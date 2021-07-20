@@ -9,12 +9,13 @@
 #include <QFileInfo>
 #include <QString>
 
-template <class Host>
+template <class Host, typename Result=bool>
 struct FileFormatFor
 {
+  typedef Result (Host::*Operation)(void);
+
   QString name_;
   QString extension_;
-  typedef bool (Host::*Operation)(void);
   Operation operation_ = nullptr;
 
 public:
@@ -32,11 +33,11 @@ public:
   {
     return bool(!extension_.compare(info.suffix()));
   }
-  bool applyFor(Host& host)
+
+  Result applyFor(Host& host)
   {
     assert(operation_);
-    return (!operation_) ? true :
-      (host.*operation_)();
+    return (!operation_) ? Result(true) : (host.*operation_)();
   }
 };
 

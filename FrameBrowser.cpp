@@ -56,6 +56,8 @@ FrameBrowser::FrameBrowser(QWidget* parent)
   : QMainWindow(parent)
   , choose_color_(new ChooseColor(this))
   , files_(new ViewFilesystem(this))
+  , wkspace_(new ViewWorkspace(this))
+  , messages_(new ViewMessages(this))
 {
   this->setupUi(this);
 
@@ -282,6 +284,12 @@ void FrameBrowser::setupDockViews()
   QDockWidget* pDock(new QDockWidget(tr("File system"), this));
   pDock->setWidget(files_);
   this->addDockWidget(Qt::LeftDockWidgetArea, pDock);
+  QDockWidget* pNext(new QDockWidget(tr("Workspace"), this));
+  pNext->setWidget(wkspace_);
+  this->tabifyDockWidget(pDock,pNext);
+  QDockWidget* pDown(new QDockWidget(tr("Log"), this));
+  pDown->setWidget(messages_);
+  this->addDockWidget(Qt::BottomDockWidgetArea,pDown);
 }
 //
 ///////////////////////////////////////////////////////////////////////

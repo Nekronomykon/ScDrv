@@ -27,7 +27,7 @@ using namespace vtk;
 typedef vtkNew<vtkSimpleBondPerceiver> NewSimpleBondMaker;
 typedef vtkSmartPointer<vtkSimpleBondPerceiver> ASimpleBondMaker;
 
-/* static */ const FileFormat FrameFile::formatInput[] = {
+/* static */ const InputFileFormat FrameFile::allInputFormats[] = {
   { QString("AIMAll exteded output"), QString("extout"),
     &FrameFile::ParseEXTOUT },
   { QString("AIMAll molecular graph"), QString("mgp"), &FrameFile::ParseMGP },
@@ -44,11 +44,11 @@ typedef vtkSmartPointer<vtkSimpleBondPerceiver> ASimpleBondMaker;
   // { QString(), QString() }
 };
 
-/* static */ FileFormat FrameFile::chooseFormatByExtension(
+/* static */ InputFileFormat FrameFile::chooseFormatByExtension(
   const QString& exten)
 {
-  FileFormat fmt_res;
-  for (const FileFormat& fmt : formatInput) {
+  InputFileFormat fmt_res;
+  for (const InputFileFormat& fmt : allInputFormats) {
     if (!fmt.hasExtension(exten))
       continue;
     fmt_res = fmt;
@@ -68,7 +68,7 @@ typedef vtkSmartPointer<vtkSimpleBondPerceiver> ASimpleBondMaker;
     ::
     */
   set<QString> allEx;
-  for (const FileFormat& fmt : formatInput) {
+  for (const InputFileFormat& fmt : allInputFormats) {
     // if(!fmt.hasAction()) --> only the text file:
     //  continue;
     if (!fmt.hasName() ||
@@ -281,7 +281,7 @@ bool FrameFile::hasPendingTasks() const
   // actually there's no yet even a concept of a "side/parallel task"...
 }
 
-bool FrameFile::canBeClosed() const
+bool FrameFile::cannotBeClosed() const
 {
   return this->isModified() ? true : this->hasPendingTasks();
 }
@@ -346,7 +346,7 @@ bool FrameFile::castSource()
 
   QString path = this->getPathSource();
   QFileInfo fi(path);
-  FileFormat fmt = FrameFile::chooseFormatByExtension(fi.suffix());
+  InputFileFormat fmt = FrameFile::chooseFormatByExtension(fi.suffix());
   if (!fmt)
     return true; // --> "text-only" mode is the only possible alternative:
   if (!fmt.applyFor(*this))
@@ -447,7 +447,7 @@ bool FrameFile::ReadMoleculeAs()
 
 #ifndef QT_MESSAGE_BOX_INFO_DEBUG
 QString message( tr("Reading molecule from:\nPath: %1\nNumber of atoms read: %2\n") );
-  QMessageBox::information( this, QString("Reading a molecule"),
+  QMessageBox::information( this, QString("Reading a molecule :1"),
   message.arg(path).arg(new_mol->GetNumberOfAtoms()) );
 #endif //! QT_MESSAGE_BOX_INFO_DEBUG
 

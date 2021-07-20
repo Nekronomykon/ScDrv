@@ -11,7 +11,7 @@
 #include <vtkMoleculeReaderBase.h>
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
-// #include <vtkVectorFieldTopology.h>
+#include <vtkVectorFieldTopology.h>
 
 #include <QPointer>
 #include <QSplitter>
@@ -30,25 +30,25 @@ typedef vtkSmartPointer<vtkMolecule> AMolecule;
 typedef vtkNew<vtkMoleculeAlgorithm> NewMolAlgorithm;
 typedef vtkSmartPointer<vtkMoleculeAlgorithm> AMolAlgorithm;
 
-// typedef vtkNew<vtkVectorFieldTopology> NewFieldTopology;
-// typedef vtkSmartPointer<vtkVectorFieldTopology> AFieldTopology;
+typedef vtkNew<vtkVectorFieldTopology> NewFieldTopology;
+typedef vtkSmartPointer<vtkVectorFieldTopology> AFieldTopology;
 
 using namespace std;
 using namespace vtk;
 
 class FrameFile;
 
-typedef FileFormatFor<FrameFile> FileFormat;
+typedef FileFormatFor<FrameFile,bool> InputFileFormat;
 
 class FrameFile : public QTabWidget
 {
   Q_OBJECT
 
 private:
-  static const FileFormat formatInput[];
+  static const InputFileFormat allInputFormats[];
 
 public:
-  static FileFormat chooseFormatByExtension(const QString& exten);
+  static InputFileFormat chooseFormatByExtension(const QString& exten);
   static QString filterInput();
   static QString filterOutput();
 
@@ -77,7 +77,7 @@ public:
   void doSave();
   bool isModified() const;
   bool hasPendingTasks() const;
-  bool canBeClosed() const;
+  bool cannotBeClosed() const;
 
   bool openTextFile(const QString& /* path */, bool /* bExistent */ = true);
 
@@ -124,11 +124,12 @@ private:
   int id_view_val_ = -1;
 
   AMolecule molecule_;
-  // AFieldTopology field_;
+  AFieldTopology field_;
 
   AMolAlgorithm make_bonds_;
 
-  vtkSmartPointer<vtk::ReadMoleculeFileBase> ptrReader_;
+  // vtkSmartPointer<vtk::ReadMoleculeFileBase> ptrReader_;
+  InputFileFormat fmt_input_;
 
   QWidget* ptrActiveWidget_ = nullptr;
 

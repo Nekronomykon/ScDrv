@@ -11,6 +11,8 @@
 #include "ChooseColor.h"
 
 #include "ViewFilesystem.h"
+#include "ViewWorkspace.h"
+#include "ViewMessages.h"
 
 #include <QCloseEvent>
 #include <QMainWindow>
@@ -40,6 +42,8 @@ signals:
 private:
   QString path_bound_;
   QPointer<ViewFilesystem> files_;
+  QPointer<ViewWorkspace> wkspace_;
+  QPointer<ViewMessages> messages_;
 
   QPointer<ChooseColor> choose_color_;
 
