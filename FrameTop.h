@@ -6,14 +6,15 @@
 #else  // !_MSC_VER
 #endif //  _MSC_VER
 
-// #include <filesystem>
-
 #include <QAction>
+#include <QPointer>
 #include <QMainWindow>
 #include <QCloseEvent>
 #include <QSessionManager>
 
 #include "FrameDoc.h"
+
+#include "ViewWorkspace.h"
 
 #include "ui_FrameTop.h"
 
@@ -41,11 +42,15 @@ protected:
   //
   FrameTop *setupActions();
   FrameTop *setupToolBars();
+  FrameTop *setupDockViews();
   //
   FrameTop *readSettings(void);
   FrameTop *saveSettings(void);
   //
   bool queryDataSaved();
+
+  private:
+  QPointer<ViewWorkspace> workspace_;
 
 private slots:
   void commitData(QSessionManager & /*mgr */);

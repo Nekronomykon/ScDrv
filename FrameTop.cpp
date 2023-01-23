@@ -1,8 +1,9 @@
 #include "FrameTop.h"
 
-#include <QMessageBox>
+#include <QDockWidget>
 #include <QSettings>
 #include <QByteArray>
+#include <QMessageBox>
 
 #include <vtkVersion.h>
 
@@ -145,6 +146,7 @@ FrameTop *FrameTop::tileAgainst(const QWidget *prev)
 
 FrameTop::FrameTop(QWidget *parent)
     : QMainWindow(parent)
+    , workspace_(new ViewWorkspace(this))
 {
     this->readSettings();
     //
@@ -153,8 +155,10 @@ FrameTop::FrameTop(QWidget *parent)
 
     connect(qApp, &QGuiApplication::commitDataRequest,
             this, &FrameTop::commitData);
+            //
     this->setupActions();
-    this->setupToolBars();
+    ->setupToolBars();
+    ->setupDockViews();
 }
 //
 ///
@@ -428,9 +432,17 @@ FrameTop *FrameTop::setupToolBars(void)
     ///
     return this;
 }
-//
 ///////////////////////////////////////////////////////////////////////
-//
+/// \brief FrameTop ::setupToolBars
+///
+FrameTop *FrameTop::setupDockViews(void)
+{
+    QDockWidget* pLeft = new QDockWidget(tr("Workspace"), this);
+    pLeft->setWidget(workspace_);
+    this->addDockWidget(Qt::LeftDockingWindowArea,pLeft);
+    ///
+    return this;
+}
 //
 ///////////////////////////////////////////////////////////////////////
 // EVENTS:
