@@ -6,15 +6,18 @@
 #else  // !_MSC_VER
 #endif //  _MSC_VER
 
+#include <algorithm>
+#include <filesystem>
+namespace fs = std::filesystem;
+// typedef fs:path Path;
+#include <vtkStdString.h>
+typedef vtkStdString Path;
+
 #include <QTabWidget>
 
 #include <QPointer>
 
-#include <vtkStdString.h>
-
-#include "EditMolecule.h"
-
-// #include <filesystem>
+#include "WidgetMolecule.h"
 
 class FrameDoc : public QTabWidget
 {
@@ -26,13 +29,13 @@ public:
     bool isModified() const;
 
     bool hasPath() const;
-    const char* getPath() const;
+    const char *getPath() const;
 
     bool doSave();
 
 private:
-    vtkStdString path_;
-    QPointer<EditMolecule> editMol_;
+    Path path_;
+    QPointer<WidgetMolecule> wMol_;
 };
 
 #endif //! Frame_Doc_h__

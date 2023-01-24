@@ -102,13 +102,14 @@ namespace
 //
 FrameTop *FrameTop::readSettings(void)
 {
-    QSettings settings; // (QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    QSettings settings; 
+    // (QCoreApplication::organizationName(), QCoreApplication::applicationName());
     const QByteArray geometry = settings.value(keyGeometry(), QByteArray()).toByteArray();
     if (geometry.isEmpty())
     {
         const QRect availableGeometry = screen()->availableGeometry();
-        resize(availableGeometry.width() / 3, availableGeometry.height() / 2);
-        move((availableGeometry.width() - width()) / 2,
+        this->resize(availableGeometry.width() / 3, availableGeometry.height() / 2);
+        this->move((availableGeometry.width() - width()) / 2,
              (availableGeometry.height() - height()) / 2);
     }
     else
@@ -120,7 +121,8 @@ FrameTop *FrameTop::readSettings(void)
 
 FrameTop *FrameTop::saveSettings(void)
 {
-    QSettings settings; // (QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    QSettings settings; 
+    // (QCoreApplication::organizationName(), QCoreApplication::applicationName());
     settings.setValue(keyGeometry(), this->saveGeometry());
     return this;
 }

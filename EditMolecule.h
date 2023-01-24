@@ -6,30 +6,18 @@
 #else  // !_MSC_VER
 #endif //  _MSC_VER
 
-#include <QSplitter>
+#include <QWidget>
 
-#include <QPointer>
-
-#include <vtkNew.h>
-#include <vtkSmartPointer.h>
-
-#include <vtkMolecule.h>
-#include <vtkMoleculeMapper.h>
-
-#include "ViewMolecule.h"
-#include "EditSource.h"
+#include "ui_EditMolecule.h"
 
 class EditMolecule
-    : public QSplitter
+    : public QWidget,
+      private Ui_EditMolecule
 {
     Q_OBJECT
 public:
     explicit EditMolecule(QWidget * /*parent*/ = nullptr);
     ~EditMolecule() override = default;
-
-private:
-    QPointer<EditSource> source_;
-    QPointer<ViewMolecule> molecule_;
 };
 
 #endif // !Edit_Molecule_h__

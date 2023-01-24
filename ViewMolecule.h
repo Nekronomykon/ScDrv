@@ -8,6 +8,16 @@
 
 #include <QVTKOpenGLNativeWidget.h>
 
+#include <vtkColor.h>
+#include <vtkRenderer.h>
+#include <vtkMoleculeMapper.h>
+
+#include <vtkNew.h>
+#include <vtkSmartPointer.h>
+
+typedef vtkNew<vtkRenderer> ANewRenderer;
+typedef vtkSmartPointer<vtkRenderer> ARenderer;
+
 class ViewMolecule
     : public QVTKOpenGLNativeWidget
 {
@@ -15,6 +25,10 @@ class ViewMolecule
 public:
     explicit ViewMolecule(QWidget * /*parent*/ = nullptr);
     ~ViewMolecule() override = default;
+
+private:
+    vtkColor3d colorBg_;
+    ANewRenderer renderBg_;
 };
 
 #endif //! View_Molecule_h__

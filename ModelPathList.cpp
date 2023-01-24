@@ -1,4 +1,8 @@
 #include "ModelPathList.h"
 
 ModelPathList::ModelPathList()
-    : QStringListModel() {}
+    : QStringListModel()
+{
+    QStringList slist(tr("[:: new ::]"));
+    this->setStringList(slist);
+}

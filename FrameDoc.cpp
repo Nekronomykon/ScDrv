@@ -1,7 +1,7 @@
 #include "FrameDoc.h"
 
 FrameDoc::FrameDoc(QWidget *parent)
-    : QTabWidget(parent), editMol_(new EditMolecule(this))
+    : QTabWidget(parent), wMol_(new WidgetMolecule(this))
 {
     this->setDocumentMode(true);
     this->setTabPosition(QTabWidget::South);
@@ -9,7 +9,7 @@ FrameDoc::FrameDoc(QWidget *parent)
     this->setTabsClosable(true);
     this->setUsesScrollButtons(true);
     //
-    this->addTab(editMol_, tr("Edit molecule"));
+    this->addTab(wMol_, tr("Edit molecule"));
 }
 
 bool FrameDoc::isModified() const
