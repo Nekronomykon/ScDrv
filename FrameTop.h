@@ -14,6 +14,7 @@
 
 #include "FrameDoc.h"
 
+#include "ViewFileSystem.h"
 #include "ViewWorkspace.h"
 
 #include "ui_FrameTop.h"
@@ -50,7 +51,8 @@ protected:
   bool queryDataSaved();
 
   private:
-  QPointer<ViewWorkspace> workspace_;
+  QPointer<ViewWorkspace> work_space_;
+  QPointer<ViewFileSystem> file_system_;
 
 private slots:
   void commitData(QSessionManager & /*mgr */);

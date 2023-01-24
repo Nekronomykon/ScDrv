@@ -145,7 +145,7 @@ FrameTop *FrameTop::tileAgainst(const QWidget *prev)
 ///
 
 FrameTop::FrameTop(QWidget *parent)
-    : QMainWindow(parent), workspace_(new ViewWorkspace(this))
+    : QMainWindow(parent), work_space_(new ViewWorkspace(this)), file_system_(new ViewFileSystem(this))
 {
    //
     this->setupUi(this);
@@ -437,8 +437,11 @@ FrameTop *FrameTop::setupToolBars(void)
 FrameTop *FrameTop::setupDockViews(void)
 {
     QDockWidget *pLeft = new QDockWidget(tr("Workspace"), this);
-    pLeft->setWidget(workspace_);
+    pLeft->setWidget(work_space_);
     this->addDockWidget(Qt::LeftDockWidgetArea, pLeft);
+    QDockWidget *pNext = new QDockWidget(tr("Filesystem"), this);
+    pNext->setWidget(file_system_);
+    this->tabifyDockWidget(pLeft,pNext);
     ///
     return this;
 }
