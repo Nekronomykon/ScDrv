@@ -190,10 +190,11 @@ bool FrameTop::queryDataSaved()
 }
 //
 ///////////////////////////////////////////////////////////////////////
-/// \brief FrameTop ::addPath
+/// \brief FrameTop::addPath
 ///
 bool FrameTop::addPath(const char *the_path)
 {
+    work_space_->addPathString(tr(the_path));
     return true;
 }
 //

@@ -8,8 +8,8 @@
 
 #include <QListView>
 
+#include <QString>
 #include <QPointer>
-
 #include <QStringListModel>
 
 class ViewPathList
@@ -19,6 +19,9 @@ class ViewPathList
 public:
     explicit ViewPathList(QWidget * /*parent*/ = nullptr);
     ~ViewPathList() override = default;
+
+    bool hasString(const QString& /*one*/) const;
+    void addString(const QString& /*one*/);
 
 private:
     QPointer<QStringListModel> modelPathList_;

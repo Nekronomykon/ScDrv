@@ -9,6 +9,8 @@
 #include <QSplitter>
 
 #include <QPointer>
+#include <QWidget>
+#include <QString>
 
 #include "ViewPathList.h"
 
@@ -21,6 +23,11 @@ class ViewWorkspace
 public:
     explicit ViewWorkspace(QWidget * /* parent */ = nullptr);
     ~ViewWorkspace() override = default;
+
+    //
+    bool addPathString(const QString & /*one*/);
+    bool hasPathTypeAssumed(const QString & /*one*/);    // casting file type from its name; simply text otherwise
+    bool isFileTypeCompatible(const QString & /*one*/); // here the file itself is preparsed to know its compatibility
 
 private:
     QPointer<ViewPathList> files_;

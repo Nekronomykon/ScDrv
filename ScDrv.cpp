@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
                           // and the already-presence.
                           // If it is not actual as an existing file, 
                           // try to open it as a new one
+                          path_full = std::filesystem::absolute(path_full);
                       }
                       pFrame->addPath(path_full.c_str());
                       // Here should be path_full. Rethink the application,
