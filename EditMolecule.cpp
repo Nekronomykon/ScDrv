@@ -3,6 +3,8 @@
 EditMolecule::EditMolecule(QWidget *parent)
     : QSplitter(parent), source_(new EditSource(this)), molecule_(new ViewMolecule(this))
 {
+    this->setOpaqueResize(false);
+    //
     this->addWidget(molecule_);
     this->addWidget(source_);
     // 

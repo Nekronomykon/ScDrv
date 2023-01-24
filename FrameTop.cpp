@@ -100,7 +100,7 @@ namespace
     ///////////////////////////////////////////////////////////////////////
 }; // *anonymous*
 //
-FrameTop* FrameTop::readSettings(void)
+FrameTop *FrameTop::readSettings(void)
 {
     QSettings settings; // (QCoreApplication::organizationName(), QCoreApplication::applicationName());
     const QByteArray geometry = settings.value(keyGeometry(), QByteArray()).toByteArray();
@@ -118,7 +118,7 @@ FrameTop* FrameTop::readSettings(void)
     return this;
 }
 
-FrameTop* FrameTop::saveSettings(void)
+FrameTop *FrameTop::saveSettings(void)
 {
     QSettings settings; // (QCoreApplication::organizationName(), QCoreApplication::applicationName());
     settings.setValue(keyGeometry(), this->saveGeometry());
@@ -145,20 +145,19 @@ FrameTop *FrameTop::tileAgainst(const QWidget *prev)
 ///
 
 FrameTop::FrameTop(QWidget *parent)
-    : QMainWindow(parent)
-    , workspace_(new ViewWorkspace(this))
+    : QMainWindow(parent), workspace_(new ViewWorkspace(this))
 {
-    this->readSettings();
-    //
+   //
     this->setupUi(this);
     this->setUnifiedTitleAndToolBarOnMac(true);
 
     connect(qApp, &QGuiApplication::commitDataRequest,
             this, &FrameTop::commitData);
-            //
-    this->setupActions();
-    ->setupToolBars();
-    ->setupDockViews();
+    //
+    this->setupActions()
+        ->setupToolBars()
+        ->setupDockViews()
+        ->readSettings();
 }
 //
 ///
@@ -437,9 +436,9 @@ FrameTop *FrameTop::setupToolBars(void)
 ///
 FrameTop *FrameTop::setupDockViews(void)
 {
-    QDockWidget* pLeft = new QDockWidget(tr("Workspace"), this);
+    QDockWidget *pLeft = new QDockWidget(tr("Workspace"), this);
     pLeft->setWidget(workspace_);
-    this->addDockWidget(Qt::LeftDockingWindowArea,pLeft);
+    this->addDockWidget(Qt::LeftDockWidgetArea, pLeft);
     ///
     return this;
 }
@@ -489,7 +488,7 @@ void FrameTop::on_actionFileRecent(void)
 /// @brief FrameTop::createNew
 /// @param parent --> widget, the
 /// @return --> pointer to a new FrameTop instance
-/// 
+///
 FrameTop *FrameTop::createNew(const QWidget *parent)
 {
     FrameTop *pNew = new FrameTop();
