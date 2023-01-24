@@ -6,6 +6,11 @@
 #else  // !_MSC_VER
 #endif //  _MSC_VER
 
+#include <algorithm>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 #include <QAction>
 #include <QPointer>
 #include <QMainWindow>
@@ -16,6 +21,8 @@
 
 #include "ViewFileSystem.h"
 #include "ViewWorkspace.h"
+
+#include <vtkStdString.h>
 
 #include "ui_FrameTop.h"
 
@@ -30,7 +37,7 @@ public:
   static FrameTop *createNew(const QWidget * /* parent */ = nullptr);
 
   FrameTop *tileAgainst(const QWidget * /* prev */ = nullptr);
-  bool addPath(const char * /* path */); // by reference or by value?
+  bool addPath(const fs::path& /* path */); // by reference or by value?
 
 protected:
   enum

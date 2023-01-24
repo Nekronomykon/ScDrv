@@ -147,7 +147,7 @@ FrameTop *FrameTop::tileAgainst(const QWidget *prev)
 FrameTop::FrameTop(QWidget *parent)
     : QMainWindow(parent), work_space_(new ViewWorkspace(this)), file_system_(new ViewFileSystem(this))
 {
-   //
+    //
     this->setupUi(this);
     this->setUnifiedTitleAndToolBarOnMac(true);
 
@@ -155,9 +155,9 @@ FrameTop::FrameTop(QWidget *parent)
             this, &FrameTop::commitData);
     //
     this->setupActions()
+        ->readSettings()
         ->setupToolBars()
-        ->setupDockViews()
-        ->readSettings();
+        ->setupDockViews();
 }
 //
 ///
@@ -192,9 +192,9 @@ bool FrameTop::queryDataSaved()
 ///////////////////////////////////////////////////////////////////////
 /// \brief FrameTop::addPath
 ///
-bool FrameTop::addPath(const char *the_path)
+bool FrameTop::addPath(const fs::path &the_path)
 {
-    work_space_->addPathString(tr(the_path));
+    work_space_->addPathString(tr(the_path.c_str()));
     return true;
 }
 //
@@ -442,7 +442,7 @@ FrameTop *FrameTop::setupDockViews(void)
     this->addDockWidget(Qt::LeftDockWidgetArea, pLeft);
     QDockWidget *pNext = new QDockWidget(tr("Filesystem"), this);
     pNext->setWidget(file_system_);
-    this->tabifyDockWidget(pLeft,pNext);
+    this->tabifyDockWidget(pLeft, pNext);
     ///
     return this;
 }
