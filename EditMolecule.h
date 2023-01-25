@@ -18,6 +18,8 @@ class EditMolecule
 public:
     explicit EditMolecule(QWidget * /*parent*/ = nullptr);
     ~EditMolecule() override = default;
+
+    void setReadOnly(bool /*bReadOnly*/ = true);
 };
 
 #endif // !Edit_Molecule_h__
