@@ -12,6 +12,7 @@
 namespace fs = std::filesystem;
 
 #include <QAction>
+#include <QLineEdit>
 #include <QPointer>
 #include <QMainWindow>
 #include <QCloseEvent>
@@ -37,7 +38,7 @@ public:
   static FrameTop *createNew(const QWidget * /* parent */ = nullptr);
 
   FrameTop *tileAgainst(const QWidget * /* prev */ = nullptr);
-  bool addPath(const fs::path& /* path */); // by reference or by value?
+  bool addPath(const fs::path & /* path */); // by reference or by value?
 
 protected:
   enum
@@ -57,7 +58,11 @@ protected:
   //
   bool queryDataSaved();
 
-  private:
+private:
+  QPointer<QLineEdit> editBgRed_;
+  QPointer<QLineEdit> editBgGreen_;
+  QPointer<QLineEdit> editBgBlue_;
+
   QPointer<ViewWorkspace> work_space_;
   QPointer<ViewFileSystem> file_system_;
 

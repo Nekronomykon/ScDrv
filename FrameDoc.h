@@ -13,6 +13,11 @@ namespace fs = std::filesystem;
 #include <vtkStdString.h>
 typedef vtkStdString Path;
 
+#include <vtkNew.h>
+#include <vtkSmartPointer.h>
+
+#include <vtkMolecule.h>
+
 #include <QTabWidget>
 
 #include <QPointer>
@@ -35,6 +40,9 @@ public:
 
 private:
     Path path_;
+    vtkNew<vtkMolecule> molecule_;
+    // GUI
+    QPointer<EditSource> wText_;
     QPointer<WidgetMolecule> wMol_;
 };
 
