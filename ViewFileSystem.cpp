@@ -2,6 +2,12 @@
 
 #include <QDir>
 
+namespace
+{
+    static inline const char *keyState() { return "Files"; }
+}
+
+
 ViewFileSystem::ViewFileSystem(QWidget *parent)
     : QSplitter(Qt::Vertical, parent),
       model_files_(new QFileSystemModel),

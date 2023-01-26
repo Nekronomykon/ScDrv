@@ -17,7 +17,8 @@ FrameDoc::FrameDoc(QWidget *parent)
 ///
 void FrameDoc::readSettings(QSettings &src)
 {
-    wMol_->readSettings(src);
+    if (wMol_)
+        wMol_->readSettings(src);
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -25,7 +26,8 @@ void FrameDoc::readSettings(QSettings &src)
 ///
 void FrameDoc::saveSettings(QSettings &src)
 {
-    wMol_->saveSettings(src);
+    if (wMol_)
+        wMol_->saveSettings(src);
 }
 
 bool FrameDoc::isModified() const

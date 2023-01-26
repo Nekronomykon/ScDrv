@@ -117,9 +117,12 @@ FrameTop *FrameTop::readSettings(void)
         this->restoreGeometry(geometry);
     }
     // now children:
-    workspace_->readSettings(settings);
-    files_->readSettings(settings);
-    frameDoc_->readSettings(settings);
+    if (workspace_)
+        workspace_->readSettings(settings);
+    if (files_)
+        files_->readSettings(settings);
+    if (frameDoc_)
+        frameDoc_->readSettings(settings);
     return this;
 }
 
@@ -128,10 +131,13 @@ FrameTop *FrameTop::saveSettings(void)
     QSettings settings;
     // (QCoreApplication::organizationName(), QCoreApplication::applicationName());
     settings.setValue(keyGeometry(), this->saveGeometry());
-    // now children:
-    workspace_->saveSettings(settings);
-    files_->saveSettings(settings);
-    frameDoc_->saveSettings(settings);
+    // now do the children:
+    if (workspace_)
+        workspace_->saveSettings(settings);
+    if (files_)
+        files_->saveSettings(settings);
+    if (frameDoc_)
+        frameDoc_->saveSettings(settings);
     return this;
 }
 //
