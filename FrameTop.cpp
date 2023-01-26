@@ -102,7 +102,7 @@ namespace
 //
 FrameTop *FrameTop::readSettings(void)
 {
-    QSettings settings; 
+    QSettings settings;
     // (QCoreApplication::organizationName(), QCoreApplication::applicationName());
     const QByteArray geometry = settings.value(keyGeometry(), QByteArray()).toByteArray();
     if (geometry.isEmpty())
@@ -110,20 +110,28 @@ FrameTop *FrameTop::readSettings(void)
         const QRect availableGeometry = screen()->availableGeometry();
         this->resize(availableGeometry.width() / 3, availableGeometry.height() / 2);
         this->move((availableGeometry.width() - width()) / 2,
-             (availableGeometry.height() - height()) / 2);
+                   (availableGeometry.height() - height()) / 2);
     }
     else
     {
         this->restoreGeometry(geometry);
     }
+    // now children:
+    workspace_->readSettings(settings);
+    files_->readSettings(settings);
+    frameDoc_->readSettings(settings);
     return this;
 }
 
 FrameTop *FrameTop::saveSettings(void)
 {
-    QSettings settings; 
+    QSettings settings;
     // (QCoreApplication::organizationName(), QCoreApplication::applicationName());
     settings.setValue(keyGeometry(), this->saveGeometry());
+    // now children:
+    workspace_->saveSettings(settings);
+    files_->saveSettings(settings);
+    frameDoc_->saveSettings(settings);
     return this;
 }
 //
@@ -147,19 +155,21 @@ FrameTop *FrameTop::tileAgainst(const QWidget *prev)
 ///
 
 FrameTop::FrameTop(QWidget *parent)
-    : QMainWindow(parent), work_space_(new ViewWorkspace(this)), file_system_(new ViewFileSystem(this))
+    : QMainWindow(parent), workspace_(new ViewWorkspace(this)), files_(new ViewFileSystem(this))
 {
     //
     this->setupUi(this);
-    this->setUnifiedTitleAndToolBarOnMac(true);
+
+    this->setUnifiedTitleAndToolBarOnMac(true); // Actually I don't know, what is it about
 
     connect(qApp, &QGuiApplication::commitDataRequest,
             this, &FrameTop::commitData);
     //
     this->setupActions()
-        ->readSettings()
         ->setupToolBars()
         ->setupDockViews();
+    //
+    this->readSettings();
 }
 //
 ///
@@ -196,7 +206,7 @@ bool FrameTop::queryDataSaved()
 ///
 bool FrameTop::addPath(const fs::path &the_path)
 {
-    work_space_->addPathString(tr(the_path.c_str()));
+    workspace_->addPathString(tr(the_path.c_str()));
     return true;
 }
 //
@@ -440,10 +450,10 @@ FrameTop *FrameTop::setupToolBars(void)
 FrameTop *FrameTop::setupDockViews(void)
 {
     QDockWidget *pLeft = new QDockWidget(tr("Workspace"), this);
-    pLeft->setWidget(work_space_);
+    pLeft->setWidget(workspace_);
     this->addDockWidget(Qt::LeftDockWidgetArea, pLeft);
     QDockWidget *pNext = new QDockWidget(tr("Filesystem"), this);
-    pNext->setWidget(file_system_);
+    pNext->setWidget(files_);
     this->tabifyDockWidget(pLeft, pNext);
     ///
     return this;

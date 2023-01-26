@@ -11,6 +11,22 @@ FrameDoc::FrameDoc(QWidget *parent)
     //
     this->addTab(wMol_, tr("Edit molecule"));
 }
+//
+///////////////////////////////////////////////////////////////////////
+/// read settings from the corresponding class instance:
+///
+void FrameDoc::readSettings(QSettings &src)
+{
+    wMol_->readSettings(src);
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// write settings to the corresponding class instance:
+///
+void FrameDoc::saveSettings(QSettings &src)
+{
+    wMol_->saveSettings(src);
+}
 
 bool FrameDoc::isModified() const
 {

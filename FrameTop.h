@@ -14,6 +14,7 @@ namespace fs = std::filesystem;
 #include <QAction>
 #include <QLineEdit>
 #include <QPointer>
+#include <QSettings>
 #include <QMainWindow>
 #include <QCloseEvent>
 #include <QSessionManager>
@@ -63,8 +64,8 @@ private:
   QPointer<QLineEdit> editBgGreen_;
   QPointer<QLineEdit> editBgBlue_;
 
-  QPointer<ViewWorkspace> work_space_;
-  QPointer<ViewFileSystem> file_system_;
+  QPointer<ViewWorkspace> workspace_;
+  QPointer<ViewFileSystem> files_;
 
 private slots:
   void commitData(QSessionManager & /*mgr */);

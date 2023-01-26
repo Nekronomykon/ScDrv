@@ -1,5 +1,10 @@
 #include "ViewWorkspace.h"
 
+namespace
+{
+    static inline const char *keyState() { return "Workspace"; }
+}
+
 ViewWorkspace::ViewWorkspace(QWidget *parent)
     : QSplitter(Qt::Vertical, parent), files_(new ViewPathList(this)), content_(new ViewFileContent(this))
 {
@@ -7,6 +12,24 @@ ViewWorkspace::ViewWorkspace(QWidget *parent)
     //
     this->addWidget(files_);
     this->addWidget(content_);
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// read settings from the corresponding class instance:
+///
+void ViewWorkspace::readSettings(QSettings &src)
+{
+    // splitter state
+    this->restoreState(src.value(keyState()).toByteArray());
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// write settings to the corresponding class instance:
+///
+void ViewWorkspace::saveSettings(QSettings &src)
+{
+    // splitter state
+    src.setValue(keyState(), this->saveState());
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -24,7 +47,7 @@ bool ViewWorkspace::addPathString(const QString &one)
 ///////////////////////////////////////////////////////////////////////
 /// casting file type from its name; simply text file otherwise
 ///
-bool ViewWorkspace::hasPathTypeAssumed(const QString & /*one*/) 
+bool ViewWorkspace::hasPathTypeAssumed(const QString & /*one*/)
 {
     return true;
 }
@@ -32,7 +55,7 @@ bool ViewWorkspace::hasPathTypeAssumed(const QString & /*one*/)
 ///////////////////////////////////////////////////////////////////////
 /// here the file itself is preparsed to know its compatibility
 ///
-bool ViewWorkspace::isFileTypeCompatible(const QString & /*one*/) 
+bool ViewWorkspace::isFileTypeCompatible(const QString & /*one*/)
 {
     return true;
 }

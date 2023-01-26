@@ -13,6 +13,8 @@
 #include <QListView>
 #include <QFileSystemModel>
 
+#include <QSettings>
+
 class ViewFileSystem
     : public QSplitter
 {
@@ -20,6 +22,10 @@ class ViewFileSystem
 public:
     explicit ViewFileSystem(QWidget * /*parent*/ = nullptr);
     ~ViewFileSystem() override = default;
+
+    //
+    void readSettings(QSettings& /*src*/);
+    void saveSettings(QSettings& /*src*/);
 
 private:
     QPointer<QFileSystemModel> model_files_;

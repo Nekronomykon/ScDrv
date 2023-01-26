@@ -16,8 +16,7 @@ typedef vtkStdString Path;
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
 
-#include <vtkMolecule.h>
-
+#include <QSettings>
 #include <QTabWidget>
 
 #include <QPointer>
@@ -37,10 +36,12 @@ public:
     const char *getPath() const;
 
     bool doSave();
-
+    //
+    void readSettings(QSettings & /*src*/);
+    void saveSettings(QSettings & /*src*/);
+    //
 private:
     Path path_;
-    vtkNew<vtkMolecule> molecule_;
     // GUI
     QPointer<EditSource> wText_;
     QPointer<WidgetMolecule> wMol_;

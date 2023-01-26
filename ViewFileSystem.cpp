@@ -20,3 +20,22 @@ ViewFileSystem::ViewFileSystem(QWidget *parent)
     this->addWidget(list_files_);
     this->setOpaqueResize(false);
 }
+//
+///////////////////////////////////////////////////////////////////////
+/// read settings from the corresponding class instance:
+///
+void ViewFileSystem::readSettings(QSettings &src)
+{
+    // splitter state
+    this->restoreState(src.value(keyState()).toByteArray());
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// write settings to the corresponding class instance:
+///
+void ViewFileSystem::saveSettings(QSettings &src)
+{
+    // splitter state
+    src.setValue(keyState(), this->saveState());
+}
+//
