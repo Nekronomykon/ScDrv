@@ -7,19 +7,19 @@
 #include <QStringList>
 
 ViewPathList::ViewPathList(QWidget *parent)
-    : QListView(parent), modelPathList_(new ModelPathList)
+    : _Base(parent)
 {
-  this->setModel(modelPathList_);
 }
+
 bool ViewPathList::hasString(const QString &one) const
 {
-  const QStringList slist = modelPathList_->stringList();
+  const QStringList slist = this->GetViewModel()->stringList();
   return slist.contains(one);
 }
 
 void ViewPathList::addString(const QString &one)
 {
-  QStringList slist = modelPathList_->stringList();
+  QStringList slist = this->GetViewModel()->stringList();
   slist.push_back(one);
-  modelPathList_->setStringList(slist);
+  this->GetViewModel()->setStringList(slist);
 }

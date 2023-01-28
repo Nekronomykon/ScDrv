@@ -10,12 +10,16 @@
 
 #include <QString>
 #include <QPointer>
-#include <QStringListModel>
+
+#include "ModelPathList.h"
+
+#include "ImplModelView.h"
 
 class ViewPathList
-    : public QListView
+    : public ImplModelView<ViewPathList,QListView,ModelPathList>
 {
     Q_OBJECT
+    typedef  ImplModelView<ViewPathList,QListView,ModelPathList> _Base;
 public:
     explicit ViewPathList(QWidget * /*parent*/ = nullptr);
     ~ViewPathList() override = default;
@@ -23,7 +27,5 @@ public:
     bool hasString(const QString& /*one*/) const;
     void addString(const QString& /*one*/);
 
-private:
-    QPointer<QStringListModel> modelPathList_;
 };
 #endif // ! View_PathList__h

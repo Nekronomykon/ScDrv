@@ -9,7 +9,7 @@ FrameDoc::FrameDoc(QWidget *parent)
     this->setTabsClosable(true);
     this->setUsesScrollButtons(true);
     //
-    this->addTab(wMol_, tr("Edit molecule"));
+    this->addTab(wMol_, tr("Edit atoms"));
 }
 //
 ///////////////////////////////////////////////////////////////////////
