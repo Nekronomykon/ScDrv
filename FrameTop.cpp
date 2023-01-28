@@ -1,9 +1,13 @@
 #include "FrameTop.h"
 
-#include <QDockWidget>
+#include <QDir>
 #include <QSettings>
 #include <QByteArray>
 #include <QMessageBox>
+#include <QFileDialog>
+#include <QDockWidget>
+
+#include "TableElements.h"
 
 #include <vtkVersion.h>
 
@@ -24,6 +28,11 @@ namespace
     static inline QString keyGeometry()
     {
         return QStringLiteral("Geometry");
+    }
+    //
+    static inline QString keyFrameState()
+    {
+        return QStringLiteral("FrameState");
     }
     //
     static inline QString keyFile()
@@ -116,6 +125,7 @@ FrameTop *FrameTop::readSettings(void)
     {
         this->restoreGeometry(geometry);
     }
+    this->restoreState(settings.value(keyFrameState(), QByteArray()).toByteArray());
     // now children:
     if (workspace_)
         workspace_->readSettings(settings);
@@ -131,6 +141,7 @@ FrameTop *FrameTop::saveSettings(void)
     QSettings settings;
     // (QCoreApplication::organizationName(), QCoreApplication::applicationName());
     settings.setValue(keyGeometry(), this->saveGeometry());
+    settings.setValue(keyFrameState(), this->saveState());
     // now do the children:
     if (workspace_)
         workspace_->saveSettings(settings);
@@ -377,6 +388,7 @@ FrameTop *FrameTop::setupToolBars(void)
     barTools_->addAction(actionSave_);
 
     QToolBar *tbEdit = this->addToolBar(tr("Edit"));
+    tbEdit->setObjectName("ToolbarEdit");
     tbEdit->addAction(actionUndo_);
     tbEdit->addAction(actionRedo_);
     tbEdit->addSeparator();
@@ -388,10 +400,12 @@ FrameTop *FrameTop::setupToolBars(void)
     tbEdit->addAction(actionClearAll_);
 
     QToolBar *tbText = this->addToolBar(tr("Text"));
+    tbText->setObjectName("ToolbarText");
     tbText->addAction(actionTextSource_);
     tbText->addAction(actionSetSourceFont_);
 
     QToolBar *tbView = this->addToolBar(tr("View"));
+    tbView->setObjectName("ToolbarView");
     tbView->addAction(actionViewMolecule_);
     /*
         tbView->addSeparator();
@@ -429,6 +443,7 @@ FrameTop *FrameTop::setupToolBars(void)
 
     // ---- [ ] ----
     QToolBar *tbMol = this->addToolBar(tr("Molecule"));
+    tbMol->setObjectName("ToolbarMolecule");
     tbMol->addAction(actionViewMoleculeFast_);
     tbMol->addSeparator();
     tbMol->addAction(actionViewMoleculeSticks_);
@@ -442,6 +457,7 @@ FrameTop *FrameTop::setupToolBars(void)
     tbMol->addAction(actionLabelBonds_);
 
     QToolBar *tbHelp = this->addToolBar(tr("Help"));
+    tbHelp->setObjectName("ToolbarHelp");
     tbHelp->addAction(actionProperties_);
     tbHelp->addAction(actionOptions_);
     tbHelp->addAction(actionAbout_);
@@ -457,9 +473,11 @@ FrameTop *FrameTop::setupDockViews(void)
 {
     QDockWidget *pLeft = new QDockWidget(tr("Workspace"), this);
     pLeft->setWidget(workspace_);
+    pLeft->setObjectName(tr("Workspace"));
     this->addDockWidget(Qt::LeftDockWidgetArea, pLeft);
     QDockWidget *pNext = new QDockWidget(tr("Filesystem"), this);
     pNext->setWidget(files_);
+    pNext->setObjectName(tr("Filesystem"));
     this->tabifyDockWidget(pLeft, pNext);
     ///
     return this;
@@ -520,33 +538,6 @@ FrameTop *FrameTop::createNew(const QWidget *parent)
 }
 //
 ///////////////////////////////////////////////////////////////////////
-/// \brief FrameTop::on_actionAbout__triggered
-///
-void FrameTop::on_actionAbout__triggered(void)
-{
-    QString message(tr("<center><b> S c D r v </b></center><br>This example demonstrates how to write single document interface (<b>SDI</b>) applications using Qt and VTK<br><br>Qt version %1-%2 from https://wwww.qt.io<br>VTK version %3 from https://vtk.org/"));
-
-    QMessageBox::about(this, tr("About the application"),
-                       message.arg(QT_VERSION_STR).arg(QT_VERSION).arg(vtkVersion::GetVTKVersionFull()));
-}
-//
-///////////////////////////////////////////////////////////////////////
-/// \brief FrameTop::on_actionClose__triggered
-///
-void FrameTop::on_actionNew__triggered(void)
-{
-    FrameTop::createNew(this->saveSettings())->show();
-}
-//
-///////////////////////////////////////////////////////////////////////
-/// \brief FrameTop::on_actionClose__triggered
-///
-void FrameTop::on_actionClose__triggered(void)
-{
-    this->close();
-}
-//
-///////////////////////////////////////////////////////////////////////
 /// \brief FrameTop::on_actionExit__triggered
 ///
 void FrameTop::on_actionExit__triggered(void)
@@ -560,6 +551,55 @@ void FrameTop::on_actionExit__triggered(void)
 void FrameTop::on_actionAboutQt__triggered(void)
 {
     qApp->aboutQt();
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// \brief FrameTop::on_actionAbout__triggered
+///
+void FrameTop::on_actionAbout__triggered(void)
+{
+    QString message(tr("<center><b> S c D r v </b></center><br>This example demonstrates how to write single document interface (<b>SDI</b>) applications using Qt and VTK<br><br>Qt version %1-%2 from https://wwww.qt.io<br>VTK version %3 from https://vtk.org/"));
+
+    QMessageBox::about(this, tr("About the application"),
+                       message.arg(QT_VERSION_STR).arg(QT_VERSION).arg(vtkVersion::GetVTKVersionFull()));
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// \brief FrameTop::on_actionNew__triggered
+///
+void FrameTop::on_actionNew__triggered(void)
+{
+    FrameTop::createNew(this->saveSettings())->show();
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// \brief FrameTop::on_actionOpen__triggered
+///
+void FrameTop::on_actionOpen__triggered(void)
+{
+    QFileDialog::Options opts_open = QFileDialog::QFileDialog::DontUseNativeDialog |
+                                     QFileDialog::DontUseCustomDirectoryIcons;
+    QString caption(tr("Open file(s)"));
+    QString dir = QDir::currentPath();
+    QString formats; // = GetFormatStringIDs(FormatHasBothIO | FormatHasInput) ???
+    QString fmt_use;
+    QStringList to_open = QFileDialog::getOpenFileNames(this,
+                                                        caption,
+                                                        dir,
+                                                        formats,
+                                                        &fmt_use,
+                                                        opts_open);
+    if (!to_open.empty())
+    { // adding paths ro workspace
+    }
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// \brief FrameTop::on_actionClose__triggered
+///
+void FrameTop::on_actionClose__triggered(void)
+{
+    this->close();
 }
 //
 ///////////////////////////////////////////////////////////////////////

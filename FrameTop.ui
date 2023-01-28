@@ -40,6 +40,7 @@
     <addaction name="actionClone_"/>
     <addaction name="separator"/>
     <addaction name="actionOpen_"/>
+    <addaction name="actionImport_"/>
     <addaction name="actionReload_"/>
     <addaction name="menuRecent_"/>
     <addaction name="separator"/>
@@ -122,7 +123,6 @@
      <addaction name="actionTextSource_"/>
      <addaction name="actionViewMolecule_"/>
     </widget>
-    <addaction name="actionElements_"/>
     <addaction name="actionFullScreen_"/>
     <addaction name="menuTabbed_"/>
     <addaction name="separator"/>
@@ -157,6 +157,7 @@
     <addaction name="actionPageSetup_"/>
     <addaction name="actionPrintSetup_"/>
     <addaction name="separator"/>
+    <addaction name="actionElements_"/>
     <addaction name="actionOptions_"/>
    </widget>
    <addaction name="menuFile_"/>
@@ -417,6 +418,16 @@
   <action name="actionViewGeometry_">
    <property name="text">
     <string>&amp;Geometry</string>
+   </property>
+  </action>
+  <action name="actionElements_1">
+   <property name="text">
+    <string>&amp;Elements..</string>
+   </property>
+  </action>
+  <action name="actionImport_">
+   <property name="text">
+    <string>Import..</string>
    </property>
   </action>
  </widget>

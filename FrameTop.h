@@ -72,6 +72,7 @@ private slots:
   void on_actionFileRecent(void);
   /* File menu */
   void on_actionNew__triggered(void);
+  void on_actionOpen__triggered(void);
   void on_actionClose__triggered(void);
   void on_actionExit__triggered(void);
 
