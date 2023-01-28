@@ -8,7 +8,7 @@
 
 #include <QTreeWidget>
 
-// unclear implementation,
+// an unclear implementation,
 // probably it could be the QTableWidget offspring
 
 class ViewFileContent
