@@ -31,6 +31,9 @@ public:
 
     void readSettings(QSettings & /*src*/);
     void saveSettings(QSettings & /*src*/);
+    //
+    EditMolecule* getEdit() const {return edit_;}
+    ViewMolecule* getView() const {return view_;}
 
 private:
     vtkNew<vtkMolecule> molecule_;

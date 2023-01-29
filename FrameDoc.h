@@ -40,6 +40,17 @@ public:
     void readSettings(QSettings & /*src*/);
     void saveSettings(QSettings & /*src*/);
     //
+    WidgetMolecule *editMolecule()
+    {
+        if (wMol_)
+            this->setCurrentWidget(wMol_);
+        return wMol_;
+    }
+    WidgetMolecule *getEditMolecule() const
+    {
+        return wMol_;
+    }
+    //
 private:
     Path path_;
     // GUI

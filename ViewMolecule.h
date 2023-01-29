@@ -26,7 +26,12 @@ public:
     explicit ViewMolecule(QWidget * /*parent*/ = nullptr);
     ~ViewMolecule() override = default;
 
-private:
+    vtkColor3d getBackgroundColor() const;
+    vtkColor3d& backgroundColor();
+
+    void updateBackgroundColor();
+
+  private:
     vtkColor3d colorBg_;
     ANewRenderer renderBg_;
 };

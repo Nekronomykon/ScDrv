@@ -1,14 +1,19 @@
 #include "ViewWorkspace.h"
 
+#include <QStringLiteral>
+
 namespace
 {
     static inline const char *keyState() { return "Workspace"; }
-}
+    static inline QString keyNewFile() { return QStringLiteral("[: new file :]"); }
+};
 
 ViewWorkspace::ViewWorkspace(QWidget *parent)
     : QSplitter(Qt::Vertical, parent), files_(new ViewPathList(this)), content_(new ViewFileContent(this))
 {
     this->setOpaqueResize(false);
+    //
+    files_->addString(keyNewFile());
     //
     this->addWidget(files_);
     this->addWidget(content_);

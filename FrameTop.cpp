@@ -4,6 +4,7 @@
 
 #include <QDir>
 #include <QSettings>
+#include <QClipboard>
 #include <QByteArray>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -174,21 +175,35 @@ FrameTop *FrameTop::tileAgainst(const QWidget *prev)
 ///
 
 FrameTop::FrameTop(QWidget *parent)
-    : QMainWindow(parent), workspace_(new ViewWorkspace(this)), files_(new ViewFileSystem(this))
+    : QMainWindow(parent),
+      editBgRed_(new QLineEdit(this)), editBgGreen_(new QLineEdit(this)), editBgBlue_(new QLineEdit(this)),
+      colorsBg_(new QVTKNamedColors(this)),
+      workspace_(new ViewWorkspace(this)),
+      files_(new ViewFileSystem(this))
 {
     //
     this->setupUi(this);
 
-    this->setUnifiedTitleAndToolBarOnMac(true); // Actually I don't know, what is it about
-
+    // validator clamp
+    // vldColorComp_->setNotation(QDoubleValidator::StandardNotation);
+    // vldColorComp_->setRange(0.0, 1.0);
+    //
+    editBgRed_->setPlaceholderText(tr("[red]"));
+    editBgGreen_->setPlaceholderText(tr("[green]"));
+    editBgBlue_->setPlaceholderText(tr("[blue]"));
+    //
     connect(qApp, &QGuiApplication::commitDataRequest,
             this, &FrameTop::commitData);
+    // clipboard sniffer
+    connect(QGuiApplication::clipboard(), &QClipboard::dataChanged,
+            this, &FrameTop::on_changedClipboardData);
     //
     this->setupActions()
         ->setupToolBars()
         ->setupDockViews();
     //
     this->readSettings();
+    this->setUnifiedTitleAndToolBarOnMac(true); // Actually I don't know, what is it about
 }
 //
 ///
@@ -231,7 +246,7 @@ bool FrameTop::addPath(const fs::path &the_path)
 ///////////////////////////////////////////////////////////////////////
 /// \brief FrameTop::addPathList
 ///
-void FrameTop::addPathList(const QStringList &list_paths)
+FrameTop *FrameTop::addPathList(const QStringList &list_paths)
 {
     std::for_each(list_paths.begin(), list_paths.end(),
                   [&](const QString &one_to_open) -> void
@@ -266,6 +281,7 @@ void FrameTop::addPathList(const QStringList &list_paths)
                       default: // nothing else matters; probably fifo or pipe would be useful
                           break;
                       } });
+    return this;
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -448,33 +464,35 @@ FrameTop *FrameTop::setupToolBars(void)
     QToolBar *tbView = this->addToolBar(tr("View"));
     tbView->setObjectName("ToolbarView");
     tbView->addAction(actionViewMolecule_);
-    /*
-        tbView->addSeparator();
-        tbView->addWidget(nameBgColor_);
-        connect(nameBgColor_, &ChooseNamedColor::currentTextChanged, this,
-                &FrameBrowser::setBgColorByName);
 
-        // editBgRed_->setValidator(vldColorComp_);
-        // editBgRed_->setClearButtonEnabled(true);
-        // editBgGreen_->setValidator(vldColorComp_);
-        // editBgGreen_->setClearButtonEnabled(true);
-        // editBgBlue_->setValidator(vldColorComp_);
-        // editBgBlue_->setClearButtonEnabled(true);
-        tbView->addSeparator();
-        // --- [ ]
-        tbView->addWidget(editBgRed_);
-        connect(editBgRed_, &QLineEdit::editingFinished, this, &FrameBrowser::updateBackgroundRed);
-        editBgRed_->setMaximumWidth(100);
-        // --- [ ]
-        tbView->addWidget(editBgGreen_);
-        connect(editBgGreen_, &QLineEdit::editingFinished, this, &FrameBrowser::updateBackgroundGreen);
-        editBgGreen_->setMaximumWidth(100);
-        // --- [ ]
-        tbView->addWidget(editBgBlue_);
-        connect(editBgBlue_, &QLineEdit::editingFinished, this, &FrameBrowser::updateBackgroundBlue);
-        editBgBlue_->setMaximumWidth(100);
-        tbView->addSeparator();
-    */
+    tbView->addSeparator();
+    tbView->addWidget(colorsBg_);
+    connect(colorsBg_, &QVTKNamedColors::currentTextChanged, this,
+            &FrameTop::on_nameBackgroundColor);
+
+    /*
+            // editBgRed_->setValidator(vldColorComp_);
+            // editBgGreen_->setValidator(vldColorComp_);
+            // editBgBlue_->setValidator(vldColorComp_);
+        */
+    editBgRed_->setClearButtonEnabled(true);
+    editBgGreen_->setClearButtonEnabled(true);
+    editBgBlue_->setClearButtonEnabled(true);
+
+    tbView->addSeparator();
+    // --- [ ]
+    tbView->addWidget(editBgRed_);
+    connect(editBgRed_, &QLineEdit::editingFinished, this, &FrameTop::on_changedBackgroundRed);
+    editBgRed_->setMaximumWidth(125);
+    // --- [ ]
+    tbView->addWidget(editBgGreen_);
+    connect(editBgGreen_, &QLineEdit::editingFinished, this, &FrameTop::on_changedBackgroundGreen);
+    editBgGreen_->setMaximumWidth(125);
+    // --- [ ]
+    tbView->addWidget(editBgBlue_);
+    connect(editBgBlue_, &QLineEdit::editingFinished, this, &FrameTop::on_changedBackgroundBlue);
+    editBgBlue_->setMaximumWidth(125);
+    tbView->addSeparator();
     tbView->addAction(actionProjectOrthogonal_);
     tbView->addAction(actionProjectPerspective_);
     tbView->addAction(actionProjectReset_);
@@ -562,6 +580,62 @@ void FrameTop::commitData(QSessionManager &mgr)
 /// @brief FrameTop::on_actionFileRecent
 ///
 void FrameTop::on_actionFileRecent(void)
+{
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// @brief FrameTop::on_nameBackgroundColor
+///
+void FrameTop::on_nameBackgroundColor(const QString &)
+{
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// @brief FrameTop::on_changedBackgroundRed
+///
+void FrameTop::on_changedBackgroundRed(void)
+{
+    double val = editBgRed_->text().toDouble();
+    WidgetMolecule *pEdit = frameDoc_->editMolecule();
+    if (pEdit)
+    {
+        pEdit->getView()->backgroundColor().SetRed(val);
+        pEdit->getView()->updateBackgroundColor();
+    }
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// @brief FrameTop::on_changedBackgroundGreen
+///
+void FrameTop::on_changedBackgroundGreen(void)
+{
+    double val = editBgRed_->text().toDouble();
+    WidgetMolecule *pEdit = frameDoc_->editMolecule();
+    if (pEdit)
+    {
+        pEdit->getView()->backgroundColor().SetGreen(val);
+        pEdit->getView()->updateBackgroundColor();
+    }
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// @brief FrameTop::on_changedBackgroundBlue
+///
+void FrameTop::on_changedBackgroundBlue(void)
+{
+    double val = editBgRed_->text().toDouble();
+    WidgetMolecule *pEdit = frameDoc_->editMolecule();
+    if (pEdit)
+    {
+        pEdit->getView()->backgroundColor().SetBlue(val);
+        pEdit->getView()->updateBackgroundColor();
+    }
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// @brief FrameTop::on_changedClipboardData
+///
+void FrameTop::on_changedClipboardData(void)
 {
 }
 //

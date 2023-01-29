@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
     parser.process(app);
     //
     FrameTop *pFrame = FrameTop::createNew();
+
     const QStringList all_paths_to_open = parser.positionalArguments();
     if (!all_paths_to_open.empty())
         pFrame->addPathList(all_paths_to_open);

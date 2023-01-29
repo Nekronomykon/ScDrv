@@ -12,8 +12,8 @@
 namespace fs = std::filesystem;
 
 #include <QAction>
-#include <QLineEdit>
 #include <QPointer>
+#include <QLineEdit>
 #include <QSettings>
 #include <QMainWindow>
 #include <QCloseEvent>
@@ -23,6 +23,8 @@ namespace fs = std::filesystem;
 
 #include "ViewFileSystem.h"
 #include "ViewWorkspace.h"
+
+#include "QVTKNamedColors.h"
 
 #include <vtkStdString.h>
 
@@ -41,7 +43,7 @@ public:
   FrameTop *tileAgainst(const QWidget * /* prev */ = nullptr);
   bool addPath(const fs::path & /* path */); // by reference or by value?
 
-  void addPathList(const QStringList & /* list_paths */);
+  FrameTop *addPathList(const QStringList & /* list_paths */);
 
 protected:
   enum
@@ -65,6 +67,7 @@ private:
   QPointer<QLineEdit> editBgRed_;
   QPointer<QLineEdit> editBgGreen_;
   QPointer<QLineEdit> editBgBlue_;
+  QPointer<QVTKNamedColors> colorsBg_;
 
   QPointer<ViewWorkspace> workspace_;
   QPointer<ViewFileSystem> files_;
@@ -72,6 +75,14 @@ private:
 private slots:
   void commitData(QSessionManager & /*mgr */);
   void on_actionFileRecent(void);
+  /* Background color for the scene */
+  void on_nameBackgroundColor(const QString & /* name */);
+  void on_changedBackgroundRed(void);
+  void on_changedBackgroundGreen(void);
+  void on_changedBackgroundBlue(void);
+  //
+  void on_changedClipboardData(void);
+
   /* File menu */
   void on_actionNew__triggered(void);
   void on_actionOpen__triggered(void);

@@ -49,3 +49,5 @@ bool FrameDoc::doSave()
 {
     return true;
 }
+
+// void FrameDoc::
