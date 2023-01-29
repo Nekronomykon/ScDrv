@@ -1,5 +1,7 @@
 #include "FrameTop.h"
 
+#include <algorithm>
+
 #include <QDir>
 #include <QSettings>
 #include <QByteArray>
@@ -225,6 +227,45 @@ bool FrameTop::addPath(const fs::path &the_path)
 {
     workspace_->addPathString(tr(the_path.c_str()));
     return true;
+}
+///////////////////////////////////////////////////////////////////////
+/// \brief FrameTop::addPathList
+///
+void FrameTop::addPathList(const QStringList &list_paths)
+{
+    std::for_each(list_paths.begin(), list_paths.end(),
+                  [&](const QString &one_to_open) -> void
+                  {
+                      fs::path a_path = fs::absolute(fs::path(one_to_open.toLocal8Bit().data()));
+                      switch (fs::status(a_path).type())
+                      {
+                      case (fs::file_type::not_found):
+                      {
+                          this->addPath(a_path); // possibly a new file
+                                                 // --> create a doc for it later
+                          break;
+                      }
+                      case (fs::file_type::regular):
+                      {
+                          this->addPath(a_path); // a regular file
+                                                 // --> open it and read the doc data from it
+                          break;
+                      }
+                      case (fs::file_type::directory):
+                      {
+                          // a directory
+                          // --> traverse and probably recurse it?
+                          break;
+                      }
+                      case (fs::file_type::symlink):
+                      {
+                          // a symbolic link
+                          // --> resolve it?
+                          break;
+                      }
+                      default: // nothing else matters; probably fifo or pipe would be useful
+                          break;
+                      } });
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -590,7 +631,8 @@ void FrameTop::on_actionOpen__triggered(void)
                                                         &fmt_use,
                                                         opts_open);
     if (!to_open.empty())
-    { // adding paths ro workspace
+    {
+        this->addPathList(to_open);
     }
 }
 //

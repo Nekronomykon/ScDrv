@@ -41,6 +41,8 @@ public:
   FrameTop *tileAgainst(const QWidget * /* prev */ = nullptr);
   bool addPath(const fs::path & /* path */); // by reference or by value?
 
+  void addPathList(const QStringList & /* list_paths */);
+
 protected:
   enum
   {
