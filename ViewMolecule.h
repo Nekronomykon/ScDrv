@@ -29,7 +29,7 @@ public:
     vtkColor3d getBackgroundColor() const;
     vtkColor3d& backgroundColor();
 
-    void updateBackgroundColor();
+    void updateBackground();
 
   private:
     vtkColor3d colorBg_;

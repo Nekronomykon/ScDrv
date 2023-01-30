@@ -2,10 +2,6 @@
 
 #include <vtkNamedColors.h>
 
-QString QVTKNamedColors::name_color_bg(tr("gainsboro"));
-
-/* static */ QString QVTKNamedColors::getDefaultColorName(){return name_color_bg;}
-/* static */ void QVTKNamedColors::resetDefaultColorName(const QString&name){name_color_bg = name;}
 /* static */ QStringList QVTKNamedColors::ColorNames()
 {
   static QStringList allNames;
@@ -37,8 +33,5 @@ QVTKNamedColors::QVTKNamedColors(QWidget *parent)
   this->addItems(ColorNames());
 }
 
-void QVTKNamedColors::adjustColorName()
-{
-  QVTKNamedColors::resetDefaultColorName(this->currentText());
-}
-
+void QVTKNamedColors::setTextByColor(const vtkColor3d &color)
+{}

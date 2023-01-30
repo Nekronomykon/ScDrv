@@ -9,10 +9,12 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QDockWidget>
+#include <QDoubleValidator>
 
 #include "TableElements.h"
 
 #include <vtkVersion.h>
+#include <vtkNamedColors.h>
 
 namespace
 {
@@ -184,19 +186,16 @@ FrameTop::FrameTop(QWidget *parent)
     //
     this->setupUi(this);
 
-    // validator clamp
-    // vldColorComp_->setNotation(QDoubleValidator::StandardNotation);
-    // vldColorComp_->setRange(0.0, 1.0);
-    //
-    editBgRed_->setPlaceholderText(tr("[red]"));
-    editBgGreen_->setPlaceholderText(tr("[green]"));
-    editBgBlue_->setPlaceholderText(tr("[blue]"));
-    //
     connect(qApp, &QGuiApplication::commitDataRequest,
             this, &FrameTop::commitData);
     // clipboard sniffer
     connect(QGuiApplication::clipboard(), &QClipboard::dataChanged,
             this, &FrameTop::on_changedClipboardData);
+
+    editBgRed_->setPlaceholderText(tr("[red]"));
+    editBgGreen_->setPlaceholderText(tr("[green]"));
+    editBgBlue_->setPlaceholderText(tr("[blue]"));
+
     //
     this->setupActions()
         ->setupToolBars()
@@ -233,6 +232,24 @@ bool FrameTop::queryDataSaved()
         break;
     }
     return true;
+}
+//
+void FrameTop::updateBackgroundInfo(void)
+{
+    WidgetMolecule *pEdit = frameDoc_->editMolecule();
+    if (!pEdit)
+        return; // no object
+    auto *pView = pEdit->getView();
+    if (!pView)
+        return; // no object
+    // const vtkColor3d& clrBg = pView->getBackgroundColor();
+    QString txt;
+    txt.setNum(pView->getBackgroundColor().GetRed(), 'f' /* , 8 */);
+    editBgRed_->setText(txt);
+    txt.setNum(pView->getBackgroundColor().GetGreen(), 'f' /* , 8 */);
+    editBgGreen_->setText(txt);
+    txt.setNum(pView->getBackgroundColor().GetBlue(), 'f' /* , 8 */);
+    editBgBlue_->setText(txt);
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -467,31 +484,26 @@ FrameTop *FrameTop::setupToolBars(void)
 
     tbView->addSeparator();
     tbView->addWidget(colorsBg_);
-    connect(colorsBg_, &QVTKNamedColors::currentTextChanged, this,
-            &FrameTop::on_nameBackgroundColor);
-
-    /*
-            // editBgRed_->setValidator(vldColorComp_);
-            // editBgGreen_->setValidator(vldColorComp_);
-            // editBgBlue_->setValidator(vldColorComp_);
-        */
-    editBgRed_->setClearButtonEnabled(true);
-    editBgGreen_->setClearButtonEnabled(true);
-    editBgBlue_->setClearButtonEnabled(true);
-
+    connect(colorsBg_, &QVTKNamedColors::currentTextChanged, this, &FrameTop::on_nameBackgroundColor);
+    //
+    // --- [ ]
     tbView->addSeparator();
-    // --- [ ]
     tbView->addWidget(editBgRed_);
+    editBgRed_->setMaximumWidth(75);
     connect(editBgRed_, &QLineEdit::editingFinished, this, &FrameTop::on_changedBackgroundRed);
-    editBgRed_->setMaximumWidth(125);
     // --- [ ]
+    tbView->addSeparator();
     tbView->addWidget(editBgGreen_);
+    editBgGreen_->setMaximumWidth(75);
     connect(editBgGreen_, &QLineEdit::editingFinished, this, &FrameTop::on_changedBackgroundGreen);
-    editBgGreen_->setMaximumWidth(125);
     // --- [ ]
+    tbView->addSeparator();
     tbView->addWidget(editBgBlue_);
+    editBgBlue_->setMaximumWidth(75);
     connect(editBgBlue_, &QLineEdit::editingFinished, this, &FrameTop::on_changedBackgroundBlue);
-    editBgBlue_->setMaximumWidth(125);
+
+    this->updateBackgroundInfo();
+    //
     tbView->addSeparator();
     tbView->addAction(actionProjectOrthogonal_);
     tbView->addAction(actionProjectPerspective_);
@@ -586,8 +598,20 @@ void FrameTop::on_actionFileRecent(void)
 ///////////////////////////////////////////////////////////////////////
 /// @brief FrameTop::on_nameBackgroundColor
 ///
-void FrameTop::on_nameBackgroundColor(const QString &)
+void FrameTop::on_nameBackgroundColor(const QString &name)
 {
+    // QMessageBox::information(this, name, tr("Eh"), QMessageBox::Ok);
+    WidgetMolecule *pEdit = frameDoc_->editMolecule();
+    if (!pEdit) // assert(pEdit)
+        return;
+    auto *pView = pEdit->getView();
+    if (!pView) // assert(pView)
+        return;
+    QByteArray ba = name.toLatin1();
+    static vtkNew<vtkNamedColors> colors;
+    colors->GetColor(ba.data(), pView->backgroundColor());
+    pView->updateBackground();
+    this->updateBackgroundInfo();
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -595,13 +619,15 @@ void FrameTop::on_nameBackgroundColor(const QString &)
 ///
 void FrameTop::on_changedBackgroundRed(void)
 {
-    double val = editBgRed_->text().toDouble();
     WidgetMolecule *pEdit = frameDoc_->editMolecule();
-    if (pEdit)
-    {
-        pEdit->getView()->backgroundColor().SetRed(val);
-        pEdit->getView()->updateBackgroundColor();
-    }
+    if (!pEdit) // assert(pEdit)
+        return;
+    auto *pView = pEdit->getView();
+    if (!pView) // assert(pView)
+        return;
+    pView->backgroundColor().SetRed(editBgRed_->text().toDouble());
+    pView->updateBackground();
+    this->updateBackgroundInfo();
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -609,13 +635,15 @@ void FrameTop::on_changedBackgroundRed(void)
 ///
 void FrameTop::on_changedBackgroundGreen(void)
 {
-    double val = editBgRed_->text().toDouble();
     WidgetMolecule *pEdit = frameDoc_->editMolecule();
-    if (pEdit)
-    {
-        pEdit->getView()->backgroundColor().SetGreen(val);
-        pEdit->getView()->updateBackgroundColor();
-    }
+    if (!pEdit) // assert(pEdit)
+        return;
+    auto *pView = pEdit->getView();
+    if (!pView)
+        return;
+    pView->backgroundColor().SetGreen(editBgGreen_->text().toDouble());
+    pView->updateBackground();
+    this->updateBackgroundInfo();
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -623,13 +651,15 @@ void FrameTop::on_changedBackgroundGreen(void)
 ///
 void FrameTop::on_changedBackgroundBlue(void)
 {
-    double val = editBgRed_->text().toDouble();
     WidgetMolecule *pEdit = frameDoc_->editMolecule();
-    if (pEdit)
-    {
-        pEdit->getView()->backgroundColor().SetBlue(val);
-        pEdit->getView()->updateBackgroundColor();
-    }
+    if (!pEdit) // assert(pEdit)
+        return;
+    auto *pView = pEdit->getView();
+    if (!pView)
+        return;
+    pView->backgroundColor().SetBlue(editBgBlue_->text().toDouble());
+    pView->updateBackground();
+    this->updateBackgroundInfo();
 }
 //
 ///////////////////////////////////////////////////////////////////////

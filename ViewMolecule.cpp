@@ -14,7 +14,7 @@ ViewMolecule::ViewMolecule(QWidget *parent)
 
     // [0] BACKGROUND
     pRW->AddRenderer(renderBg_);
-    this->updateBackgroundColor();
+    this->updateBackground();
 }
 
 vtkColor3d ViewMolecule::getBackgroundColor() const
@@ -27,8 +27,9 @@ vtkColor3d &ViewMolecule::backgroundColor()
     return colorBg_;
 }
 
-void ViewMolecule::updateBackgroundColor()
+void ViewMolecule::updateBackground()
 {
     renderBg_->SetLayer(0);
     renderBg_->SetBackground(colorBg_.GetData());
+    this->renderWindow()->Render();
 }

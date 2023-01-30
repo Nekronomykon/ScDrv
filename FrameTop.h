@@ -15,6 +15,8 @@ namespace fs = std::filesystem;
 #include <QPointer>
 #include <QLineEdit>
 #include <QSettings>
+#include <QValidator> 
+#include <QDoubleValidator>
 #include <QMainWindow>
 #include <QCloseEvent>
 #include <QSessionManager>
@@ -61,14 +63,16 @@ protected:
   FrameTop *readSettings(void);
   FrameTop *saveSettings(void);
   //
-  bool queryDataSaved();
+  bool queryDataSaved(void);
+  //
+  void updateBackgroundInfo(void);
 
 private:
   QPointer<QLineEdit> editBgRed_;
   QPointer<QLineEdit> editBgGreen_;
   QPointer<QLineEdit> editBgBlue_;
   QPointer<QVTKNamedColors> colorsBg_;
-
+  //
   QPointer<ViewWorkspace> workspace_;
   QPointer<ViewFileSystem> files_;
 

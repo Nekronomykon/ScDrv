@@ -9,6 +9,7 @@
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
 
+#include <vtkColor.h>
 #include <vtkStdString.h>
 #include <vtkNamedColors.h>
 
@@ -18,15 +19,10 @@ class QVTKNamedColors
   Q_OBJECT
 public:
   explicit QVTKNamedColors(QWidget * /*parent*/ = nullptr);
-
-  static QString getDefaultColorName();
-  static void resetDefaultColorName(const QString&);
-
-  void adjustColorName();
+  void setTextByColor(const vtkColor3d &color); 
 
 private:
   static QStringList ColorNames();
-  static QString name_color_bg;
 };
 
 #endif // !ChooseColor_byName__h
