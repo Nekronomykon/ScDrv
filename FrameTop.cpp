@@ -214,7 +214,7 @@ bool FrameTop::queryDataSaved()
     if (frameDoc_->hasPath())
     {
         query += tr("under the path:\n");
-        query += frameDoc_->getPath();
+        query += frameDoc_->getPath().c_str();
         query += '\n';
     }
     query += tr("is modified\nDo you want to save the changes?");

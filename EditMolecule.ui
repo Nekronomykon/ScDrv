@@ -148,6 +148,11 @@
          <string>Z-matrix</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Fractional</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

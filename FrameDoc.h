@@ -7,10 +7,12 @@
 #endif //  _MSC_VER
 
 #include <algorithm>
+
 #include <filesystem>
 namespace fs = std::filesystem;
-// typedef fs:path Path;
 #include <vtkStdString.h>
+
+// typedef fs:path Path;
 typedef vtkStdString Path;
 
 #include <vtkNew.h>
@@ -23,17 +25,25 @@ typedef vtkStdString Path;
 
 #include "WidgetMolecule.h"
 
+class FrameDoc;
+
+typedef bool (FrameDoc::*OperationRead)(Path);
+
 class FrameDoc : public QTabWidget
 {
     Q_OBJECT
 public:
+    //
     explicit FrameDoc(QWidget * /*parent*/ = nullptr);
     ~FrameDoc() override = default;
 
     bool isModified() const;
 
+    ///////////////////////////////////////////////////////////////////////////////
+    // Path operations
     bool hasPath() const;
-    const char *getPath() const;
+    const Path &getPath() const;
+    Path resetPath(Path /* pathNew */);
 
     bool doSave();
     //
@@ -51,6 +61,10 @@ public:
         return wMol_;
     }
     //
+    bool ReadFilePDB(Path);
+    bool ReadFileXYZ(Path);
+    bool ReadFileCUBE(Path);
+
 private:
     Path path_;
     // GUI

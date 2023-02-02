@@ -8,13 +8,17 @@
 
 #include <QStringListModel>
 
+#include "FrameDoc.h"
+
 class ModelPathList
     : public QStringListModel
 {
     Q_OBJECT
 public:
+
     explicit ModelPathList();
     ~ModelPathList() override = default;
+
 };
 
 #endif // !Model_PathList_h__

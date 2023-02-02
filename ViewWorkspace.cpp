@@ -64,5 +64,15 @@ bool ViewWorkspace::isFileTypeCompatible(const QString & /*one*/)
 {
     return true;
 }
+bool ViewWorkspace::invokeOperationRead(OperationRead read, FrameDoc *pDoc, Path path)
+{
+    if (!read)
+        return true;
+    if (!pDoc)
+        return false;
+    if ((pDoc->*read)(path))
+        pDoc->resetPath(path);
+    return true;
+}
 //
 ///////////////////////////////////////////////////////////////////////

@@ -30,9 +30,34 @@ void FrameDoc::saveSettings(QSettings &src)
         wMol_->saveSettings(src);
 }
 
+bool FrameDoc::ReadFilePDB(Path)
+{
+    return false;
+}
+
+bool FrameDoc::ReadFileXYZ(Path)
+{
+    return false;
+}
+
+bool FrameDoc::ReadFileCUBE(Path)
+{
+    return false;
+}
+
+// bool FrameDoc::ReadFileCUBE(Path)
+//{
+//    return false;
+//}
+
 bool FrameDoc::isModified() const
 {
     return false;
+}
+
+bool FrameDoc::doSave()
+{
+    return true;
 }
 
 bool FrameDoc::hasPath() const
@@ -40,14 +65,14 @@ bool FrameDoc::hasPath() const
     return path_.empty() ? false : true;
 }
 
-const char *FrameDoc::getPath() const
+const Path &FrameDoc::getPath() const
 {
-    return path_.c_str();
+    return path_;
 }
-
-bool FrameDoc::doSave()
+Path FrameDoc::resetPath(Path pathNew)
 {
-    return true;
+    std::swap(pathNew, path_);
+    return pathNew;
 }
 
 // void FrameDoc::

@@ -13,8 +13,9 @@
 #include <QWidget>
 #include <QString>
 
-#include "ViewPathList.h"
+#include "FrameDoc.h"
 
+#include "ViewPathList.h"
 #include "ViewFileContent.h"
 
 class ViewWorkspace
@@ -25,12 +26,14 @@ public:
     explicit ViewWorkspace(QWidget * /* parent */ = nullptr);
     ~ViewWorkspace() override = default;
     //
-    void readSettings(QSettings& /*src*/);
-    void saveSettings(QSettings& /*src*/);
+    void readSettings(QSettings & /*src*/);
+    void saveSettings(QSettings & /*src*/);
     //
     bool addPathString(const QString & /*one*/);
-    bool hasPathTypeAssumed(const QString & /*one*/);    // casting file type from its name; simply text otherwise
+    bool hasPathTypeAssumed(const QString & /*one*/);   // casting file type from its name; simply text otherwise
     bool isFileTypeCompatible(const QString & /*one*/); // here the file itself is preparsed to know its compatibility
+
+    bool invokeOperationRead(OperationRead /* read */, FrameDoc* /* pDoc */, Path /* path */);
 
 private:
     QPointer<ViewPathList> files_;
