@@ -3,6 +3,8 @@
 #include <algorithm>
 
 #include <QDir>
+#include <QMimeData>
+#include <QFileInfo>
 #include <QSettings>
 #include <QClipboard>
 #include <QByteArray>
@@ -12,6 +14,7 @@
 #include <QDoubleValidator>
 
 #include "TableElements.h"
+#include "DialogFileProperties.h"
 
 #include <vtkVersion.h>
 #include <vtkNamedColors.h>
@@ -667,6 +670,16 @@ void FrameTop::on_changedBackgroundBlue(void)
 ///
 void FrameTop::on_changedClipboardData(void)
 {
+    QClipboard *pClipBoard = QGuiApplication::clipboard();
+    if (!pClipBoard)
+    {
+        actionPaste_->setEnabled(false);
+    }
+    else
+    {
+        const QMimeData *pData = pClipBoard->mimeData(QClipboard::Clipboard);
+        actionPaste_->setEnabled(!pData ? false : pData->hasText());
+    }
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -724,19 +737,43 @@ void FrameTop::on_actionOpen__triggered(void)
 {
     QFileDialog::Options opts_open = QFileDialog::QFileDialog::DontUseNativeDialog |
                                      QFileDialog::DontUseCustomDirectoryIcons;
+    QString name_dir = QDir::currentPath();
+    if (frameDoc_->hasPath())
+    {
+        QFileInfo info(tr(frameDoc_->getPath().c_str()));
+        name_dir = info.path();
+    }
     QString caption(tr("Open file(s)"));
-    QString dir = QDir::currentPath();
-    QString formats; // = GetFormatStringIDs(FormatHasBothIO | FormatHasInput) ???
+    QString formats = workspace_->getReadFilter();
     QString fmt_use;
     QStringList to_open = QFileDialog::getOpenFileNames(this,
                                                         caption,
-                                                        dir,
+                                                        name_dir,
                                                         formats,
                                                         &fmt_use,
                                                         opts_open);
     if (!to_open.empty())
-    {
         this->addPathList(to_open);
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// \brief FrameBrowser::on_actionProperties__triggered
+///
+void FrameTop::on_actionProperties__triggered(void)
+{
+    if (!frameDoc_->hasPath() && frameDoc_->isModified())
+    {
+        return;
+    } // no sense to characterize a nonexistant file..
+
+    // ..but if the path is set...
+    DialogFileProperties dlgProperties(frameDoc_->getPath(), this);
+
+    int kRes = dlgProperties.exec();
+    if (kRes == QDialog::Accepted)
+    {
+        // load newly changed data
+        // this->updateUi();
     }
 }
 //

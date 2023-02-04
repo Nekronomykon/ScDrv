@@ -8,13 +8,6 @@
 
 #include <algorithm>
 
-#include <filesystem>
-namespace fs = std::filesystem;
-#include <vtkStdString.h>
-
-// typedef fs:path Path;
-typedef vtkStdString Path;
-
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
 
@@ -23,11 +16,11 @@ typedef vtkStdString Path;
 
 #include <QPointer>
 
+#include "FileFormat.h"
+
 #include "WidgetMolecule.h"
 
 class FrameDoc;
-
-typedef bool (FrameDoc::*OperationRead)(Path);
 
 class FrameDoc : public QTabWidget
 {
@@ -50,21 +43,14 @@ public:
     void readSettings(QSettings & /*src*/);
     void saveSettings(QSettings & /*src*/);
     //
-    WidgetMolecule *editMolecule()
-    {
-        if (wMol_)
-            this->setCurrentWidget(wMol_);
-        return wMol_;
-    }
-    WidgetMolecule *getEditMolecule() const
-    {
-        return wMol_;
-    }
-    //
+    WidgetMolecule *editMolecule();
+    WidgetMolecule *getEditMolecule() const;
+    // Reader functions
     bool ReadFilePDB(Path);
     bool ReadFileXYZ(Path);
     bool ReadFileCUBE(Path);
 
+protected:
 private:
     Path path_;
     // GUI

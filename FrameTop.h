@@ -15,7 +15,7 @@ namespace fs = std::filesystem;
 #include <QPointer>
 #include <QLineEdit>
 #include <QSettings>
-#include <QValidator> 
+#include <QValidator>
 #include <QDoubleValidator>
 #include <QMainWindow>
 #include <QCloseEvent>
@@ -92,7 +92,7 @@ private slots:
   void on_actionOpen__triggered(void);
   void on_actionClose__triggered(void);
   void on_actionExit__triggered(void);
-
+  void on_actionProperties__triggered(void);
   /* Help menu */
   void on_actionAbout__triggered(void);
   void on_actionAboutQt__triggered(void);
