@@ -3,6 +3,7 @@
 #include <vtkPDBReader.h>
 #include <vtkGaussianCubeReader.h>
 #include <vtkGaussianCubeReader2.h>
+#include <vtkCMLMoleculeReader.h>
 #include <vtkXYZMolReader.h>
 #include <vtkXYZMolReader2.h>
 
@@ -36,6 +37,13 @@ void FrameDoc::saveSettings(QSettings &src)
         wMol_->saveSettings(src);
 }
 
+bool FrameDoc::ReadFileCML(Path a_path)
+{
+    vtkNew<vtkCMLMoleculeReader> reader;
+    reader->SetFileName(a_path.c_str());
+    return false;
+}
+
 bool FrameDoc::ReadFilePDB(Path a_path)
 {
     vtkNew<vtkPDBReader> reader;
@@ -61,11 +69,6 @@ bool FrameDoc::ReadFileCUBE(Path a_path)
     return false;
 }
 
-// bool FrameDoc::ReadFileCUBE(Path)
-//{
-//    return false;
-//}
-
 bool FrameDoc::isModified() const
 {
     return false;
@@ -82,6 +85,7 @@ WidgetMolecule *FrameDoc::editMolecule()
         this->setCurrentWidget(wMol_);
     return wMol_;
 }
+
 WidgetMolecule *FrameDoc::getEditMolecule() const
 {
     return wMol_;
@@ -96,10 +100,9 @@ const Path &FrameDoc::getPath() const
 {
     return path_;
 }
+
 Path FrameDoc::resetPath(Path pathNew)
 {
     std::swap(pathNew, path_);
     return pathNew;
 }
-
-// void FrameDoc::

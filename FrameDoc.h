@@ -46,6 +46,7 @@ public:
     WidgetMolecule *editMolecule();
     WidgetMolecule *getEditMolecule() const;
     // Reader functions
+    bool ReadFileCML(Path);
     bool ReadFilePDB(Path);
     bool ReadFileXYZ(Path);
     bool ReadFileCUBE(Path);

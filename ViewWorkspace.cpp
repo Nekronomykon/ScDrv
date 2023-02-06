@@ -10,6 +10,7 @@ namespace
 
 FileFormat ViewWorkspace::formats[] = {
     {"XYZ atoms", "xyz", &FrameDoc::ReadFileXYZ},
+    {"Chemical Markup Language molecule", "cml", &FrameDoc::ReadFileCML},
     {"PDB molecule", "pdb", &FrameDoc::ReadFilePDB},
     {"CUBE molecular field", "cube", &FrameDoc::ReadFileCUBE},
     {nullptr, nullptr, nullptr} // invalid
