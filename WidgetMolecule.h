@@ -24,6 +24,8 @@ class WidgetMolecule
 {
     Q_OBJECT
 public:
+    typedef vtkMolecule Molecule;
+    //
     explicit WidgetMolecule(QWidget * /*parent*/ = nullptr);
     ~WidgetMolecule() override = default;
 
@@ -32,11 +34,13 @@ public:
     void readSettings(QSettings & /*src*/);
     void saveSettings(QSettings & /*src*/);
     //
-    EditMolecule* getEdit() const {return edit_;}
-    ViewMolecule* getView() const {return view_;}
+    EditMolecule *getEdit() const { return edit_; }
+    ViewMolecule *getView() const { return view_; }
+    //
+    void showMolecule();
 
 private:
-    vtkNew<vtkMolecule> molecule_;
+    vtkNew<Molecule> molecule_;
     QPointer<EditMolecule> edit_;
     QPointer<ViewMolecule> view_;
 };

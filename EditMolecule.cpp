@@ -18,3 +18,13 @@ vtkIdType EditMolecule::readAtoms(vtkMolecule *pMol)
   // editSource_->
   return pMol->GetNumberOfAtoms();
 }
+//
+void EditMolecule::resetMolecule(vtkMolecule *pMol)
+{
+  if (pMol != ptrMolecule_)
+    ptrMolecule_ = pMol;
+  // read data from ptrMolecule_
+  // or make them default if ptrMolecule_ == nullptr
+}
+//
+///////////////////////////////////////////////////////////////////////////////

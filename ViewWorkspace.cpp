@@ -8,14 +8,6 @@ namespace
     static inline QString keyNewFile() { return QStringLiteral("[: new file :]"); }
 };
 
-FileFormat ViewWorkspace::formats[] = {
-    {"XYZ atoms", "xyz", &FrameDoc::ReadFileXYZ},
-    {"Chemical Markup Language molecule", "cml", &FrameDoc::ReadFileCML},
-    {"PDB molecule", "pdb", &FrameDoc::ReadFilePDB},
-    {"CUBE molecular field", "cube", &FrameDoc::ReadFileCUBE},
-    {nullptr, nullptr, nullptr} // invalid
-};
-
 ViewWorkspace::ViewWorkspace(QWidget *parent)
     : QSplitter(Qt::Vertical, parent), files_(new ViewPathList(this)), content_(new ViewFileContent(this))
 {
@@ -72,21 +64,11 @@ bool ViewWorkspace::isFileTypeCompatible(const QString & /*one*/)
 {
     return true;
 }
-bool ViewWorkspace::invokeOperationRead(OperationRead read, FrameDoc *pDoc, Path path)
-{
-    if (!read)
-        return true;
-    if (!pDoc)
-        return false;
-    if ((pDoc->*read)(path))
-        pDoc->resetPath(path);
-    return true;
-}
 QString ViewWorkspace::getReadFilter() const
 {
     QString sFlt(tr("Known formats ( "));
     QString sAll;
-    for (const FileFormat &fmt : formats)
+    for (const FrameDoc::FileFormat &fmt : FrameDoc::getFormats())
     {
         if (!fmt.description_ || !fmt.mask_path_ || !fmt.opRead_)
             continue;

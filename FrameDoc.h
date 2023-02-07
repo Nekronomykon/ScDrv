@@ -7,6 +7,7 @@
 #endif //  _MSC_VER
 
 #include <algorithm>
+#include <deque>
 
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
@@ -18,45 +19,66 @@
 
 #include "FileFormat.h"
 
+#include "TableElements.h"
 #include "WidgetMolecule.h"
+#include "EditSource.h"
 
 class FrameDoc;
 
+typedef FileFormatFor<FrameDoc> FileFormat;
+
 class FrameDoc : public QTabWidget
 {
-    Q_OBJECT
+  Q_OBJECT
+
 public:
-    //
-    explicit FrameDoc(QWidget * /*parent*/ = nullptr);
-    ~FrameDoc() override = default;
+  typedef FileFormatFor<FrameDoc> FileFormat;
+  typedef std::deque<FileFormat> AllFileFormats;
 
-    bool isModified() const;
+protected:
+  static const AllFileFormats AllFormats;
 
-    ///////////////////////////////////////////////////////////////////////////////
-    // Path operations
-    bool hasPath() const;
-    const Path &getPath() const;
-    Path resetPath(Path /* pathNew */);
+public:
+  static const AllFileFormats& getFormats() { return AllFormats; }
 
-    bool doSave();
-    //
-    void readSettings(QSettings & /*src*/);
-    void saveSettings(QSettings & /*src*/);
-    //
-    WidgetMolecule *editMolecule();
-    WidgetMolecule *getEditMolecule() const;
-    // Reader functions
-    bool ReadFileCML(Path);
-    bool ReadFilePDB(Path);
-    bool ReadFileXYZ(Path);
-    bool ReadFileCUBE(Path);
+  //
+  explicit FrameDoc(QWidget * /*parent*/ = nullptr);
+  ~FrameDoc() override = default;
+
+  bool isModified() const;
+
+  ///////////////////////////////////////////////////////////////////////////////
+  // Path operations
+  bool hasPath() const;
+  const Path &getPath() const;
+  Path resetPath(Path /* pathNew */);
+
+  bool doSave();
+  //
+  void readSettings(QSettings & /*src*/);
+  void saveSettings(QSettings & /*src*/);
+  //
+  WidgetMolecule *editMolecule();
+  WidgetMolecule *getEditMolecule() const;
+  // reader functions
+  bool ReadFileCML(Path);
+  bool ReadFilePDB(Path);
+  bool ReadFileXYZ(Path);
+  bool ReadFileCUBE(Path);
+  // export functions
+  bool ExportPixBMP(Path);
+  bool ExportPixTIFF(Path);
+  bool ExportPixPNG(Path);
+  bool ExportPixJPEG(Path);
+  bool ExportPixPostScript(Path);
 
 protected:
 private:
-    Path path_;
-    // GUI
-    QPointer<EditSource> wText_;
-    QPointer<WidgetMolecule> wMol_;
+  Path path_;
+  // GUI
+  QPointer<TableElements> wTable_;
+  QPointer<WidgetMolecule> wMol_;
+  QPointer<EditSource> wText_;
 };
 
 #endif //! Frame_Doc_h__

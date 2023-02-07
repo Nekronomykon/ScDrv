@@ -15,6 +15,9 @@ WidgetMolecule::WidgetMolecule(QWidget *parent)
     //
     this->setCollapsible(this->indexOf(view_), false);
     this->setCollapsible(this->indexOf(edit_), true);
+    //
+    view_->resetMolecule(molecule_);
+    edit_->resetMolecule(molecule_);
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -33,4 +36,10 @@ void WidgetMolecule::saveSettings(QSettings &src)
 {
     // splitter state
     src.setValue(keyState(), this->saveState());
+}
+
+void WidgetMolecule::showMolecule()
+{
+    view_->resetMolecule();
+    edit_->resetMolecule();
 }

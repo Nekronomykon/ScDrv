@@ -1,35 +1,165 @@
 #include "ViewMolecule.h"
 
+#include <vtkProperty.h>
+
 #include <vtkRenderWindow.h>
+#include <vtkWindowToImageFilter.h>
+
+#include <vtkTrivialProducer.h>
+
+#include <vtkCamera.h>
+
+#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkInteractorStyleRubberBandPick.h>
 
 ViewMolecule::ViewMolecule(QWidget *parent)
     : QVTKOpenGLNativeWidget(parent)
 {
     // init from registry?
     colorBg_.SetRed(0.9);    // debug colors
-    colorBg_.SetGreen(0.85); // total up to yellow
-    colorBg_.SetBlue(0.95);  // light-yellow
+    colorBg_.SetGreen(0.85); // total up tp neither yellow
+    colorBg_.SetBlue(0.95);  // nor light-yellow
 
     vtkRenderWindow *pRW = this->renderWindow();
+    pRW->SetNumberOfLayers(2);
+
+    // -----------------------------------------------------------
+    // read these properties from registry?
+    actorMol_->GetProperty()->SetDiffuse(0.75);
+    actorMol_->GetProperty()->SetSpecular(0.5);
+    actorMol_->GetProperty()->SetSpecularPower(20.0);
+    // -----------------------------------------------------------
+    actorMol_->SetMapper(this->getMoleculeMapper());
+    renderMol_->AddActor(actorMol_);
+    //
+    vtkRenderWindowInteractor *pRWI = this->interactor();
+    if (!pRWI)
+    {
+        ANewRenderWindowInteractor new_rwi;
+        pRW->SetInteractor(new_rwi);
+        pRWI = new_rwi.Get();
+    }
+
+    vtkSmartPointer<vtkInteractorStyleTrackballCamera>
+        istyle_rb(vtkInteractorStyleRubberBandPick::New()); // see the song...
+    // The InteractorStyle mechanism is the 3D GUI mechanism to be used in editing,
+    // So we would try to override it by our own mechanism... yet not now.
+    // In progress. Under the development.
+    pRWI->SetInteractorStyle(istyle_rb);
 
     // [0] BACKGROUND
     pRW->AddRenderer(renderBg_);
+    // [1] MOLECULE
+    pRW->AddRenderer(renderMol_);
+    //
     this->updateBackground();
 }
-
+//
+///////////////////////////////////////////////////////////////////////////////
+//
 vtkColor3d ViewMolecule::getBackgroundColor() const
 {
     return colorBg_;
 }
-
+//
 vtkColor3d &ViewMolecule::backgroundColor()
 {
     return colorBg_;
 }
-
+//
+///////////////////////////////////////////////////////////////////////////////
+//
+vtkMoleculeMapper *ViewMolecule::getMoleculeMapper(void) const
+{
+    return mapMol_;
+}
+///////////////////////////////////////////////////////////////////////////////
+//
+vtkRenderer *ViewMolecule::getMoleculeRenderer(void) const
+{
+    return renderMol_;
+}
+//
+///////////////////////////////////////////////////////////////////////////////
+//
 void ViewMolecule::updateBackground()
 {
     renderBg_->SetLayer(0);
     renderBg_->SetBackground(colorBg_.GetData());
     this->renderWindow()->Render();
 }
+//
+///////////////////////////////////////////////////////////////////////////////
+//
+bool ViewMolecule::exportImageTo(vtkImageWriter *pIW, bool bAlpha)
+{
+    if (!pIW)
+        return false;
+    //
+    vtkRenderWindow *pRW = this->renderWindow();
+    if (!pRW)
+        return false;
+    pRW->Render();
+    //
+    vtkNew<vtkWindowToImageFilter> w2if;
+    w2if->SetFixBoundary(true);
+    // w2if->SetScale(4); --> how to scale label fonts???  to think on...
+    //
+    w2if->SetInput(pRW);
+    if (bAlpha)
+        w2if->SetInputBufferTypeToRGBA();
+    else
+        w2if->SetInputBufferTypeToRGB();
+    w2if->ReadFrontBufferOff();
+    w2if->Update();
+
+    pIW->SetInputConnection(w2if->GetOutputPort());
+    pIW->Write();
+    //
+    pRW->Modified();
+    return true;
+}
+//
+///////////////////////////////////////////////////////////////////////////////
+//
+void ViewMolecule::setProjectParallel(bool bReset)
+{
+    vtkRenderer *pRen = this->getMoleculeRenderer();
+    vtkCamera *pCam = pRen->GetActiveCamera();
+    if (!pCam->GetParallelProjection())
+        pCam->ParallelProjectionOn();
+    else
+    {
+        if (bReset)
+            pRen->ResetCamera();
+    }
+    this->renderWindow()->Modified();
+}
+//
+///////////////////////////////////////////////////////////////////////////////
+//
+void ViewMolecule::setProjectPerspective(bool bReset)
+{
+    vtkRenderer *pRen = this->getMoleculeRenderer();
+    vtkCamera *pCam = pRen->GetActiveCamera();
+    if (pCam->GetParallelProjection())
+        pCam->ParallelProjectionOff();
+    else
+    {
+        if (bReset)
+            pRen->ResetCamera();
+    }
+    this->renderWindow()->Modified();
+}
+//
+///////////////////////////////////////////////////////////////////////////////
+//
+void ViewMolecule::resetMolecule(vtkMolecule *pMol)
+{
+    if (pMol)
+        mapMol_->SetInputData(pMol);
+    mapMol_->Update();
+}
+//
+///////////////////////////////////////////////////////////////////////////////
+//

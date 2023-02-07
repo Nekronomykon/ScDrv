@@ -7,8 +7,23 @@
 #include <vtkXYZMolReader.h>
 #include <vtkXYZMolReader2.h>
 
+const FrameDoc::AllFileFormats FrameDoc::AllFormats{
+    // import
+    {"xyz", "XYZ atoms", &FrameDoc::ReadFileXYZ, nullptr},
+    {"cml", "Chemical Markup Language molecule", &FrameDoc::ReadFileCML, nullptr},
+    {"pdb", "PDB molecule", &FrameDoc::ReadFilePDB, nullptr},
+    {"cube", "CUBE molecular field", &FrameDoc::ReadFileCUBE, nullptr},
+    // export
+    {"bmp", "Bitmap file", nullptr, &FrameDoc::ExportPixBMP},
+    {"tiff", "Tagged image file", nullptr, &FrameDoc::ExportPixTIFF},
+    {"png", "Portable Network Graphics file", nullptr, &FrameDoc::ExportPixPNG},
+    {"jpeg", "JPEG file", nullptr, &FrameDoc::ExportPixJPEG},
+    {"ps", "Bitmap file", nullptr, &FrameDoc::ExportPixPostScript},
+    {nullptr, nullptr, nullptr} // invalid
+};
+
 FrameDoc::FrameDoc(QWidget *parent)
-    : QTabWidget(parent), wMol_(new WidgetMolecule(this))
+    : QTabWidget(parent), wTable_(new TableElements(this)), wMol_(new WidgetMolecule(this)), wText_(new EditSource(this))
 {
     this->setDocumentMode(true);
     this->setTabPosition(QTabWidget::South);
@@ -16,7 +31,9 @@ FrameDoc::FrameDoc(QWidget *parent)
     // this->setTabsClosable(true);
     this->setUsesScrollButtons(true);
     //
-    this->addTab(wMol_, tr("Edit atoms"));
+    this->addTab(wTable_, tr("Elements"));
+    this->addTab(wMol_, tr("Atoms"));
+    this->addTab(wText_, tr("Comment"));
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -41,14 +58,24 @@ bool FrameDoc::ReadFileCML(Path a_path)
 {
     vtkNew<vtkCMLMoleculeReader> reader;
     reader->SetFileName(a_path.c_str());
-    return false;
+    reader->Update();
+    WidgetMolecule::Molecule *pMol = wMol_->getMolecule();
+    assert(pMol != nullptr);
+    // pMol->Initialize();
+    pMol->DeepCopy(reader->GetOutput());
+    return bool(pMol->GetNumberOfAtoms() > 0);
 }
 
 bool FrameDoc::ReadFilePDB(Path a_path)
 {
     vtkNew<vtkPDBReader> reader;
     reader->SetFileName(a_path.c_str());
-    return false;
+    reader->Update();
+    WidgetMolecule::Molecule *pMol = wMol_->getMolecule();
+    assert(pMol != nullptr);
+    // pMol->Initialize();
+    pMol->DeepCopy(reader->GetOutput());
+    return bool(pMol->GetNumberOfAtoms() > 0);
 }
 
 bool FrameDoc::ReadFileXYZ(Path a_path)
@@ -57,7 +84,12 @@ bool FrameDoc::ReadFileXYZ(Path a_path)
     vtkNew<vtkXYZMolReader2> reader2;
     reader->SetFileName(a_path.c_str());
     reader2->SetFileName(a_path.c_str());
-    return false;
+    reader->Update();
+    WidgetMolecule::Molecule *pMol = wMol_->getMolecule();
+    assert(pMol != nullptr);
+    // pMol->Initialize();
+    pMol->DeepCopy(reader->GetOutput());
+    return bool(pMol->GetNumberOfAtoms() > 0);
 }
 
 bool FrameDoc::ReadFileCUBE(Path a_path)
@@ -66,9 +98,40 @@ bool FrameDoc::ReadFileCUBE(Path a_path)
     vtkNew<vtkGaussianCubeReader2> reader2;
     reader->SetFileName(a_path.c_str());
     reader2->SetFileName(a_path.c_str());
+    reader->Update();
+    WidgetMolecule::Molecule *pMol = wMol_->getMolecule();
+    assert(pMol != nullptr);
+    // pMol->Initialize();
+    pMol->DeepCopy(reader->GetOutput());
+    return bool(pMol->GetNumberOfAtoms() > 0);
+}
+
+bool FrameDoc::ExportPixBMP(Path)
+{
     return false;
 }
 
+bool FrameDoc::ExportPixTIFF(Path)
+{
+    return false;
+}
+
+bool FrameDoc::ExportPixPNG(Path)
+{
+    return false;
+}
+
+bool FrameDoc::ExportPixJPEG(Path)
+{
+    return false;
+}
+
+bool FrameDoc::ExportPixPostScript(Path)
+{
+    return false;
+}
+
+//
 bool FrameDoc::isModified() const
 {
     return false;

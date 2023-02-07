@@ -10,13 +10,27 @@
 
 #include <vtkColor.h>
 #include <vtkRenderer.h>
+#include <vtkImageWriter.h>
 #include <vtkMoleculeMapper.h>
+
+#include <vtkRenderWindowInteractor.h>
+
+#include <vtkActor.h>
+#include <vtkLODActor.h>
 
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
 
+typedef vtkNew<vtkActor> ANewActor;
+typedef vtkSmartPointer<vtkActor> AnActor;
+
 typedef vtkNew<vtkRenderer> ANewRenderer;
 typedef vtkSmartPointer<vtkRenderer> ARenderer;
+
+typedef vtkNew<vtkMoleculeMapper> ANewMolMapper;
+typedef vtkSmartPointer<vtkMoleculeMapper> AMolMapper;
+
+typedef vtkNew<vtkRenderWindowInteractor> ANewRenderWindowInteractor;
 
 class ViewMolecule
     : public QVTKOpenGLNativeWidget
@@ -27,13 +41,27 @@ public:
     ~ViewMolecule() override = default;
 
     vtkColor3d getBackgroundColor() const;
-    vtkColor3d& backgroundColor();
+    vtkColor3d &backgroundColor();
+
+    vtkMoleculeMapper *getMoleculeMapper(void) const;
+    vtkRenderer *getMoleculeRenderer(void) const;
 
     void updateBackground();
 
-  private:
-    vtkColor3d colorBg_;
+    bool exportImageTo(vtkImageWriter* /*pIW*/, bool /*bAlpha*/ = true);
+
+    void setProjectParallel(bool /* bResetCameraIfAlreadySetSo */ = false);
+    void setProjectPerspective(bool /* bResetCameraIfAlreadySetSo */ = false);
+
+    void resetMolecule(vtkMolecule * /*pMol*/ = nullptr);
+
+private:
     ANewRenderer renderBg_;
+    vtkColor3d colorBg_;
+
+    ANewActor actorMol_;
+    ANewRenderer renderMol_;
+    ANewMolMapper mapMol_;
 };
 
 #endif //! View_Molecule_h__

@@ -23,17 +23,11 @@
 
 #include "FrameDoc.h"
 
-typedef FileFormatFor<FrameDoc> FileFormat;
-
 class ViewWorkspace
     : public QSplitter
 {
     Q_OBJECT
 public:
-    typedef FileFormatFor<FrameDoc> FileFormat;
-    typedef FileFormat::OperationRead OperationRead;
-    typedef FileFormat::OperationSave OperationSave;
-    //
     explicit ViewWorkspace(QWidget * /* parent */ = nullptr);
     ~ViewWorkspace() override = default;
     //
@@ -44,8 +38,6 @@ public:
     bool hasPathTypeAssumed(const QString & /*one*/);   // casting file type from its name; simply text otherwise
     bool isFileTypeCompatible(const QString & /*one*/); // here the file itself is preparsed to know its compatibility
     //
-    bool invokeOperationRead(OperationRead /* read */, FrameDoc * /* pDoc */, Path /* path */);
-    //
     QString getReadFilter() const;
 
     ViewPathList   *getPathList() const;
@@ -54,6 +46,5 @@ private:
     QPointer<ViewPathList> files_;
     QPointer<ViewFileContent> content_;
 
-    static FileFormat formats[];
 };
 #endif // ! View_Workspace_h__

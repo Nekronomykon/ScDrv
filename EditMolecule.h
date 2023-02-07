@@ -16,7 +16,7 @@
 
 #include "ui_EditMolecule.h"
 
-typedef std::map<IndexElement,vtkIdType> ChemFormula;
+typedef std::map<IndexElement, vtkIdType> ChemFormula;
 
 class EditMolecule
     : public QWidget,
@@ -28,9 +28,13 @@ public:
     explicit EditMolecule(QWidget * /*parent*/ = nullptr);
     ~EditMolecule() override = default;
 
-
     void setReadOnly(bool /*bReadOnly*/ = true);
-    vtkIdType readAtoms(vtkMolecule* /*pMol*/);
+    vtkIdType readAtoms(vtkMolecule * /*pMol*/);
+
+    void resetMolecule(vtkMolecule * /*pMol*/ = nullptr);
+
+private:
+    vtkMolecule *ptrMolecule_ = nullptr;
 };
 
 #endif // !Edit_Molecule_h__
