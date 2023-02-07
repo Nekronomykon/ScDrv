@@ -64,35 +64,6 @@ bool ViewWorkspace::isFileTypeCompatible(const QString & /*one*/)
 {
     return true;
 }
-QString ViewWorkspace::getReadFilter() const
-{
-    QString sFlt(tr("Known formats ( "));
-    QString sAll;
-    for (const FrameDoc::FileFormat &fmt : FrameDoc::getFormats())
-    {
-        if (!fmt.description_ || !fmt.mask_path_ || !fmt.opRead_)
-            continue;
-        //
-        QString sExtFmt(tr("*."));
-        sExtFmt += fmt.mask_path_;
-        sFlt += sExtFmt;
-        sFlt += ' ';
-        //
-        QString sNameFmt(tr(";;"));
-        sNameFmt += fmt.description_;
-        sNameFmt += " format ( ";
-        sNameFmt += sExtFmt;
-        sNameFmt += " )";
-        sAll += sNameFmt;
-    }
-    sFlt += ')';
-    sFlt += sAll;
-    sFlt += ";;All files ( *.* )";
-    return sFlt.simplified();
-}
-//
-///////////////////////////////////////////////////////////////////////
-//
 ViewPathList *ViewWorkspace::getPathList() const { return files_; }
 //
 ///////////////////////////////////////////////////////////////////////

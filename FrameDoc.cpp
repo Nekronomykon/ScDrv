@@ -7,6 +7,12 @@
 #include <vtkXYZMolReader.h>
 #include <vtkXYZMolReader2.h>
 
+#include <vtkPNGWriter.h>
+#include <vtkTIFFWriter.h>
+#include <vtkBMPWriter.h>
+#include <vtkJPEGWriter.h>
+#include <vtkPostScriptWriter.h>
+
 const FrameDoc::AllFileFormats FrameDoc::AllFormats{
     // import
     {"xyz", "XYZ atoms", &FrameDoc::ReadFileXYZ, nullptr},
@@ -19,7 +25,7 @@ const FrameDoc::AllFileFormats FrameDoc::AllFormats{
     {"png", "Portable Network Graphics file", nullptr, &FrameDoc::ExportPixPNG},
     {"jpeg", "JPEG file", nullptr, &FrameDoc::ExportPixJPEG},
     {"ps", "Bitmap file", nullptr, &FrameDoc::ExportPixPostScript},
-    {nullptr, nullptr, nullptr} // invalid
+    // {nullptr, nullptr, nullptr} // invalid
 };
 
 FrameDoc::FrameDoc(QWidget *parent)
@@ -34,6 +40,64 @@ FrameDoc::FrameDoc(QWidget *parent)
     this->addTab(wTable_, tr("Elements"));
     this->addTab(wMol_, tr("Atoms"));
     this->addTab(wText_, tr("Comment"));
+}
+//
+///////////////////////////////////////////////////////////////////////
+//
+QString FrameDoc::getExportFilter()
+{
+    QString sFlt(tr("Known formats ( "));
+    QString sAll;
+    for (const FrameDoc::FileFormat &fmt : FrameDoc::getFormats())
+    {
+        if (!fmt.description_ || !fmt.mask_path_ || !fmt.opSave_)
+            continue;
+        //
+        QString sExtFmt(tr("*."));
+        sExtFmt += fmt.mask_path_;
+        sFlt += sExtFmt;
+        sFlt += ' ';
+        //
+        QString sNameFmt(tr(";;"));
+        sNameFmt += fmt.description_;
+        sNameFmt += " format ( ";
+        sNameFmt += sExtFmt;
+        sNameFmt += " )";
+        sAll += sNameFmt;
+    }
+    sFlt += ')';
+    sFlt += sAll;
+    sFlt += ";;All files ( *.* )";
+    return sFlt.simplified();
+}
+//
+///////////////////////////////////////////////////////////////////////
+//
+QString FrameDoc::getReadFilter()
+{
+    QString sFlt(tr("Known formats ( "));
+    QString sAll;
+    for (const FrameDoc::FileFormat &fmt : FrameDoc::getFormats())
+    {
+        if (!fmt.description_ || !fmt.mask_path_ || !fmt.opRead_)
+            continue;
+        //
+        QString sExtFmt(tr("*."));
+        sExtFmt += fmt.mask_path_;
+        sFlt += sExtFmt;
+        sFlt += ' ';
+        //
+        QString sNameFmt(tr(";;"));
+        sNameFmt += fmt.description_;
+        sNameFmt += " format ( ";
+        sNameFmt += sExtFmt;
+        sNameFmt += " )";
+        sAll += sNameFmt;
+    }
+    sFlt += ')';
+    sFlt += sAll;
+    sFlt += ";;All files ( *.* )";
+    return sFlt.simplified();
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -106,29 +170,39 @@ bool FrameDoc::ReadFileCUBE(Path a_path)
     return bool(pMol->GetNumberOfAtoms() > 0);
 }
 
-bool FrameDoc::ExportPixBMP(Path)
+bool FrameDoc::ExportPixBMP(Path a_path)
 {
-    return false;
+    vtkNew<vtkBMPWriter> saver;
+    saver->SetFileName(a_path.c_str());
+    return this->getEditMolecule()->getView()->exportImageTo(saver);
 }
 
-bool FrameDoc::ExportPixTIFF(Path)
+bool FrameDoc::ExportPixTIFF(Path a_path)
 {
-    return false;
+    vtkNew<vtkTIFFWriter> saver;
+    saver->SetFileName(a_path.c_str());
+    return this->getEditMolecule()->getView()->exportImageTo(saver);
 }
 
-bool FrameDoc::ExportPixPNG(Path)
+bool FrameDoc::ExportPixPNG(Path a_path)
 {
-    return false;
+    vtkNew<vtkPNGWriter> saver;
+    saver->SetFileName(a_path.c_str());
+    return this->getEditMolecule()->getView()->exportImageTo(saver);
 }
 
-bool FrameDoc::ExportPixJPEG(Path)
+bool FrameDoc::ExportPixJPEG(Path a_path)
 {
-    return false;
+    vtkNew<vtkJPEGWriter> saver;
+    saver->SetFileName(a_path.c_str());
+    return this->getEditMolecule()->getView()->exportImageTo(saver);
 }
 
-bool FrameDoc::ExportPixPostScript(Path)
+bool FrameDoc::ExportPixPostScript(Path a_path)
 {
-    return false;
+    vtkNew<vtkPostScriptWriter> saver;
+    saver->SetFileName(a_path.c_str());
+    return this->getEditMolecule()->getView()->exportImageTo(saver);
 }
 
 //

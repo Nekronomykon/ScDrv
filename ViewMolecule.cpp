@@ -47,11 +47,6 @@ ViewMolecule::ViewMolecule(QWidget *parent)
     // In progress. Under the development.
     pRWI->SetInteractorStyle(istyle_rb);
 
-    // [0] BACKGROUND
-    pRW->AddRenderer(renderBg_);
-    // [1] MOLECULE
-    pRW->AddRenderer(renderMol_);
-    //
     this->updateBackground();
 }
 //
@@ -82,11 +77,26 @@ vtkRenderer *ViewMolecule::getMoleculeRenderer(void) const
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-void ViewMolecule::updateBackground()
+void ViewMolecule::updateBackground(vtkRenderWindow *pRW)
 {
-    renderBg_->SetLayer(0);
-    renderBg_->SetBackground(colorBg_.GetData());
-    this->renderWindow()->Render();
+    if (!pRW)
+        pRW = this->renderWindow();
+    // [0] BACKGROUND
+    if (isImageBackTransparent_)
+    {
+        renderBg_->SetLayer(0);
+        renderBg_->SetBackground(colorBg_.GetData());
+        pRW->AddRenderer(renderBg_);
+    }
+    // [1] MOLECULE
+    renderMol_->SetLayer(1);
+    if (!isImageBackTransparent_)
+    {
+        renderMol_->SetBackground(colorBg_.GetData());
+    }
+    pRW->AddRenderer(renderMol_);
+    //
+    pRW->Render();
 }
 //
 ///////////////////////////////////////////////////////////////////////////////

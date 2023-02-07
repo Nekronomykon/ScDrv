@@ -46,9 +46,9 @@ public:
     vtkMoleculeMapper *getMoleculeMapper(void) const;
     vtkRenderer *getMoleculeRenderer(void) const;
 
-    void updateBackground();
+    void updateBackground(vtkRenderWindow * /*pRW*/ = nullptr);
 
-    bool exportImageTo(vtkImageWriter* /*pIW*/, bool /*bAlpha*/ = true);
+    bool exportImageTo(vtkImageWriter * /*pIW*/, bool /*bAlpha*/ = true);
 
     void setProjectParallel(bool /* bResetCameraIfAlreadySetSo */ = false);
     void setProjectPerspective(bool /* bResetCameraIfAlreadySetSo */ = false);
@@ -56,6 +56,7 @@ public:
     void resetMolecule(vtkMolecule * /*pMol*/ = nullptr);
 
 private:
+    bool isImageBackTransparent_ = true;
     ANewRenderer renderBg_;
     vtkColor3d colorBg_;
 

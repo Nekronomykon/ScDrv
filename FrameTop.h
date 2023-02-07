@@ -90,6 +90,9 @@ private slots:
   /* File menu */
   void on_actionNew__triggered(void);
   void on_actionOpen__triggered(void);
+  void on_actionSave__triggered(void);
+  void on_actionSaveAs__triggered(void);
+  void on_actionExport__triggered(void);
   void on_actionClose__triggered(void);
   void on_actionExit__triggered(void);
   void on_actionProperties__triggered(void);

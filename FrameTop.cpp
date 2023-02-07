@@ -744,7 +744,7 @@ void FrameTop::on_actionOpen__triggered(void)
         name_dir = info.path();
     }
     QString caption(tr("Open file(s)"));
-    QString formats = workspace_->getReadFilter();
+    QString formats = FrameDoc::getReadFilter();
     QString fmt_use;
     QStringList to_open = QFileDialog::getOpenFileNames(this,
                                                         caption,
@@ -754,6 +754,67 @@ void FrameTop::on_actionOpen__triggered(void)
                                                         opts_open);
     if (!to_open.empty())
         this->addPathList(to_open);
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// \brief FrameTop::on_actionSaveAs__triggered
+///
+void FrameTop::on_actionSave__triggered(void)
+{
+    assert(frameDoc_->hasPath());
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// \brief FrameTop::on_actionSaveAs__triggered
+///
+void FrameTop::on_actionSaveAs__triggered(void)
+{
+    QFileDialog::Options opts_open = QFileDialog::QFileDialog::DontUseNativeDialog |
+                                     QFileDialog::DontUseCustomDirectoryIcons;
+    QString name_dir = QDir::currentPath();
+    if (frameDoc_->hasPath())
+    {
+        QFileInfo info(tr(frameDoc_->getPath().c_str()));
+        name_dir = info.path();
+    }
+    QString caption(tr("Open file(s)"));
+    QString formats = FrameDoc::getExportFilter();
+    QString fmt_use;
+    QString to_save_as = QFileDialog::getSaveFileName(this,
+                                                      caption,
+                                                      name_dir,
+                                                      formats,
+                                                      &fmt_use,
+                                                      opts_open);
+    // if (!to_open.empty())
+    //    this->addPathList(to_open);
+}
+//
+//
+///////////////////////////////////////////////////////////////////////
+/// \brief FrameTop::on_actionExport__triggered
+///
+void FrameTop::on_actionExport__triggered(void)
+{
+    QFileDialog::Options opts_open = QFileDialog::QFileDialog::DontUseNativeDialog |
+                                     QFileDialog::DontUseCustomDirectoryIcons;
+    QString name_dir = QDir::currentPath();
+    if (frameDoc_->hasPath())
+    {
+        QFileInfo info(tr(frameDoc_->getPath().c_str()));
+        name_dir = info.path();
+    }
+    QString caption(tr("Open file(s)"));
+    QString formats = FrameDoc::getExportFilter();
+    QString fmt_use;
+    QString to_save_as = QFileDialog::getSaveFileName(this,
+                                                      caption,
+                                                      name_dir,
+                                                      formats,
+                                                      &fmt_use,
+                                                      opts_open);
+    // if (!to_open.empty())
+    //    this->addPathList(to_open);
 }
 //
 ///////////////////////////////////////////////////////////////////////

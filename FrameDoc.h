@@ -44,9 +44,14 @@ public:
   //
   explicit FrameDoc(QWidget * /*parent*/ = nullptr);
   ~FrameDoc() override = default;
-
+  ///////////////////////////////////////////////////////////////////////////////
+  //
   bool isModified() const;
-
+    //
+  static QString getReadFilter();
+    //
+  static QString getExportFilter();
+  //
   ///////////////////////////////////////////////////////////////////////////////
   // Path operations
   bool hasPath() const;
