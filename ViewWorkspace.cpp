@@ -5,7 +5,6 @@
 namespace
 {
     static inline const char *keyState() { return "Workspace"; }
-    static inline QString keyNewFile() { return QStringLiteral("[: new file :]"); }
 };
 
 ViewWorkspace::ViewWorkspace(QWidget *parent)
@@ -16,7 +15,7 @@ ViewWorkspace::ViewWorkspace(QWidget *parent)
     this->addWidget(files_);
     this->addWidget(content_);
     //
-    files_->addString(keyNewFile());
+    files_->addString(ModelPathList::keyNewFile());
 }
 //
 ///////////////////////////////////////////////////////////////////////

@@ -549,11 +549,16 @@ FrameTop *FrameTop::setupDockViews(void)
     pLeft->setWidget(workspace_);
     pLeft->setObjectName(tr("Workspace"));
     this->addDockWidget(Qt::LeftDockWidgetArea, pLeft);
+    QObject::connect(workspace_->getPathList(), &ViewPathList::activated,
+                     this, &FrameTop::on_activatedPathIndex);
+    // QObject::connect(workspace_->getPathList(), &ViewPathList::currentTextChanged, this, &FrameTop::on_changeInputPath);
+
+    //
     QDockWidget *pNext = new QDockWidget(tr("Filesystem"), this);
     pNext->setWidget(files_);
     pNext->setObjectName(tr("Filesystem"));
     this->tabifyDockWidget(pLeft, pNext);
-    ///
+    //
     return this;
 }
 //
@@ -597,6 +602,22 @@ void FrameTop::commitData(QSessionManager &mgr)
 void FrameTop::on_actionFileRecent(void)
 {
 }
+///////////////////////////////////////////////////////////////////////
+/// @brief FrameTop::on_changeDocumentPath
+///
+void FrameTop::on_activatedPathIndex(const QModelIndex &idx)
+{
+    QString pathNew = workspace_->getPathList()->model()->data(idx).toString();
+    // if (pathNew.compare(ViewWorkspace::keyNewFile()))
+        QMessageBox::information(this, tr("New path"), pathNew);
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// @brief FrameTop::on_changeInputPath
+///
+// void FrameTop::on_changeInputPath(const QString &name)
+//{
+// }
 //
 ///////////////////////////////////////////////////////////////////////
 /// @brief FrameTop::on_nameBackgroundColor

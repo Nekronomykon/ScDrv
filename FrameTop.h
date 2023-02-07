@@ -77,9 +77,12 @@ private:
   QPointer<ViewFileSystem> files_;
 
 private slots:
+  // void on_changeDocumentPath(QListWidgetItem *current, QListWidgetItem *previous);
   void commitData(QSessionManager & /*mgr */);
   void on_actionFileRecent(void);
   /* Background color for the scene */
+  void on_activatedPathIndex(const QModelIndex &);
+  // void on_changeInputPath(const QString &name);
   void on_nameBackgroundColor(const QString & /* name */);
   void on_changedBackgroundRed(void);
   void on_changedBackgroundGreen(void);

@@ -37,9 +37,10 @@ public:
 
 protected:
   static const AllFileFormats AllFormats;
+  static const char strAllFiles[];
 
 public:
-  static const AllFileFormats& getFormats() { return AllFormats; }
+  static const AllFileFormats &getFormats() { return AllFormats; }
 
   //
   explicit FrameDoc(QWidget * /*parent*/ = nullptr);
@@ -47,9 +48,9 @@ public:
   ///////////////////////////////////////////////////////////////////////////////
   //
   bool isModified() const;
-    //
+  //
   static QString getReadFilter();
-    //
+  //
   static QString getExportFilter();
   //
   ///////////////////////////////////////////////////////////////////////////////
@@ -76,6 +77,8 @@ public:
   bool ExportPixPNG(Path);
   bool ExportPixJPEG(Path);
   bool ExportPixPostScript(Path);
+  //
+  void updateAllViews();
 
 protected:
 private:

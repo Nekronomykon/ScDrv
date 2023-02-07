@@ -28,6 +28,8 @@ const FrameDoc::AllFileFormats FrameDoc::AllFormats{
     // {nullptr, nullptr, nullptr} // invalid
 };
 
+const char FrameDoc::strAllFiles[] = ";;All files (*.*)";
+
 FrameDoc::FrameDoc(QWidget *parent)
     : QTabWidget(parent), wTable_(new TableElements(this)), wMol_(new WidgetMolecule(this)), wText_(new EditSource(this))
 {
@@ -46,7 +48,7 @@ FrameDoc::FrameDoc(QWidget *parent)
 //
 QString FrameDoc::getExportFilter()
 {
-    QString sFlt(tr("Known formats ( "));
+    QString sFlt(tr("Known formats ("));
     QString sAll;
     for (const FrameDoc::FileFormat &fmt : FrameDoc::getFormats())
     {
@@ -60,14 +62,15 @@ QString FrameDoc::getExportFilter()
         //
         QString sNameFmt(tr(";;"));
         sNameFmt += fmt.description_;
-        sNameFmt += " format ( ";
+        sNameFmt += " format (";
         sNameFmt += sExtFmt;
-        sNameFmt += " )";
+        sNameFmt += ')';
         sAll += sNameFmt;
     }
+    sFlt = sFlt.trimmed();
     sFlt += ')';
     sFlt += sAll;
-    sFlt += ";;All files ( *.* )";
+    sFlt += strAllFiles;
     return sFlt.simplified();
 }
 //
@@ -75,7 +78,7 @@ QString FrameDoc::getExportFilter()
 //
 QString FrameDoc::getReadFilter()
 {
-    QString sFlt(tr("Known formats ( "));
+    QString sFlt(tr("Known formats ("));
     QString sAll;
     for (const FrameDoc::FileFormat &fmt : FrameDoc::getFormats())
     {
@@ -89,14 +92,15 @@ QString FrameDoc::getReadFilter()
         //
         QString sNameFmt(tr(";;"));
         sNameFmt += fmt.description_;
-        sNameFmt += " format ( ";
+        sNameFmt += " format (";
         sNameFmt += sExtFmt;
-        sNameFmt += " )";
+        sNameFmt += ')';
         sAll += sNameFmt;
     }
+    sFlt = sFlt.trimmed();
     sFlt += ')';
     sFlt += sAll;
-    sFlt += ";;All files ( *.* )";
+    sFlt += strAllFiles;
     return sFlt.simplified();
 }
 //
@@ -203,6 +207,11 @@ bool FrameDoc::ExportPixPostScript(Path a_path)
     vtkNew<vtkPostScriptWriter> saver;
     saver->SetFileName(a_path.c_str());
     return this->getEditMolecule()->getView()->exportImageTo(saver);
+}
+
+void FrameDoc::updateAllViews()
+{
+    wMol_->showMolecule();
 }
 
 //

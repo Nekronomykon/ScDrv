@@ -30,14 +30,17 @@ void WidgetMolecule::readSettings(QSettings &src)
 }
 //
 ///////////////////////////////////////////////////////////////////////
-/// write settings to the corresponding class instance:
+/// Write settings to the corresponding class instance:
 ///
 void WidgetMolecule::saveSettings(QSettings &src)
 {
     // splitter state
     src.setValue(keyState(), this->saveState());
 }
-
+//
+///////////////////////////////////////////////////////////////////////
+/// Dispatch updating:
+///
 void WidgetMolecule::showMolecule()
 {
     view_->resetMolecule();

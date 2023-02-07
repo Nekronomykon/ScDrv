@@ -38,11 +38,11 @@ public:
     bool hasPathTypeAssumed(const QString & /*one*/);   // casting file type from its name; simply text otherwise
     bool isFileTypeCompatible(const QString & /*one*/); // here the file itself is preparsed to know its compatibility
 
-    ViewPathList   *getPathList() const;
+    ViewPathList *getPathList() const;
     ViewFileContent *getFileContent() const;
+
 private:
     QPointer<ViewPathList> files_;
     QPointer<ViewFileContent> content_;
-
 };
 #endif // ! View_Workspace_h__
