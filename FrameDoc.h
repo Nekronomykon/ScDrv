@@ -40,24 +40,30 @@ protected:
   static const char strAllFiles[];
 
 public:
-  static const AllFileFormats &getFormats() { return AllFormats; }
+  inline static const AllFileFormats &getFormats() { return AllFormats; }
+
+  static FileFormat FormatForSuffix(const QString &);
 
   //
   explicit FrameDoc(QWidget * /*parent*/ = nullptr);
   ~FrameDoc() override = default;
   ///////////////////////////////////////////////////////////////////////////////
   //
-  bool isModified() const;
-  //
   static QString getReadFilter();
-  //
   static QString getExportFilter();
+  //
+  bool isModified() const;
+  void setModified(bool /*bSet*/ = true);
   //
   ///////////////////////////////////////////////////////////////////////////////
   // Path operations
   bool hasPath() const;
   const Path &getPath() const;
   Path resetPath(Path /* pathNew */);
+  //
+  bool hasFormat() const;
+  FileFormat getFormat() const;
+  FileFormat resetFormat(FileFormat /*fmt*/);
 
   bool doSave();
   //
@@ -82,7 +88,9 @@ public:
 
 protected:
 private:
+  bool isModified_ = false;
   Path path_;
+  FileFormat format_;
   // GUI
   QPointer<TableElements> wTable_;
   QPointer<WidgetMolecule> wMol_;

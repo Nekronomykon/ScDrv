@@ -25,15 +25,37 @@ struct FileFormatFor
   OperationRead opRead_ = nullptr;
   OperationSave opSave_ = nullptr;
   //
+  bool hasSuffix() const { return ((mask_path_ != nullptr) && *mask_path_); }
+  bool isValidFormat() const { return ((description_ != nullptr) && *description_); }
+  bool hasRead() const { return (opRead_ != nullptr); }
+  bool hasSave() const { return (opSave_ != nullptr); }
+  //
+  const char *suffix() const { return mask_path_; }
+  const char *description() const { return description_; }
+  //
   bool ReadTo(Path path, Obj *pDoc)
   {
-    if (!opRead_)
+    assert(hasRead());
+    if (!hasRead())
       return false;
     assert(pDoc != nullptr);
     // pDoc->Initialize();
     bool bResult = (pDoc->*opRead_)(path);
-    if (bResult)
-      pDoc->resetPath(path);
+    // is there anything mandatory after the read?
+    // if(bResult)
+    // pDoc->setModified(false);
+    pDoc->updateAllViews();
+    return bResult;
+  }
+  //
+  bool SaveTo(Obj *pDoc, Path path)
+  {
+    assert(hasSave());
+    if (!hasSave())
+      return false;
+    assert(pDoc != nullptr);
+    bool bResult = (pDoc->*opSave_)(path);
+    // is there anything mandatory after the save?
     return bResult;
   }
 
