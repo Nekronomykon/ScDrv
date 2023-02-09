@@ -202,7 +202,7 @@ bool FrameDoc::ExportPixTIFF(Path a_path)
 {
   vtkNew<vtkTIFFWriter> saver;
   saver->SetFileName(a_path.c_str());
-#ifndef QT_MESSAGE_BOX_DEBUG
+#ifdef QT_MESSAGE_BOX_DEBUG
   QMessageBox::information(this, tr("Export TIFF to"), tr(a_path.c_str()));
 #endif
 
@@ -213,7 +213,7 @@ bool FrameDoc::ExportPixPNG(Path a_path)
 {
   vtkNew<vtkPNGWriter> saver;
   saver->SetFileName(a_path.c_str());
-#ifndef QT_MESSAGE_BOX_DEBUG
+#ifdef QT_MESSAGE_BOX_DEBUG
   QMessageBox::information(this, tr("Export PNG to"), tr(a_path.c_str()));
 #endif
 
@@ -224,22 +224,22 @@ bool FrameDoc::ExportPixJPEG(Path a_path)
 {
   vtkNew<vtkJPEGWriter> saver;
   saver->SetFileName(a_path.c_str());
-#ifndef QT_MESSAGE_BOX_DEBUG
+#ifdef QT_MESSAGE_BOX_DEBUG
   QMessageBox::information(this, tr("Export JPG to"), tr(a_path.c_str()));
 #endif
 
-  return this->getEditMolecule()->getView()->exportImageTo(saver);
+  return this->getEditMolecule()->getView()->exportImageTo(saver,false);
 }
 
 bool FrameDoc::ExportPixPostScript(Path a_path)
 {
   vtkNew<vtkPostScriptWriter> saver;
   saver->SetFileName(a_path.c_str());
-#ifndef QT_MESSAGE_BOX_DEBUG
+#ifdef QT_MESSAGE_BOX_DEBUG
   QMessageBox::information(this, tr("Export PostScript to"), tr(a_path.c_str()));
 #endif
 
-  return this->getEditMolecule()->getView()->exportImageTo(saver);
+  return this->getEditMolecule()->getView()->exportImageTo(saver,false); // RGB instead of RGBA
 }
 
 void FrameDoc::updateAllViews()

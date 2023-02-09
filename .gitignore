@@ -33,3 +33,14 @@
 
 # CMake build
 Build/*
+
+# Test images
+tests/*.png
+tests/*.jpg
+tests/*.jpeg
+tests/*.bmp
+tests/*.tif
+tests/*.tiff
+tests/*.ps
+tests/*.eps
+tests/*.pdf

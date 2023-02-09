@@ -865,7 +865,7 @@ void FrameTop::on_actionExport__triggered(void)
 #endif
   QFileInfo fi(to_save_as);
   FileFormat fmt = FrameDoc::FormatForSuffix(fi.suffix());
-#ifndef QT_MESSAGE_BOX_DEBUG
+#ifdef QT_MESSAGE_BOX_DEBUG
   QMessageBox::information(this, tr(fmt.description()), tr(fmt.suffix()));
 #endif
   if (fmt.isValidFormat() && fmt.hasSave())
