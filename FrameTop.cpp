@@ -310,7 +310,10 @@ FrameTop *FrameTop::addPathList(const QStringList &list_paths)
 FrameTop *FrameTop::setupActions(void)
 {
   //! [implicit tr context]
-  const QIcon iconNew = QIcon::fromTheme("window-new", QIcon(":/images/New.png"));
+  const QIcon iconNewWindow = QIcon::fromTheme("window-new", QIcon(":/images/New.png"));
+  actionNewWindow_->setIcon(iconNewWindow);
+
+  const QIcon iconNew = QIcon::fromTheme("document-new" /*, QIcon(":/images/NewDoc.png")*/);
   actionNew_->setIcon(iconNew);
   actionNew_->setShortcuts(QKeySequence::New);
   actionNew_->setStatusTip(tr("Create a new file"));
@@ -608,8 +611,15 @@ void FrameTop::on_actionFileRecent(void)
 void FrameTop::on_activatedPathIndex(const QModelIndex &idx)
 {
   QString pathNew = workspace_->getPathList()->model()->data(idx).toString();
-  if (pathNew.isEmpty() || !pathNew.compare(ModelPathList::keyNewFile()))
+  if (pathNew.isEmpty() || !this->queryDataSaved())
     return;
+  //
+  frameDoc_->clearAll(false);
+  frameDoc_->resetPath();
+  //
+  if (!pathNew.compare(ModelPathList::keyNewFile()))
+    return;
+  /* otherwise: try to load */
   QFileInfo fi(pathNew);
   // QMessageBox::information(this, tr("New path"), pathNew);
   FileFormat fmt = FrameDoc::FormatForSuffix(fi.suffix());
@@ -754,11 +764,23 @@ void FrameTop::on_actionAbout__triggered(void)
 }
 //
 ///////////////////////////////////////////////////////////////////////
+/// \brief FrameTop::on_actionNewWindow__triggered
+///
+void FrameTop::on_actionNewWindow__triggered(void)
+{
+  FrameTop::createNew(this->saveSettings())->show();
+}
+//
+//
+///////////////////////////////////////////////////////////////////////
 /// \brief FrameTop::on_actionNew__triggered
 ///
 void FrameTop::on_actionNew__triggered(void)
 {
-  FrameTop::createNew(this->saveSettings())->show();
+  if (!this->queryDataSaved())
+    return;
+  frameDoc_->clearAll();
+  frameDoc_->resetPath();
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -891,6 +913,26 @@ void FrameTop::on_actionProperties__triggered(void)
     // load newly changed data
     // this->updateUi();
   }
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// \brief FrameTop::on_actionClearAll__triggered
+///
+void FrameTop::on_actionClearAll__triggered(void)
+{
+  if (!this->queryDataSaved())
+    return;
+  frameDoc_->clearAll(true); // set modefied ???
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// \brief FrameTop::on_actionClone__triggered
+///
+void FrameTop::on_actionClone__triggered(void)
+{
+  workspace_->clearPathList();
+  frameDoc_->setModified(true);
+  frameDoc_->resetPath();
 }
 //
 ///////////////////////////////////////////////////////////////////////

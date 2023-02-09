@@ -56,6 +56,13 @@ FrameDoc::FrameDoc(QWidget *parent)
   this->addTab(wMol_, tr("Atoms"));
   this->addTab(wText_, tr("Comment"));
 }
+void FrameDoc::clearAll(bool bModified)
+{
+  wMol_->clearAll();
+  wText_->clear();
+  this->updateAllViews();
+  this->setModified(bModified);
+}
 //
 ///////////////////////////////////////////////////////////////////////
 //
@@ -287,13 +294,7 @@ const Path &FrameDoc::getPath() const
 
 Path FrameDoc::resetPath(Path pathNew)
 {
-#ifdef QT_MESSAGE_BOX_DEBUG
-  QMessageBox::information(this, tr("Changing path to:"), tr(pathNew.c_str()));
-#endif
   std::swap(pathNew, path_);
-#ifdef QT_MESSAGE_BOX_DEBUG
-  QMessageBox::information(this, tr("Path was:"), tr(pathNew.c_str()));
-#endif
   return pathNew;
 }
 

@@ -49,6 +49,10 @@ public:
   ~FrameDoc() override = default;
   ///////////////////////////////////////////////////////////////////////////////
   //
+  void clearAll(bool /*bModeified*/ = false);
+  //
+  ///////////////////////////////////////////////////////////////////////////////
+  //
   static QString getReadFilter();
   static QString getExportFilter();
   //
@@ -59,7 +63,7 @@ public:
   // Path operations
   bool hasPath() const;
   const Path &getPath() const;
-  Path resetPath(Path /* pathNew */);
+  Path resetPath(Path /* pathNew */ = Path() );
   //
   bool hasFormat() const;
   FileFormat getFormat() const;

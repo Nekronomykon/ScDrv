@@ -16,8 +16,13 @@
 
 #include <vtkMolecule.h>
 
+#include <vtkNew.h>
+#include <vtkSmartPointer.h>
+
 #include "EditMolecule.h"
 #include "ViewMolecule.h"
+
+typedef vtkNew<vtkMolecule> ANewMolecule;
 
 class WidgetMolecule
     : public QSplitter
@@ -38,9 +43,13 @@ public:
     ViewMolecule *getView() const { return view_; }
     //
     void showMolecule();
+    void clearAll();
+
+private slots:
+    void on_changedBlockCount(int /* newBlockCount */);
 
 private:
-    vtkNew<Molecule> molecule_;
+    ANewMolecule molecule_;
     QPointer<EditMolecule> edit_;
     QPointer<ViewMolecule> view_;
 };

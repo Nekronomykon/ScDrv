@@ -34,6 +34,7 @@ public:
     void readSettings(QSettings & /*src*/);
     void saveSettings(QSettings & /*src*/);
     //
+    void clearPathList(void);
     bool addPathString(const QString & /*one*/);
     bool hasPathTypeAssumed(const QString & /*one*/);   // casting file type from its name; simply text otherwise
     bool isFileTypeCompatible(const QString & /*one*/); // here the file itself is preparsed to know its compatibility

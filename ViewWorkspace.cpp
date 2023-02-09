@@ -15,7 +15,7 @@ ViewWorkspace::ViewWorkspace(QWidget *parent)
     this->addWidget(files_);
     this->addWidget(content_);
     //
-    files_->addString(ModelPathList::keyNewFile());
+    this->clearPathList();
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -36,6 +36,13 @@ void ViewWorkspace::saveSettings(QSettings &src)
     src.setValue(keyState(), this->saveState());
 }
 //
+void ViewWorkspace::clearPathList(void)
+{
+    // none_list;
+    files_->GetViewModel()->setStringList(QStringList());
+    files_->addString(ModelPathList::keyNewFile());
+}
+
 ///////////////////////////////////////////////////////////////////////
 /// adding an unique path string
 ///

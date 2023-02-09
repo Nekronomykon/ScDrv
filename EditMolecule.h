@@ -9,6 +9,7 @@
 #include <map>
 
 #include <QWidget>
+#include <QTextDocument>
 
 #include <vtkMolecule.h>
 
@@ -32,6 +33,12 @@ public:
     vtkIdType readAtoms(vtkMolecule * /*pMol*/);
 
     void resetMolecule(vtkMolecule * /*pMol*/ = nullptr);
+    void loadMolecule();
+
+    QTextDocument *sourceAtoms() const;
+
+private slots:
+    void on_toolEditAtoms__triggered(void);
 
 private:
     vtkMolecule *ptrMolecule_ = nullptr;

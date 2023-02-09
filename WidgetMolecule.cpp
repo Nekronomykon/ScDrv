@@ -1,23 +1,28 @@
 #include "WidgetMolecule.h"
 
+#include "EditSource.h"
+
 namespace
 {
-    static inline const char *keyState() { return "Molecule Widget"; }
+  static inline const char *keyState() { return "Molecule Widget"; }
 }
 
 WidgetMolecule::WidgetMolecule(QWidget *parent)
     : QSplitter(parent), edit_(new EditMolecule(this)), view_(new ViewMolecule(this))
 {
-    this->setOpaqueResize(false);
-    //
-    this->addWidget(view_);
-    this->addWidget(edit_);
-    //
-    this->setCollapsible(this->indexOf(view_), false);
-    this->setCollapsible(this->indexOf(edit_), true);
-    //
-    view_->resetMolecule(molecule_);
-    edit_->resetMolecule(molecule_);
+  this->setOpaqueResize(false);
+  //
+  this->addWidget(view_);
+  this->addWidget(edit_);
+  //
+  this->setCollapsible(this->indexOf(view_), false);
+  this->setCollapsible(this->indexOf(edit_), true);
+  //
+  view_->resetMolecule(molecule_);
+  edit_->resetMolecule(molecule_);
+  //
+  QObject::connect(edit_->sourceAtoms(), &QTextDocument::blockCountChanged,
+                   this, &WidgetMolecule::on_changedBlockCount);
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -25,8 +30,8 @@ WidgetMolecule::WidgetMolecule(QWidget *parent)
 ///
 void WidgetMolecule::readSettings(QSettings &src)
 {
-    // splitter state
-    this->restoreState(src.value(keyState()).toByteArray());
+  // splitter state
+  this->restoreState(src.value(keyState()).toByteArray());
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -34,8 +39,8 @@ void WidgetMolecule::readSettings(QSettings &src)
 ///
 void WidgetMolecule::saveSettings(QSettings &src)
 {
-    // splitter state
-    src.setValue(keyState(), this->saveState());
+  // splitter state
+  src.setValue(keyState(), this->saveState());
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -43,6 +48,21 @@ void WidgetMolecule::saveSettings(QSettings &src)
 ///
 void WidgetMolecule::showMolecule()
 {
-    view_->resetMolecule();
-    edit_->resetMolecule();
+  view_->resetMolecule();
+  edit_->resetMolecule();
 }
+void WidgetMolecule::clearAll()
+{
+  ANewMolecule mol;
+  molecule_->DeepCopy(mol);
+  this->showMolecule();
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// Dispatch updating:
+///
+void WidgetMolecule::on_changedBlockCount(int newBlockCount)
+{
+}
+//
+///////////////////////////////////////////////////////////////////////

@@ -85,15 +85,7 @@ void ViewMolecule::updateBackground(vtkRenderWindow *pRW)
   if (!pRW)
     pRW = this->renderWindow();
   // [0] BACKGROUND
-  if (isImageBackTransparent_)
-  {
-    renderBg_->SetBackground(colorBg_.GetData());
-  }
-  else
-  {
-    renderMol_->SetBackground(colorBg_.GetData());
-  }
-  //
+  renderBg_->SetBackground(colorBg_.GetData());
   pRW->Modified();
 }
 //
@@ -132,6 +124,7 @@ bool ViewMolecule::exportImageTo(vtkImageWriter *pIW, bool bAlpha)
 //
 void ViewMolecule::setProjectParallel(bool bReset)
 {
+  vtkRenderWindow *pRW = this->renderWindow();
   vtkRenderer *pRen = this->getMoleculeRenderer();
   vtkCamera *pCam = pRen->GetActiveCamera();
   if (!pCam->GetParallelProjection())
@@ -141,13 +134,14 @@ void ViewMolecule::setProjectParallel(bool bReset)
     if (bReset)
       pRen->ResetCamera();
   }
-  this->renderWindow()->Modified();
+  pRW->Modified();
 }
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
 void ViewMolecule::setProjectPerspective(bool bReset)
 {
+  vtkRenderWindow *pRW = this->renderWindow();
   vtkRenderer *pRen = this->getMoleculeRenderer();
   vtkCamera *pCam = pRen->GetActiveCamera();
   if (pCam->GetParallelProjection())
@@ -157,16 +151,18 @@ void ViewMolecule::setProjectPerspective(bool bReset)
     if (bReset)
       pRen->ResetCamera();
   }
-  this->renderWindow()->Modified();
+  pRW->Modified();
 }
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
 void ViewMolecule::resetMolecule(vtkMolecule *pMol)
 {
+  vtkRenderWindow *pRW = this->renderWindow();
   if (pMol)
     mapMol_->SetInputData(pMol);
   mapMol_->Update();
+  pRW->Modified();
 }
 //
 ///////////////////////////////////////////////////////////////////////////////
