@@ -56,11 +56,15 @@ FrameDoc::FrameDoc(QWidget *parent)
   this->addTab(wMol_, tr("Atoms"));
   this->addTab(wText_, tr("Comment"));
 }
+//
+///////////////////////////////////////////////////////////////////////
+//
 void FrameDoc::clearAll(bool bModified)
 {
   wMol_->clearAll();
   wText_->clear();
   this->updateAllViews();
+  this->setReadOnly(false);
   this->setModified(bModified);
 }
 //
@@ -72,7 +76,7 @@ QString FrameDoc::getExportFilter()
   QString sAll;
   for (const FrameDoc::FileFormat &fmt : FrameDoc::getFormats())
   {
-    if (!fmt.hasSuffix() || !fmt.isValidFormat() || !fmt.hasSave() )
+    if (!fmt.hasSuffix() || !fmt.isValidFormat() || !fmt.hasSave())
       continue;
     //
     QString sExtFmt(tr("*."));
@@ -102,7 +106,7 @@ QString FrameDoc::getReadFilter()
   QString sAll;
   for (const FrameDoc::FileFormat &fmt : FrameDoc::getFormats())
   {
-    if (!fmt.hasSuffix() || !fmt.isValidFormat() || !fmt.hasRead() )
+    if (!fmt.hasSuffix() || !fmt.isValidFormat() || !fmt.hasRead())
       continue;
     //
     QString sExtFmt(tr("*."));
@@ -235,7 +239,7 @@ bool FrameDoc::ExportPixJPEG(Path a_path)
   QMessageBox::information(this, tr("Export JPG to"), tr(a_path.c_str()));
 #endif
 
-  return this->getEditMolecule()->getView()->exportImageTo(saver,false);
+  return this->getEditMolecule()->getView()->exportImageTo(saver, false);
 }
 
 bool FrameDoc::ExportPixPostScript(Path a_path)
@@ -246,70 +250,103 @@ bool FrameDoc::ExportPixPostScript(Path a_path)
   QMessageBox::information(this, tr("Export PostScript to"), tr(a_path.c_str()));
 #endif
 
-  return this->getEditMolecule()->getView()->exportImageTo(saver,false); // RGB instead of RGBA
+  return this->getEditMolecule()->getView()->exportImageTo(saver, false); // RGB instead of RGBA
 }
 
 void FrameDoc::updateAllViews()
 {
   wMol_->showMolecule();
 }
-
+//
+///////////////////////////////////////////////////////////////////////
+//
+void FrameDoc::setReadOnly(bool bSet)
+{
+  wMol_->setReadOnly(bSet);
+  wText_->setReadOnly(bSet);
+}
+//
+///////////////////////////////////////////////////////////////////////
+//
 //
 bool FrameDoc::isModified() const
 {
   return isModified_;
 }
-
+//
+///////////////////////////////////////////////////////////////////////
+//
 void FrameDoc::setModified(bool bSet)
 {
   isModified_ = bSet;
 }
-
+//
+///////////////////////////////////////////////////////////////////////
+//
 bool FrameDoc::doSave()
 {
   return true;
 }
-
+//
+///////////////////////////////////////////////////////////////////////
+//
 WidgetMolecule *FrameDoc::editMolecule()
 {
   if (wMol_)
     this->setCurrentWidget(wMol_);
   return wMol_;
 }
-
+//
+///////////////////////////////////////////////////////////////////////
+//
 WidgetMolecule *FrameDoc::getEditMolecule() const
 {
   return wMol_;
 }
-
+//
+///////////////////////////////////////////////////////////////////////
+//
 bool FrameDoc::hasPath() const
 {
   return path_.empty() ? false : true;
 }
-
+//
+///////////////////////////////////////////////////////////////////////
+//
 const Path &FrameDoc::getPath() const
 {
   return path_;
 }
-
+//
+///////////////////////////////////////////////////////////////////////
+//
 Path FrameDoc::resetPath(Path pathNew)
 {
   std::swap(pathNew, path_);
   return pathNew;
 }
-
+//
+///////////////////////////////////////////////////////////////////////
+//
 bool FrameDoc::hasFormat() const
 {
   return format_.isValidFormat();
 }
-
+//
+///////////////////////////////////////////////////////////////////////
+//
 FileFormat FrameDoc::getFormat() const
 {
   return format_;
 }
-
+//
+///////////////////////////////////////////////////////////////////////
+//
 FileFormat FrameDoc::resetFormat(FileFormat new_fmt)
 {
   std::swap(new_fmt, format_);
   return new_fmt;
 }
+//
+///////////////////////////////////////////////////////////////////////
+//

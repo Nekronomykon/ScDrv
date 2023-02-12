@@ -347,6 +347,10 @@ FrameTop *FrameTop::setupActions(void)
   actionSaveAs_->setShortcuts(QKeySequence::SaveAs);
   actionSaveAs_->setStatusTip(tr("Save the document under a new name"));
 
+  const QIcon iconClone = QIcon::fromTheme("document-send"/*, QIcon(":/images/Clone.png") */);
+  actionClone_->setIcon(iconClone);
+  actionClone_->setStatusTip(tr("Detach the current content from the initial document"));
+
   const QIcon iconClose = QIcon::fromTheme("window-close", QIcon(":/images/CloseFrame.png"));
   actionClose_->setIcon(iconClose);
   actionClose_->setShortcut(QKeySequence::Close);

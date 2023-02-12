@@ -4,18 +4,18 @@
 
 namespace
 {
-    static inline const char *keyState() { return "Workspace"; }
+  static inline const char *keyState() { return "Workspace"; }
 };
 
 ViewWorkspace::ViewWorkspace(QWidget *parent)
     : QSplitter(Qt::Vertical, parent), files_(new ViewPathList(this)), content_(new ViewFileContent(this))
 {
-    this->setOpaqueResize(false);
-    //
-    this->addWidget(files_);
-    this->addWidget(content_);
-    //
-    this->clearPathList();
+  this->setOpaqueResize(false);
+  //
+  this->addWidget(files_);
+  this->addWidget(content_);
+  //
+  this->clearPathList();
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -23,8 +23,8 @@ ViewWorkspace::ViewWorkspace(QWidget *parent)
 ///
 void ViewWorkspace::readSettings(QSettings &src)
 {
-    // splitter state
-    this->restoreState(src.value(keyState()).toByteArray());
+  // splitter state
+  this->restoreState(src.value(keyState()).toByteArray());
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -32,15 +32,15 @@ void ViewWorkspace::readSettings(QSettings &src)
 ///
 void ViewWorkspace::saveSettings(QSettings &src)
 {
-    // splitter state
-    src.setValue(keyState(), this->saveState());
+  // splitter state
+  src.setValue(keyState(), this->saveState());
 }
 //
 void ViewWorkspace::clearPathList(void)
 {
-    // none_list;
-    files_->GetViewModel()->setStringList(QStringList());
-    files_->addString(ModelPathList::keyNewFile());
+  // none_list;
+  files_->GetViewModel()->setStringList(QStringList());
+  files_->addString(ModelPathList::keyNewFile());
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -48,11 +48,11 @@ void ViewWorkspace::clearPathList(void)
 ///
 bool ViewWorkspace::addPathString(const QString &one)
 {
-    if (files_->hasString(one))
-        return false;
-    files_->addString(one);
-    return this->hasPathTypeAssumed(one)       // --> casting a file type
-           && this->isFileTypeCompatible(one); // --> preparsing file
+  if (files_->hasString(one))
+    return false;
+  files_->addString(one);
+  return this->hasPathTypeAssumed(one)       // --> casting a file type
+         && this->isFileTypeCompatible(one); // --> preparsing file
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ bool ViewWorkspace::addPathString(const QString &one)
 ///
 bool ViewWorkspace::hasPathTypeAssumed(const QString & /*one*/)
 {
-    return true;
+  return true;
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ bool ViewWorkspace::hasPathTypeAssumed(const QString & /*one*/)
 ///
 bool ViewWorkspace::isFileTypeCompatible(const QString & /*one*/)
 {
-    return true;
+  return true;
 }
 ViewPathList *ViewWorkspace::getPathList() const { return files_; }
 //

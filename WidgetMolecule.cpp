@@ -61,6 +61,14 @@ void WidgetMolecule::clearAll()
 ///////////////////////////////////////////////////////////////////////
 /// Dispatch updating:
 ///
+void WidgetMolecule::setReadOnly(bool bSet)
+{
+  edit_->setReadOnly(bSet);
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// Dispatch updating:
+///
 void WidgetMolecule::on_changedBlockCount(int newBlockCount)
 {
 }

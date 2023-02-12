@@ -89,6 +89,7 @@ public:
   bool ExportPixPostScript(Path);
   //
   void updateAllViews();
+  void setReadOnly(bool /* bSet */ = true);
 
 protected:
 private:
