@@ -18,7 +18,7 @@ void EditMolecule::setReadOnly(bool bRO)
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-vtkIdType EditMolecule::readAtoms(vtkMolecule *pMol)
+vtkIdType EditMolecule::readAtoms(Molecule *pMol)
 {
   pMol->Initialize();
   // editSource_->
@@ -27,7 +27,14 @@ vtkIdType EditMolecule::readAtoms(vtkMolecule *pMol)
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-void EditMolecule::resetMolecule(vtkMolecule *pMol)
+Molecule *EditMolecule::getMolecule() const
+{
+  return ptrMolecule_;
+}
+//
+///////////////////////////////////////////////////////////////////////////////
+//
+void EditMolecule::resetMolecule(Molecule *pMol)
 {
   if (pMol != ptrMolecule_)
   {
@@ -62,4 +69,12 @@ void EditMolecule::on_toolEditAtoms__triggered(void)
 {
   editSource_->setReadOnly(false);
   editSource_->setFocus();
+}
+//
+///////////////////////////////////////////////////////////////////////////////
+//
+void EditMolecule::on_toolEditTitle__triggered(void)
+{
+  lineTitle_->setReadOnly(false);
+  lineTitle_->setFocus();
 }

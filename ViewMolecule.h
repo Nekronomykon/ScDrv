@@ -18,6 +18,8 @@
 #include <vtkActor.h>
 #include <vtkLODActor.h>
 
+#include "Molecule.h"
+
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
 
@@ -53,7 +55,7 @@ public:
     void setProjectParallel(bool /* bResetCameraIfAlreadySetSo */ = false);
     void setProjectPerspective(bool /* bResetCameraIfAlreadySetSo */ = false);
 
-    void resetMolecule(vtkMolecule * /*pMol*/ = nullptr);
+    void resetMolecule(Molecule * /*pMol*/ = nullptr);
 
 private:
     bool isImageBackTransparent_ = true;

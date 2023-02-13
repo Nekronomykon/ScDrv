@@ -20,8 +20,9 @@
 #include "FileFormat.h"
 
 #include "TableElements.h"
-#include "WidgetMolecule.h"
 #include "EditSource.h"
+#include "WidgetMolecule.h"
+#include "WidgetStructure.h"
 
 class FrameDoc;
 
@@ -98,8 +99,9 @@ private:
   FileFormat format_;
   // GUI
   QPointer<TableElements> wTable_;
-  QPointer<WidgetMolecule> wMol_;
   QPointer<EditSource> wText_;
+  QPointer<WidgetMolecule> wMol_;
+  QPointer<WidgetStructure> wStruct_;
 };
 
 #endif //! Frame_Doc_h__

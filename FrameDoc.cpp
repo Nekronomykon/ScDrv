@@ -35,7 +35,7 @@ FileFormat FrameDoc::FormatForSuffix(const QString &sfx)
   FileFormat fmt_res;
   for (const FileFormat &fmt_one : AllFormats)
   {
-    if (sfx.compare(tr(fmt_one.mask_path_)))
+    if (sfx.compare(tr(fmt_one.suffix())))
       continue;
     fmt_res = fmt_one;
     break;
@@ -44,7 +44,8 @@ FileFormat FrameDoc::FormatForSuffix(const QString &sfx)
 }
 
 FrameDoc::FrameDoc(QWidget *parent)
-    : QTabWidget(parent), wTable_(new TableElements(this)), wMol_(new WidgetMolecule(this)), wText_(new EditSource(this))
+    : QTabWidget(parent), wTable_(new TableElements(this)), wText_(new EditSource(this)),
+      wMol_(new WidgetMolecule(this)), wStruct_(new WidgetStructure(this))
 {
   this->setDocumentMode(true);
   this->setTabPosition(QTabWidget::South);
@@ -53,8 +54,9 @@ FrameDoc::FrameDoc(QWidget *parent)
   this->setUsesScrollButtons(true);
   //
   this->addTab(wTable_, tr("Elements"));
-  this->addTab(wMol_, tr("Atoms"));
   this->addTab(wText_, tr("Comment"));
+  this->addTab(wMol_, tr("Atoms"));
+  this->addTab(wStruct_, tr("Structure"));
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -151,7 +153,7 @@ bool FrameDoc::ReadFileCML(Path a_path)
   vtkNew<vtkCMLMoleculeReader> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  WidgetMolecule::Molecule *pMol = wMol_->getMolecule();
+  Molecule *pMol = wMol_->getMolecule();
   assert(pMol != nullptr);
   // pMol->Initialize();
   pMol->DeepCopy(reader->GetOutput());
@@ -163,7 +165,7 @@ bool FrameDoc::ReadFilePDB(Path a_path)
   vtkNew<vtkPDBReader> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  WidgetMolecule::Molecule *pMol = wMol_->getMolecule();
+  Molecule *pMol = wMol_->getMolecule();
   assert(pMol != nullptr);
   // pMol->Initialize();
   pMol->DeepCopy(reader->GetOutput());
@@ -172,11 +174,11 @@ bool FrameDoc::ReadFilePDB(Path a_path)
 
 bool FrameDoc::ReadFileXYZ(Path a_path)
 {
-  vtkNew<vtkXYZMolReader> reader1;
+  // vtkNew<vtkXYZMolReader> reader1;
   vtkNew<vtkXYZMolReader2> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  WidgetMolecule::Molecule *pMol = wMol_->getMolecule();
+  Molecule *pMol = wMol_->getMolecule();
   assert(pMol != nullptr);
   // pMol->Initialize();
   pMol->DeepCopy(reader->GetOutput());
@@ -187,10 +189,10 @@ bool FrameDoc::ReadFileXYZ(Path a_path)
 bool FrameDoc::ReadFileCUBE(Path a_path)
 {
   vtkNew<vtkGaussianCubeReader> reader;
-  vtkNew<vtkGaussianCubeReader2> reader2;
+  // vtkNew<vtkGaussianCubeReader2> reader2;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  WidgetMolecule::Molecule *pMol = wMol_->getMolecule();
+  Molecule *pMol = wMol_->getMolecule();
   assert(pMol != nullptr);
   // pMol->Initialize();
   pMol->DeepCopy(reader->GetOutput());
@@ -239,7 +241,7 @@ bool FrameDoc::ExportPixJPEG(Path a_path)
   QMessageBox::information(this, tr("Export JPG to"), tr(a_path.c_str()));
 #endif
 
-  return this->getEditMolecule()->getView()->exportImageTo(saver, false);
+  return this->getEditMolecule()->getView()->exportImageTo(saver, false); // RGB instead of RGBA ???
 }
 
 bool FrameDoc::ExportPixPostScript(Path a_path)
@@ -256,6 +258,7 @@ bool FrameDoc::ExportPixPostScript(Path a_path)
 void FrameDoc::updateAllViews()
 {
   wMol_->showMolecule();
+  wStruct_->showMolecule();
 }
 //
 ///////////////////////////////////////////////////////////////////////

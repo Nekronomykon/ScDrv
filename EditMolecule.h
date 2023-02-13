@@ -11,7 +11,7 @@
 #include <QWidget>
 #include <QTextDocument>
 
-#include <vtkMolecule.h>
+#include "Molecule.h"
 
 #include "Elements.h"
 
@@ -23,25 +23,27 @@ class EditMolecule
     : public QWidget,
       private Ui_EditMolecule
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    explicit EditMolecule(QWidget * /*parent*/ = nullptr);
-    ~EditMolecule() override = default;
+  explicit EditMolecule(QWidget * /*parent*/ = nullptr);
+  ~EditMolecule() override = default;
 
-    void setReadOnly(bool /*bReadOnly*/ = true);
-    vtkIdType readAtoms(vtkMolecule * /*pMol*/);
+  void setReadOnly(bool /*bReadOnly*/ = true);
+  vtkIdType readAtoms(Molecule * /*pMol*/);
 
-    void resetMolecule(vtkMolecule * /*pMol*/ = nullptr);
-    void loadMolecule();
+  Molecule *getMolecule() const;
+  void resetMolecule(Molecule * /*pMol*/ = nullptr);
+  void loadMolecule();
 
-    QTextDocument *sourceAtoms() const;
+  QTextDocument *sourceAtoms() const;
 
 private slots:
-    void on_toolEditAtoms__triggered(void);
+  void on_toolEditAtoms__triggered(void);
+  void on_toolEditTitle__triggered(void);
 
 private:
-    vtkMolecule *ptrMolecule_ = nullptr;
+  Molecule *ptrMolecule_ = nullptr;
 };
 
 #endif // !Edit_Molecule_h__

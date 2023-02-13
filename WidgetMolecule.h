@@ -11,10 +11,7 @@
 #include <QPointer>
 #include <QSettings>
 
-#include <vtkNew.h>
-#include <vtkSmartPointer.h>
-
-#include <vtkMolecule.h>
+#include "Molecule.h"
 
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
@@ -22,19 +19,17 @@
 #include "EditMolecule.h"
 #include "ViewMolecule.h"
 
-typedef vtkNew<vtkMolecule> ANewMolecule;
 
 class WidgetMolecule
     : public QSplitter
 {
   Q_OBJECT
 public:
-  typedef vtkMolecule Molecule;
   //
   explicit WidgetMolecule(QWidget * /*parent*/ = nullptr);
   ~WidgetMolecule() override = default;
 
-  vtkMolecule *getMolecule() const { return molecule_; }
+  Molecule *getMolecule() const { return molecule_; }
 
   void readSettings(QSettings & /*src*/);
   void saveSettings(QSettings & /*src*/);
