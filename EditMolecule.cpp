@@ -1,5 +1,8 @@
 #include "EditMolecule.h"
 
+using namespace std;
+using namespace vtk;
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 EditMolecule::EditMolecule(QWidget *parent)

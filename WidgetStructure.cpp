@@ -1,5 +1,8 @@
 #include "WidgetStructure.h"
 
+using namespace vtk;
+using namespace std;
+
 namespace
 {
   static inline const char *keyState() { return "Structure Widget"; }

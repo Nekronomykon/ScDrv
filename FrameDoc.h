@@ -78,10 +78,11 @@ public:
   WidgetMolecule *editMolecule();
   WidgetMolecule *getEditMolecule() const;
   // reader functions
-  bool ReadFileCML(Path);
-  bool ReadFilePDB(Path);
-  bool ReadFileXYZ(Path);
-  bool ReadFileCUBE(Path);
+  bool ReadMoleculeCML(Path);
+  bool ReadMoleculePDB(Path);
+  bool ReadMoleculeXYZ(Path);
+  // export functions
+  bool ReadFieldCUBE(Path);
   // export functions
   bool ExportPixBMP(Path);
   bool ExportPixTIFF(Path);
@@ -95,6 +96,7 @@ public:
 protected:
 private:
   bool isModified_ = false;
+  bool bGuessBonds_ = true;
   Path path_;
   FileFormat format_;
   // GUI

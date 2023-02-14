@@ -30,10 +30,10 @@ public:
   ~EditMolecule() override = default;
 
   void setReadOnly(bool /*bReadOnly*/ = true);
-  vtkIdType readAtoms(Molecule * /*pMol*/);
+  vtkIdType readAtoms(vtk::Molecule * /*pMol*/);
 
-  Molecule *getMolecule() const;
-  void resetMolecule(Molecule * /*pMol*/ = nullptr);
+  vtk::Molecule *getMolecule() const;
+  void resetMolecule(vtk::Molecule * /*pMol*/ = nullptr);
   void loadMolecule();
 
   QTextDocument *sourceAtoms() const;
@@ -43,7 +43,7 @@ private slots:
   void on_toolEditTitle__triggered(void);
 
 private:
-  Molecule *ptrMolecule_ = nullptr;
+  vtk::Molecule *ptrMolecule_ = nullptr;
 };
 
 #endif // !Edit_Molecule_h__

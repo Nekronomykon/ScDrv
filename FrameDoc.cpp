@@ -13,12 +13,17 @@
 #include <vtkJPEGWriter.h>
 #include <vtkPostScriptWriter.h>
 
+#include "MakeBondsDist.h"
+
+using namespace vtk;
+using namespace std;
+
 const FrameDoc::AllFileFormats FrameDoc::AllFormats{
     // import
-    {"xyz", "XYZ atoms", &FrameDoc::ReadFileXYZ, nullptr},
-    {"cml", "Chemical Markup Language molecule", &FrameDoc::ReadFileCML, nullptr},
-    {"pdb", "PDB molecule", &FrameDoc::ReadFilePDB, nullptr},
-    {"cube", "CUBE molecular field", &FrameDoc::ReadFileCUBE, nullptr},
+    {"xyz", "XYZ atoms", &FrameDoc::ReadMoleculeXYZ, nullptr},
+    {"cml", "Chemical Markup Language molecule", &FrameDoc::ReadMoleculeCML, nullptr},
+    {"pdb", "PDB molecule", &FrameDoc::ReadMoleculePDB, nullptr},
+    {"cube", "CUBE molecular field", &FrameDoc::ReadFieldCUBE, nullptr},
     // export
     {"bmp", "Bitmap file", nullptr, &FrameDoc::ExportPixBMP},
     {"tiff", "Tagged image file", nullptr, &FrameDoc::ExportPixTIFF},
@@ -148,54 +153,94 @@ void FrameDoc::saveSettings(QSettings &src)
     wMol_->saveSettings(src);
 }
 
-bool FrameDoc::ReadFileCML(Path a_path)
+bool FrameDoc::ReadMoleculeCML(Path a_path)
 {
   vtkNew<vtkCMLMoleculeReader> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  Molecule *pMol = wMol_->getMolecule();
+  vtk::Molecule *pMol = wMol_->getMolecule();
   assert(pMol != nullptr);
   // pMol->Initialize();
-  pMol->DeepCopy(reader->GetOutput());
+  if (bGuessBonds_)
+  {
+    ANewMkBondsDist mkbonds;
+    mkbonds->SetInputData(reader->GetOutput());
+    mkbonds->Update();
+    pMol->DeepCopy(mkbonds->GetOutput());
+  }
+  else
+  {
+    pMol->DeepCopy(reader->GetOutput());
+  }
   return bool(pMol->GetNumberOfAtoms() > 0);
 }
 
-bool FrameDoc::ReadFilePDB(Path a_path)
+bool FrameDoc::ReadMoleculePDB(Path a_path)
 {
   vtkNew<vtkPDBReader> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  Molecule *pMol = wMol_->getMolecule();
+  vtk::Molecule *pMol = wMol_->getMolecule();
   assert(pMol != nullptr);
   // pMol->Initialize();
-  pMol->DeepCopy(reader->GetOutput());
+  if (bGuessBonds_)
+  {
+    ANewMkBondsDist mkbonds;
+    mkbonds->SetInputData(reader->GetOutput());
+    mkbonds->Update();
+    pMol->DeepCopy(mkbonds->GetOutput());
+  }
+  else
+  {
+    pMol->DeepCopy(reader->GetOutput());
+  }
   return bool(pMol->GetNumberOfAtoms() > 0);
 }
 
-bool FrameDoc::ReadFileXYZ(Path a_path)
+bool FrameDoc::ReadMoleculeXYZ(Path a_path)
 {
   // vtkNew<vtkXYZMolReader> reader1;
   vtkNew<vtkXYZMolReader2> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  Molecule *pMol = wMol_->getMolecule();
+  vtk::Molecule *pMol = wMol_->getMolecule();
   assert(pMol != nullptr);
   // pMol->Initialize();
-  pMol->DeepCopy(reader->GetOutput());
+  if (bGuessBonds_)
+  {
+    ANewMkBondsDist mkbonds;
+    mkbonds->SetInputData(reader->GetOutput());
+    mkbonds->Update();
+    pMol->DeepCopy(mkbonds->GetOutput());
+  }
+  else
+  {
+    pMol->DeepCopy(reader->GetOutput());
+  }
   this->updateAllViews();
   return bool(pMol->GetNumberOfAtoms() > 0);
 }
 
-bool FrameDoc::ReadFileCUBE(Path a_path)
+bool FrameDoc::ReadFieldCUBE(Path a_path)
 {
   vtkNew<vtkGaussianCubeReader> reader;
   // vtkNew<vtkGaussianCubeReader2> reader2;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  Molecule *pMol = wMol_->getMolecule();
+  vtk::Molecule *pMol = wMol_->getMolecule();
   assert(pMol != nullptr);
   // pMol->Initialize();
-  pMol->DeepCopy(reader->GetOutput());
+  if (bGuessBonds_)
+  {
+    ANewMkBondsDist mkbonds;
+    mkbonds->SetInputData(reader->GetOutput());
+    mkbonds->Update();
+    pMol->DeepCopy(mkbonds->GetOutput());
+  }
+  else
+  {
+    pMol->DeepCopy(reader->GetOutput());
+  }
   return bool(pMol->GetNumberOfAtoms() > 0);
 }
 

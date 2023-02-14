@@ -29,7 +29,7 @@ public:
   explicit WidgetMolecule(QWidget * /*parent*/ = nullptr);
   ~WidgetMolecule() override = default;
 
-  Molecule *getMolecule() const { return molecule_; }
+  vtk::Molecule *getMolecule() const { return molecule_; }
 
   void readSettings(QSettings & /*src*/);
   void saveSettings(QSettings & /*src*/);

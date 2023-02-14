@@ -11,11 +11,11 @@
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
 
-
-typedef vtkMolecule Molecule;
-
-
-typedef vtkNew<Molecule>          ANewMolecule;
-typedef vtkSmartPointer<Molecule> AMolecule;
+namespace vtk
+{
+  typedef vtkMolecule Molecule;
+}; // namespace vtk
+typedef vtkNew<vtk::Molecule> ANewMolecule;
+typedef vtkSmartPointer<vtk::Molecule> AMolecule;
 
 #endif // !Molecule_h__

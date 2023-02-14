@@ -55,7 +55,7 @@ public:
     void setProjectParallel(bool /* bResetCameraIfAlreadySetSo */ = false);
     void setProjectPerspective(bool /* bResetCameraIfAlreadySetSo */ = false);
 
-    void resetMolecule(Molecule * /*pMol*/ = nullptr);
+    void resetMolecule(vtk::Molecule * /*pMol*/ = nullptr);
 
 private:
     bool isImageBackTransparent_ = true;
