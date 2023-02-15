@@ -90,6 +90,9 @@ private slots:
   //
   void on_changedClipboardData(void);
 
+  /* [Help] menu */
+  void on_actionAbout__triggered(void);
+  void on_actionAboutQt__triggered(void);
   /* [File] menu */
   void on_actionNew__triggered(void);
   void on_actionNewWindow__triggered(void);
@@ -103,9 +106,10 @@ private slots:
   void on_actionProperties__triggered(void);
   /* [Edit] menu */
   void on_actionClearAll__triggered(void);
-  /* [Help] menu */
-  void on_actionAbout__triggered(void);
-  void on_actionAboutQt__triggered(void);
+  /* [Project] menu */
+  void on_actionProjectOrthogonal__triggered(void);
+  void on_actionProjectPerspective__triggered(void);
+  void on_actionProjectReset__triggered(void);
 };
 
 #endif //! Frame_Top_h__

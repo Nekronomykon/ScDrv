@@ -52,10 +52,10 @@ public:
 
     bool exportImageTo(vtkImageWriter * /*pIW*/, bool /*bAlpha*/ = true);
 
-    void setProjectParallel(bool /* bResetCameraIfAlreadySetSo */ = false);
-    void setProjectPerspective(bool /* bResetCameraIfAlreadySetSo */ = false);
+    ViewMolecule* setProjectParallel(bool /* bResetCameraIfAlreadySetSo */ = false);
+    ViewMolecule* setProjectPerspective(bool /* bResetCameraIfAlreadySetSo */ = false);
 
-    void resetMolecule(vtk::Molecule * /*pMol*/ = nullptr);
+    ViewMolecule* resetMolecule(vtk::Molecule * /*pMol*/ = nullptr);
 
 private:
     bool isImageBackTransparent_ = true;

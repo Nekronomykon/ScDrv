@@ -122,7 +122,7 @@ bool ViewMolecule::exportImageTo(vtkImageWriter *pIW, bool bAlpha)
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-void ViewMolecule::setProjectParallel(bool bReset)
+ViewMolecule* ViewMolecule::setProjectParallel(bool bReset)
 {
   vtkRenderWindow *pRW = this->renderWindow();
   vtkRenderer *pRen = this->getMoleculeRenderer();
@@ -135,11 +135,12 @@ void ViewMolecule::setProjectParallel(bool bReset)
       pRen->ResetCamera();
   }
   pRW->Modified();
+  return this;
 }
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-void ViewMolecule::setProjectPerspective(bool bReset)
+ViewMolecule* ViewMolecule::setProjectPerspective(bool bReset)
 {
   vtkRenderWindow *pRW = this->renderWindow();
   vtkRenderer *pRen = this->getMoleculeRenderer();
@@ -152,17 +153,19 @@ void ViewMolecule::setProjectPerspective(bool bReset)
       pRen->ResetCamera();
   }
   pRW->Modified();
+  return this;
 }
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-void ViewMolecule::resetMolecule(vtkMolecule *pMol)
+ViewMolecule* ViewMolecule::resetMolecule(vtkMolecule *pMol)
 {
   vtkRenderWindow *pRW = this->renderWindow();
   if (pMol)
     mapMol_->SetInputData(pMol);
   mapMol_->Update();
   pRW->Modified();
+  return this;
 }
 //
 ///////////////////////////////////////////////////////////////////////////////

@@ -23,6 +23,8 @@ void EditMolecule::setReadOnly(bool bRO)
 //
 vtkIdType EditMolecule::readAtoms(Molecule *pMol)
 {
+  ANewMolecule new_mol;
+  // QTextCursor
   pMol->Initialize();
   // editSource_->
   return pMol->GetNumberOfAtoms();
@@ -43,22 +45,27 @@ void EditMolecule::resetMolecule(Molecule *pMol)
   {
     ptrMolecule_ = pMol;
   } // read data from ptrMolecule_
-    // or make them default if ptrMolecule_ == nullptr
+  // or make them default if ptrMolecule_ == nullptr
+  this->loadMolecule();
 }
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
 void EditMolecule::loadMolecule()
 {
-  QPointer<QTextDocument> pDoc(new QTextDocument);
   editSource_->clear();
-  int nAtoms = (!ptrMolecule_) ? 0 : ptrMolecule_->GetNumberOfAtoms();
-  for(int j = 0; j < nAtoms; ++j)
+  if (!ptrMolecule_)
+    return;
+
+  int nAtoms = ptrMolecule_->GetNumberOfAtoms();
+  QPointer<QTextDocument> pDoc(new QTextDocument);
+
+  for (int j = 0; j < nAtoms; ++j)
   {
-    QString strAtom;
+    QString strAtom(tr("  Atom %1: \n").arg(j+1) );
 
     strAtom += '\n';
-    editSource_->appendPlainText(strAtom);
+    editSource_->appendPlainText(strAtom.trimmed());
   }
 }
 QTextDocument *EditMolecule::sourceAtoms() const

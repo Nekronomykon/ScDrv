@@ -19,6 +19,8 @@
 #include <vtkVersion.h>
 #include <vtkNamedColors.h>
 
+#include "ViewMolecule.h"
+
 namespace
 {
   ///////////////////////////////////////////////////////////////////////
@@ -214,10 +216,10 @@ bool FrameTop::queryDataSaved()
   if (!frameDoc_->isModified())
     return true;
   QString query(tr("The document "));
-  if (frameDoc_->hasPath())
+  if (frameDoc_->HasPath())
   {
     query += tr("under the path:\n");
-    query += frameDoc_->getPath().c_str();
+    query += frameDoc_->GetPath().c_str();
     query += '\n';
   }
   query += tr("is modified\nDo you want to save the changes?");
@@ -347,7 +349,7 @@ FrameTop *FrameTop::setupActions(void)
   actionSaveAs_->setShortcuts(QKeySequence::SaveAs);
   actionSaveAs_->setStatusTip(tr("Save the document under a new name"));
 
-  const QIcon iconClone = QIcon::fromTheme("document-send"/*, QIcon(":/images/Clone.png") */);
+  const QIcon iconClone = QIcon::fromTheme("document-send" /*, QIcon(":/images/Clone.png") */);
   actionClone_->setIcon(iconClone);
   actionClone_->setStatusTip(tr("Detach the current content from the initial document"));
 
@@ -619,7 +621,7 @@ void FrameTop::on_activatedPathIndex(const QModelIndex &idx)
     return;
   //
   frameDoc_->clearAll(false);
-  frameDoc_->resetPath();
+  frameDoc_->ResetPath();
   //
   if (!pathNew.compare(ModelPathList::keyNewFile()))
     return;
@@ -630,7 +632,7 @@ void FrameTop::on_activatedPathIndex(const QModelIndex &idx)
   Path path_to_read = fi.filesystemAbsoluteFilePath();
   if (fmt.isValidFormat() && fmt.hasRead() && this->queryDataSaved() && fmt.ReadTo(path_to_read, frameDoc_))
   {
-    frameDoc_->resetPath(path_to_read);
+    frameDoc_->ResetPath(path_to_read);
     frameDoc_->resetFormat(fmt);
     frameDoc_->setModified(false);
   }
@@ -784,7 +786,7 @@ void FrameTop::on_actionNew__triggered(void)
   if (!this->queryDataSaved())
     return;
   frameDoc_->clearAll();
-  frameDoc_->resetPath();
+  frameDoc_->ResetPath();
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -795,9 +797,9 @@ void FrameTop::on_actionOpen__triggered(void)
   QFileDialog::Options opts_open = QFileDialog::QFileDialog::DontUseNativeDialog |
                                    QFileDialog::DontUseCustomDirectoryIcons;
   QString name_dir = QDir::currentPath();
-  if (frameDoc_->hasPath())
+  if (frameDoc_->HasPath())
   {
-    QFileInfo info(tr(frameDoc_->getPath().c_str()));
+    QFileInfo info(frameDoc_->GetPath());
     name_dir = info.path();
   }
   QString caption(tr("Open file(s)"));
@@ -829,9 +831,9 @@ void FrameTop::on_actionSaveAs__triggered(void)
   QFileDialog::Options opts_open = QFileDialog::QFileDialog::DontUseNativeDialog |
                                    QFileDialog::DontUseCustomDirectoryIcons;
   QString name_dir = QDir::currentPath();
-  if (frameDoc_->hasPath())
+  if (frameDoc_->HasPath())
   {
-    QFileInfo finfo(tr(frameDoc_->getPath().c_str()));
+    QFileInfo finfo(frameDoc_->GetPath());
     name_dir = finfo.path();
   }
   QString caption(tr("Save file as:"));
@@ -855,7 +857,7 @@ void FrameTop::on_actionSaveAs__triggered(void)
   if (fmt.isValidFormat() && fmt.hasSave() && fmt.hasRead() &&
       fmt.SaveTo(frameDoc_, path_to_save))
   {
-    frameDoc_->resetPath(path_to_save);
+    frameDoc_->ResetPath(path_to_save);
     frameDoc_->resetFormat(fmt);
     frameDoc_->setModified(false);
   }
@@ -870,9 +872,9 @@ void FrameTop::on_actionExport__triggered(void)
   QFileDialog::Options opts_open = QFileDialog::QFileDialog::DontUseNativeDialog |
                                    QFileDialog::DontUseCustomDirectoryIcons;
   QString name_dir = QDir::currentPath();
-  if (frameDoc_->hasPath())
+  if (frameDoc_->HasPath())
   {
-    QFileInfo finfo(frameDoc_->getPath());
+    QFileInfo finfo(frameDoc_->GetPath());
     name_dir = finfo.absoluteFilePath();
   }
   QString caption(tr("Export to file:"));
@@ -899,17 +901,17 @@ void FrameTop::on_actionExport__triggered(void)
 }
 //
 ///////////////////////////////////////////////////////////////////////
-/// \brief FrameBrowser::on_actionProperties__triggered
+/// \brief FrameTop::on_actionProperties__triggered
 ///
 void FrameTop::on_actionProperties__triggered(void)
 {
-  if (!frameDoc_->hasPath() && frameDoc_->isModified())
+  if (!frameDoc_->HasPath() && frameDoc_->isModified())
   {
     return;
   } // no sense to characterize a nonexistant file..
 
   // ..but if the path is set...
-  DialogFileProperties dlgProperties(frameDoc_->getPath(), this);
+  DialogFileProperties dlgProperties(frameDoc_->GetPath(), this);
 
   int kRes = dlgProperties.exec();
   if (kRes == QDialog::Accepted)
@@ -936,7 +938,7 @@ void FrameTop::on_actionClone__triggered(void)
 {
   workspace_->clearPathList();
   frameDoc_->setModified(true);
-  frameDoc_->resetPath();
+  frameDoc_->ResetPath();
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -947,4 +949,47 @@ void FrameTop::on_actionClose__triggered(void)
   this->close();
 }
 //
+//////////////////////////////////////////////////////////////////////
+/// \brief FrameTop::on_actionProjectOrthogonal__triggered
+///
+void FrameTop::on_actionProjectOrthogonal__triggered(void)
+{
+  auto *pWMol = frameDoc_->editMolecule();
+  assert(pWMol);
+  ViewMolecule *pMol = pWMol->getView();
+  assert(pMol);
+  pMol->setProjectParallel();
+  pMol->resetMolecule();
+  // this->updateUi();
+}
+//
+//////////////////////////////////////////////////////////////////////
+/// \brief FrameTop::on_actionProjectPerspective__triggered
+///
+void FrameTop::on_actionProjectPerspective__triggered(void)
+{
+  auto *pWMol = frameDoc_->editMolecule();
+  assert(pWMol);
+  ViewMolecule *pMol = pWMol->getView();
+  assert(pMol);
+  pMol->setProjectPerspective();
+  pMol->resetMolecule();
+  // this->updateUi();
+}
+//
+//////////////////////////////////////////////////////////////////////
+/// \brief FrameTop::on_actionProjectReset__triggered
+///
+void FrameTop::on_actionProjectReset__triggered(void)
+{
+  auto *pWMol = frameDoc_->editMolecule();
+  assert(pWMol);
+  ViewMolecule *pMol = pWMol->getView();
+  assert(pMol);
+  pMol->getMoleculeRenderer()->ResetCamera(); // ->ResetCamera();
+  pMol->resetMolecule();
+  // this->updateUi();
+}
+//
+///////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////

@@ -34,8 +34,8 @@ BuildMolecule::BuildMolecule(int nOuts, int nIns)
 {
   // by default assume filters have one input and one output
   // subclasses that deviate should modify this setting
-  this->SetNumberOfInputPorts(nIns);
   this->SetNumberOfOutputPorts(nOuts);
+  this->SetNumberOfInputPorts(nIns);
 }
 
 //------------------------------------------------------------------------------

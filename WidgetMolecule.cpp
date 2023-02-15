@@ -1,5 +1,7 @@
 #include "WidgetMolecule.h"
 
+#include <vtkRenderWindow.h>
+
 #include "EditSource.h"
 
 namespace
@@ -48,9 +50,14 @@ void WidgetMolecule::saveSettings(QSettings &src)
 ///
 void WidgetMolecule::showMolecule()
 {
-  view_->resetMolecule();
   edit_->resetMolecule();
+  view_->resetMolecule();
+  view_->renderWindow()->Render();
 }
+//
+///////////////////////////////////////////////////////////////////////
+/// Dispatch updating:
+///
 void WidgetMolecule::clearAll()
 {
   ANewMolecule mol;

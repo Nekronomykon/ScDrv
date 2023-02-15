@@ -152,26 +152,27 @@ void FrameDoc::saveSettings(QSettings &src)
   if (wMol_)
     wMol_->saveSettings(src);
 }
-
+//
+///////////////////////////////////////////////////////////////////////
+/// access to the only molecule object member:
+///
+vtk::Molecule *FrameDoc::getMolecule() const
+{
+  return wMol_->getMolecule();
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// reads from CML format: both atoms and bonds:
+///
 bool FrameDoc::ReadMoleculeCML(Path a_path)
 {
   vtkNew<vtkCMLMoleculeReader> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  vtk::Molecule *pMol = wMol_->getMolecule();
+  vtk::Molecule *pMol = this->getMolecule();
   assert(pMol != nullptr);
   // pMol->Initialize();
-  if (bGuessBonds_)
-  {
-    ANewMkBondsDist mkbonds;
-    mkbonds->SetInputData(reader->GetOutput());
-    mkbonds->Update();
-    pMol->DeepCopy(mkbonds->GetOutput());
-  }
-  else
-  {
-    pMol->DeepCopy(reader->GetOutput());
-  }
+  pMol->DeepCopy(reader->GetOutput());
   return bool(pMol->GetNumberOfAtoms() > 0);
 }
 
@@ -180,7 +181,7 @@ bool FrameDoc::ReadMoleculePDB(Path a_path)
   vtkNew<vtkPDBReader> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  vtk::Molecule *pMol = wMol_->getMolecule();
+  vtk::Molecule *pMol = this->getMolecule();
   assert(pMol != nullptr);
   // pMol->Initialize();
   if (bGuessBonds_)
@@ -203,7 +204,7 @@ bool FrameDoc::ReadMoleculeXYZ(Path a_path)
   vtkNew<vtkXYZMolReader2> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  vtk::Molecule *pMol = wMol_->getMolecule();
+  vtk::Molecule *pMol = this->getMolecule();
   assert(pMol != nullptr);
   // pMol->Initialize();
   if (bGuessBonds_)
@@ -227,7 +228,7 @@ bool FrameDoc::ReadFieldCUBE(Path a_path)
   // vtkNew<vtkGaussianCubeReader2> reader2;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  vtk::Molecule *pMol = wMol_->getMolecule();
+  vtk::Molecule *pMol = this->getMolecule();
   assert(pMol != nullptr);
   // pMol->Initialize();
   if (bGuessBonds_)
@@ -350,28 +351,6 @@ WidgetMolecule *FrameDoc::editMolecule()
 WidgetMolecule *FrameDoc::getEditMolecule() const
 {
   return wMol_;
-}
-//
-///////////////////////////////////////////////////////////////////////
-//
-bool FrameDoc::hasPath() const
-{
-  return path_.empty() ? false : true;
-}
-//
-///////////////////////////////////////////////////////////////////////
-//
-const Path &FrameDoc::getPath() const
-{
-  return path_;
-}
-//
-///////////////////////////////////////////////////////////////////////
-//
-Path FrameDoc::resetPath(Path pathNew)
-{
-  std::swap(pathNew, path_);
-  return pathNew;
 }
 //
 ///////////////////////////////////////////////////////////////////////

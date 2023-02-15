@@ -24,11 +24,14 @@
 #include "WidgetMolecule.h"
 #include "WidgetStructure.h"
 
+#include "ImplPathBound.h"
+
 class FrameDoc;
 
 typedef FileFormatFor<FrameDoc> FileFormat;
 
-class FrameDoc : public QTabWidget
+class FrameDoc : public QTabWidget,
+                 public ImplPathBound<FrameDoc>
 {
   Q_OBJECT
 
@@ -60,12 +63,6 @@ public:
   bool isModified() const;
   void setModified(bool /*bSet*/ = true);
   //
-  ///////////////////////////////////////////////////////////////////////////////
-  // Path operations
-  bool hasPath() const;
-  const Path &getPath() const;
-  Path resetPath(Path /* pathNew */ = Path() );
-  //
   bool hasFormat() const;
   FileFormat getFormat() const;
   FileFormat resetFormat(FileFormat /*fmt*/);
@@ -74,6 +71,8 @@ public:
   //
   void readSettings(QSettings & /*src*/);
   void saveSettings(QSettings & /*src*/);
+  //
+  vtk::Molecule* getMolecule() const;
   //
   WidgetMolecule *editMolecule();
   WidgetMolecule *getEditMolecule() const;
@@ -97,7 +96,7 @@ protected:
 private:
   bool isModified_ = false;
   bool bGuessBonds_ = true;
-  Path path_;
+  // Path path_;
   FileFormat format_;
   // GUI
   QPointer<TableElements> wTable_;
