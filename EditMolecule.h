@@ -36,7 +36,8 @@ public:
   void resetMolecule(vtk::Molecule * /*pMol*/ = nullptr);
   void loadMolecule();
 
-  QTextDocument *sourceAtoms() const;
+  EditSource *editSource() const { return editSource_; }
+  QTextDocument *getSource() const;
 
 private slots:
   void on_toolEditAtoms__triggered(void);

@@ -2,6 +2,9 @@
 
 #include <vtkRenderWindow.h>
 
+#include <QMessageBox>
+
+#include "ResetCursor.h"
 #include "EditSource.h"
 
 namespace
@@ -10,21 +13,23 @@ namespace
 }
 
 WidgetMolecule::WidgetMolecule(QWidget *parent)
-    : QSplitter(parent), edit_(new EditMolecule(this)), view_(new ViewMolecule(this))
+    : QSplitter(parent), editMol_(new EditMolecule(this)), view_(new ViewMolecule(this))
 {
   this->setOpaqueResize(false);
   //
   this->addWidget(view_);
-  this->addWidget(edit_);
+  this->addWidget(editMol_);
   //
   this->setCollapsible(this->indexOf(view_), false);
-  this->setCollapsible(this->indexOf(edit_), true);
+  this->setCollapsible(this->indexOf(editMol_), true);
   //
   view_->resetMolecule(molecule_);
-  edit_->resetMolecule(molecule_);
+  editMol_->resetMolecule(molecule_);
   //
-  QObject::connect(edit_->sourceAtoms(), &QTextDocument::blockCountChanged,
-                   this, &WidgetMolecule::on_changedBlockCount);
+  connect(editMol_->editSource(), &EditSource::blockCountChanged,
+          this, &WidgetMolecule::on_changedBlockCount);
+  connect(editMol_->editSource(), &EditSource::textChanged,
+          this, &WidgetMolecule::on_changedSource);
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -50,7 +55,7 @@ void WidgetMolecule::saveSettings(QSettings &src)
 ///
 void WidgetMolecule::showMolecule()
 {
-  edit_->resetMolecule();
+  editMol_->resetMolecule();
   view_->resetMolecule();
   view_->renderWindow()->Render();
 }
@@ -60,6 +65,7 @@ void WidgetMolecule::showMolecule()
 ///
 void WidgetMolecule::clearAll()
 {
+  ResetCursor rcc(Qt::WaitCursor);
   ANewMolecule mol;
   molecule_->DeepCopy(mol);
   this->showMolecule();
@@ -70,7 +76,34 @@ void WidgetMolecule::clearAll()
 ///
 void WidgetMolecule::setReadOnly(bool bSet)
 {
-  edit_->setReadOnly(bSet);
+  editMol_->setReadOnly(bSet);
+}
+//
+///////////////////////////////////////////////////////////////////////
+/// Dispatch updating:
+///
+void WidgetMolecule::updateMolecule()
+{
+  ResetCursor rcc(Qt::WaitCursor);
+  ANewMolecule mol_new;
+  QTextDocument *pDoc = this->getSource();
+  int nBlox = pDoc->blockCount();
+#ifdef QT_MESSAGE_BOX_DEBUG
+  QMessageBox::information(this, tr("Block count"), tr("Now Num of blox is %1").arg(nBlox));
+#endif //! QT_MESSAGE_BOX_DEBUG
+       // mol_new->SetNumberOfAtoms(molecule_->GetNumberOfAtoms());
+  QTextBlock block = pDoc->firstBlock();
+  int j = 0;
+  while (block.isValid())
+  {
+    QString content = block.text().trimmed();
+
+    vtkAtom atom = mol_new->AppendAtom();
+    ++j;
+    block = block.next();
+  }
+  // copy the parsed content: molecule
+  // molecule_->DeepCopy(new_mol);
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -78,6 +111,19 @@ void WidgetMolecule::setReadOnly(bool bSet)
 ///
 void WidgetMolecule::on_changedBlockCount(int newBlockCount)
 {
+#ifdef QT_MESSAGE_BOX_DEBUG
+  QMessageBox::information(this, tr("Block count"), tr("Changed to %1").arg(newBlockCount));
+#endif //! QT_MESSAGE_BOX_DEBUG
+  this->updateMolecule();
+}
+//
+///////////////////////////////////////////////////////////////////////
+///
+void WidgetMolecule::on_changedSource(void)
+{
+#ifdef QT_MESSAGE_BOX_DEBUG
+  QMessageBox::information(this, tr("Block count"), tr("Changed to %1").arg(editSource()->blockCount()));
+#endif //! QT_MESSAGE_BOX_DEBUG
 }
 //
 ///////////////////////////////////////////////////////////////////////

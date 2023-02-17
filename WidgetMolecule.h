@@ -10,6 +10,7 @@
 
 #include <QPointer>
 #include <QSettings>
+#include <QTextDocument>
 
 #include "Molecule.h"
 
@@ -18,7 +19,6 @@
 
 #include "EditMolecule.h"
 #include "ViewMolecule.h"
-
 
 class WidgetMolecule
     : public QSplitter
@@ -34,19 +34,23 @@ public:
   void readSettings(QSettings & /*src*/);
   void saveSettings(QSettings & /*src*/);
   //
-  EditMolecule *getEdit() const { return edit_; }
+  EditMolecule *editAtoms() const { return editMol_; }
+  EditSource *editSource() const { return editMol_->editSource(); }
+  QTextDocument *getSource() const { return editMol_->getSource(); }
   ViewMolecule *getView() const { return view_; }
   //
   void showMolecule();
   void clearAll();
   void setReadOnly(bool /* bSet */ = true);
+  void updateMolecule();
 
 private slots:
   void on_changedBlockCount(int /* newBlockCount */);
+  void on_changedSource(void);
 
 private:
   ANewMolecule molecule_;
-  QPointer<EditMolecule> edit_;
+  QPointer<EditMolecule> editMol_;
   QPointer<ViewMolecule> view_;
 };
 

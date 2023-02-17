@@ -166,6 +166,7 @@ vtk::Molecule *FrameDoc::getMolecule() const
 ///
 bool FrameDoc::ReadMoleculeCML(Path a_path)
 {
+  ResetCursor rcc(Qt::WaitCursor);
   vtkNew<vtkCMLMoleculeReader> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
@@ -178,6 +179,7 @@ bool FrameDoc::ReadMoleculeCML(Path a_path)
 
 bool FrameDoc::ReadMoleculePDB(Path a_path)
 {
+  ResetCursor rcc(Qt::WaitCursor);
   vtkNew<vtkPDBReader> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
@@ -200,7 +202,7 @@ bool FrameDoc::ReadMoleculePDB(Path a_path)
 
 bool FrameDoc::ReadMoleculeXYZ(Path a_path)
 {
-  // vtkNew<vtkXYZMolReader> reader1;
+  ResetCursor rcc(Qt::WaitCursor);
   vtkNew<vtkXYZMolReader2> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
@@ -224,6 +226,7 @@ bool FrameDoc::ReadMoleculeXYZ(Path a_path)
 
 bool FrameDoc::ReadFieldCUBE(Path a_path)
 {
+  ResetCursor rcc(Qt::WaitCursor);
   vtkNew<vtkGaussianCubeReader> reader;
   // vtkNew<vtkGaussianCubeReader2> reader2;
   reader->SetFileName(a_path.c_str());
@@ -247,18 +250,18 @@ bool FrameDoc::ReadFieldCUBE(Path a_path)
 
 bool FrameDoc::ExportPixBMP(Path a_path)
 {
+  ResetCursor rcc(Qt::WaitCursor);
   vtkNew<vtkBMPWriter> saver;
   saver->SetFileName(a_path.c_str());
-
-#ifndef QT_MESSAGE_BOX_DEBUG
+#ifdef QT_MESSAGE_BOX_DEBUG
   QMessageBox::information(this, tr("Export BMP to"), tr(a_path.c_str()));
-#endif
-
+#endif //!QT_MESSAGE_BOX_DEBUG
   return this->getEditMolecule()->getView()->exportImageTo(saver);
 }
 
 bool FrameDoc::ExportPixTIFF(Path a_path)
 {
+  ResetCursor rcc(Qt::WaitCursor);
   vtkNew<vtkTIFFWriter> saver;
   saver->SetFileName(a_path.c_str());
 #ifdef QT_MESSAGE_BOX_DEBUG
@@ -270,6 +273,7 @@ bool FrameDoc::ExportPixTIFF(Path a_path)
 
 bool FrameDoc::ExportPixPNG(Path a_path)
 {
+  ResetCursor rcc(Qt::WaitCursor);
   vtkNew<vtkPNGWriter> saver;
   saver->SetFileName(a_path.c_str());
 #ifdef QT_MESSAGE_BOX_DEBUG
@@ -281,6 +285,7 @@ bool FrameDoc::ExportPixPNG(Path a_path)
 
 bool FrameDoc::ExportPixJPEG(Path a_path)
 {
+  ResetCursor rcc(Qt::WaitCursor);
   vtkNew<vtkJPEGWriter> saver;
   saver->SetFileName(a_path.c_str());
 #ifdef QT_MESSAGE_BOX_DEBUG
@@ -292,6 +297,7 @@ bool FrameDoc::ExportPixJPEG(Path a_path)
 
 bool FrameDoc::ExportPixPostScript(Path a_path)
 {
+  ResetCursor rcc(Qt::WaitCursor);
   vtkNew<vtkPostScriptWriter> saver;
   saver->SetFileName(a_path.c_str());
 #ifdef QT_MESSAGE_BOX_DEBUG

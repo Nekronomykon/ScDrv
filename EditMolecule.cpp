@@ -68,7 +68,7 @@ void EditMolecule::loadMolecule()
     editSource_->appendPlainText(strAtom.trimmed());
   }
 }
-QTextDocument *EditMolecule::sourceAtoms() const
+QTextDocument *EditMolecule::getSource() const
 {
   return editSource_->document();
 }

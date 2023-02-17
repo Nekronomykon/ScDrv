@@ -25,11 +25,12 @@ class ResetCursor
 {
 public:
   explicit ResetCursor(const QCursor &);
+  explicit ResetCursor(Qt::CursorShape);
   ~ResetCursor();
 
 private:
-  ResetCursor();
-  ResetCursor(const ResetCursor &);
+  ResetCursor() = delete;
+  ResetCursor(const ResetCursor &) = delete;
 };
 
 #endif // !__Cursor_Helper_h__
