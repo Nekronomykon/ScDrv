@@ -8,16 +8,23 @@
 
 #include "BuildMolecule.h"
 
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
+// #include <vtkInformation.h>
+
 #include "ImplPathBound.h"
 
 namespace vtk
 {
-  class ReadMolecule : public BuildMolecule
+  class ReadMolecule : public BuildMolecule, public ImplPathBound<ReadMolecule>
   {
   public:
     static ReadMolecule *New();
     vtkTypeMacro(ReadMolecule, BuildMolecule);
     void PrintSelf(ostream &os, vtkIndent indent) override;
+    //
+    Molecule *GetOutput(void);
+    void SetOutput(Molecule * /* putmol */);
 
   protected:
     explicit ReadMolecule(int /*nOuts */ = 1, int /*nIns*/ = 0);

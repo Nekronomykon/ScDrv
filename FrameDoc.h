@@ -80,8 +80,10 @@ public:
   bool ReadMoleculeCML(Path);
   bool ReadMoleculePDB(Path);
   bool ReadMoleculeXYZ(Path);
-  // export functions
+  // import functions
   bool ReadFieldCUBE(Path);
+  bool ReadMoleculeWFN(Path);
+  bool ReadMoleculeWFX(Path);
   // export functions
   bool ExportPixBMP(Path);
   bool ExportPixTIFF(Path);

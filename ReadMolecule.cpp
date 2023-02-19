@@ -14,3 +14,15 @@ void ReadMolecule::PrintSelf(ostream &os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 }
+
+//------------------------------------------------------------------------------
+Molecule *ReadMolecule::GetOutput()
+{
+  return Molecule::SafeDownCast(this->GetOutputDataObject(0));
+}
+
+//------------------------------------------------------------------------------
+void ReadMolecule::SetOutput(Molecule *putmol)
+{
+  this->GetExecutive()->SetOutputData(0, putmol);
+}

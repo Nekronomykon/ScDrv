@@ -129,6 +129,8 @@ namespace vtk
   private:
     BuildMolecule(const BuildMolecule &) = delete;
     void operator=(const BuildMolecule &) = delete;
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    vtkIdType numAtoms_ = -1L;
   };
 
 } // namespace vtk

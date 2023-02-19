@@ -7,6 +7,10 @@
 #include <vtkXYZMolReader.h>
 #include <vtkXYZMolReader2.h>
 
+#include "ReadMoleculeWFN.h"
+#include "ReadMoleculeWFX.h"
+#include "ReadMoleculeXYZ.h"
+
 #include <vtkPNGWriter.h>
 #include <vtkTIFFWriter.h>
 #include <vtkBMPWriter.h>
@@ -20,10 +24,12 @@ using namespace std;
 
 const FrameDoc::AllFileFormats FrameDoc::AllFormats{
     // import
-    {"xyz", "XYZ atoms", &FrameDoc::ReadMoleculeXYZ, nullptr},
     {"cml", "Chemical Markup Language molecule", &FrameDoc::ReadMoleculeCML, nullptr},
-    {"pdb", "PDB molecule", &FrameDoc::ReadMoleculePDB, nullptr},
     {"cube", "CUBE molecular field", &FrameDoc::ReadFieldCUBE, nullptr},
+    {"pdb", "PDB molecule", &FrameDoc::ReadMoleculePDB, nullptr},
+    {"wfn", "Wavefunction", &FrameDoc::ReadMoleculeWFN, nullptr},
+    {"wfx", "Wavefunction Extended", &FrameDoc::ReadMoleculeWFX, nullptr},
+    {"xyz", "XMol XYZ atoms", &FrameDoc::ReadMoleculeXYZ, nullptr},
     // export
     {"bmp", "Bitmap file", nullptr, &FrameDoc::ExportPixBMP},
     {"tiff", "Tagged image file", nullptr, &FrameDoc::ExportPixTIFF},
@@ -174,17 +180,18 @@ bool FrameDoc::ReadMoleculeCML(Path a_path)
   assert(pMol != nullptr);
   // pMol->Initialize();
   pMol->DeepCopy(reader->GetOutput());
+  this->updateAllViews();
   return bool(pMol->GetNumberOfAtoms() > 0);
 }
 
 bool FrameDoc::ReadMoleculePDB(Path a_path)
 {
+  vtk::Molecule *pMol = this->getMolecule();
+  assert(pMol != nullptr);
   ResetCursor rcc(Qt::WaitCursor);
   vtkNew<vtkPDBReader> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  vtk::Molecule *pMol = this->getMolecule();
-  assert(pMol != nullptr);
   // pMol->Initialize();
   if (bGuessBonds_)
   {
@@ -197,12 +204,63 @@ bool FrameDoc::ReadMoleculePDB(Path a_path)
   {
     pMol->DeepCopy(reader->GetOutput());
   }
+  this->updateAllViews();
+  return bool(pMol->GetNumberOfAtoms() > 0);
+}
+
+bool FrameDoc::ReadMoleculeWFN(Path a_path)
+{
+  vtk::Molecule *pMol = this->getMolecule();
+  assert(pMol != nullptr);
+  ResetCursor rcc(Qt::WaitCursor);
+  vtkNew<vtk::ReadMoleculeWFN> reader;
+  reader->ResetPath(a_path);
+  reader->Update();
+  // pMol->Initialize();
+  if (bGuessBonds_)
+  {
+    ANewMkBondsDist mkbonds;
+    mkbonds->SetInputData(reader->GetOutput());
+    mkbonds->Update();
+    pMol->DeepCopy(mkbonds->GetOutput());
+  }
+  else
+  {
+    pMol->DeepCopy(reader->GetOutput());
+  }
+  this->updateAllViews();
+  return bool(pMol->GetNumberOfAtoms() > 0);
+}
+
+bool FrameDoc::ReadMoleculeWFX(Path a_path)
+{
+  vtk::Molecule *pMol = this->getMolecule();
+  assert(pMol != nullptr);
+  ResetCursor rcc(Qt::WaitCursor);
+  vtkNew<vtk::ReadMoleculeWFX> reader;
+  reader->ResetPath(a_path);
+  reader->Update();
+  // pMol->Initialize();
+  if (bGuessBonds_)
+  {
+    ANewMkBondsDist mkbonds;
+    mkbonds->SetInputData(reader->GetOutput());
+    mkbonds->Update();
+    pMol->DeepCopy(mkbonds->GetOutput());
+  }
+  else
+  {
+    pMol->DeepCopy(reader->GetOutput());
+  }
+  this->updateAllViews();
   return bool(pMol->GetNumberOfAtoms() > 0);
 }
 
 bool FrameDoc::ReadMoleculeXYZ(Path a_path)
 {
   ResetCursor rcc(Qt::WaitCursor);
+  vtkNew<vtk::ReadMoleculeXYZ> reader2;
+  reader2->ResetPath(a_path);
   vtkNew<vtkXYZMolReader2> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
@@ -245,6 +303,7 @@ bool FrameDoc::ReadFieldCUBE(Path a_path)
   {
     pMol->DeepCopy(reader->GetOutput());
   }
+  this->updateAllViews();
   return bool(pMol->GetNumberOfAtoms() > 0);
 }
 
@@ -255,7 +314,7 @@ bool FrameDoc::ExportPixBMP(Path a_path)
   saver->SetFileName(a_path.c_str());
 #ifdef QT_MESSAGE_BOX_DEBUG
   QMessageBox::information(this, tr("Export BMP to"), tr(a_path.c_str()));
-#endif //!QT_MESSAGE_BOX_DEBUG
+#endif //! QT_MESSAGE_BOX_DEBUG
   return this->getEditMolecule()->getView()->exportImageTo(saver);
 }
 
