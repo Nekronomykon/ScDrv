@@ -19,6 +19,8 @@ namespace vtk
     vtkTypeMacro(SaveMolecule, BuildMolecule);
     void PrintSelf(ostream &os, vtkIndent indent) override;
 
+    Molecule *GetInput();
+
   protected:
     explicit SaveMolecule(int /*nOuts */ = 0, int /*nIns*/ = 1);
     ~SaveMolecule() override = default;

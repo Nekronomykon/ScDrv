@@ -14,3 +14,9 @@ void SaveMolecule::PrintSelf(ostream &os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 }
+
+//------------------------------------------------------------------------------
+Molecule *SaveMolecule::GetInput()
+{
+  return Molecule::SafeDownCast(this->GetInput(0));
+}
