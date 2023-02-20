@@ -2,12 +2,13 @@
 
 #include <vtkInformation.h>
 #include <vtkInformationVector.h>
-#include <vtkMolecule.h>
 #include <vtkExecutive.h>
-#include "vtkObjectFactory.h"
-#include <vtkPeriodicTable.h>
+#include <vtkObjectFactory.h>
 #include <vtkStreamingDemandDrivenPipeline.h>
 #include <vtksys/FStream.hxx>
+
+#include "Molecule.h"
+#include "Elements.h"
 
 #include <cmath>
 #include <cstring>
@@ -27,9 +28,9 @@ ReadMoleculeXYZ::ReadMoleculeXYZ(void)
 
 //------------------------------------------------------------------------------
 int ReadMoleculeXYZ::RequestInformation(vtkInformation *vtkNotUsed(request),
-                                         vtkInformationVector **vtkNotUsed(inputVector), vtkInformationVector *outputVector)
+                                         vtkInformationVector **vtkNotUsed(inputVector), vtkInformationVector *outVector)
 {
-  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+  vtkInformation *outInfo = outVector->GetInformationObject(0);
 
    vtksys::ifstream fileInput( this->GetPath() );
 
@@ -97,10 +98,10 @@ int ReadMoleculeXYZ::RequestInformation(vtkInformation *vtkNotUsed(request),
 
 //------------------------------------------------------------------------------
 int ReadMoleculeXYZ::RequestData(
-    vtkInformation *, vtkInformationVector **, vtkInformationVector *outputVector)
+    vtkInformation *, vtkInformationVector **, vtkInformationVector *outVector)
 {
-  vtkInformation *outInfo = outputVector->GetInformationObject(0);
-  vtkMolecule *output = vtkMolecule::SafeDownCast(vtkDataObject::GetData(outputVector));
+  vtkInformation *outInfo = outVector->GetInformationObject(0);
+  vtkMolecule *output = vtkMolecule::SafeDownCast(vtkDataObject::GetData(outVector));
 
   if (!output)
   {
@@ -170,7 +171,8 @@ int ReadMoleculeXYZ::RequestData(
   // construct vtkMolecule
   output->Initialize();
 
-  vtkNew<vtkPeriodicTable> pT;
+  /// vtkNew<vtkPeriodicTable> pT;
+  vtk::Elements elements;
   for (int i = 0; i < nAtoms; i++)
   {
     char atomType[16];
@@ -183,7 +185,7 @@ int ReadMoleculeXYZ::RequestData(
       fileInput.close();
       return 0;
     }
-    output->AppendAtom(pT->GetAtomicNumber(atomType), x, y, z);
+    output->AppendAtom(vtk::Elements::SymbolToNumber(atomType), x, y, z);
   }
   fileInput.close();
 

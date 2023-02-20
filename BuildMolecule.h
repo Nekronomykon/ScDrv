@@ -103,6 +103,9 @@ namespace vtk
     void AddInputData(int, vtkDataObject *);
     ///@}
 
+    vtkIdType GetNumberOfAtoms() const;
+    vtkIdType ResetNumberOfAtoms(vtkIdType nAtoms);
+
   protected:
     explicit BuildMolecule(int /*nOuts */ = 1, int /*nIns*/ = 1);
     ~BuildMolecule() override = default;

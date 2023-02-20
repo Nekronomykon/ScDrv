@@ -18,10 +18,11 @@
 #include <vtkCommand.h>
 #include <vtkInformation.h>
 #include <vtkInformationVector.h>
-#include <Molecule.h>
 #include <vtkObjectFactory.h>
 #include <vtkStreamingDemandDrivenPipeline.h>
 #include <vtkTrivialProducer.h>
+
+#include "Molecule.h"
 
 using namespace std;
 using namespace vtk;
@@ -113,14 +114,16 @@ vtkTypeBool BuildMolecule::ProcessRequest(
 int BuildMolecule::FillOutputPortInformation(int vtkNotUsed(port), vtkInformation *info)
 {
   // now add our info
-  info->Set(vtkDataObject::DATA_TYPE_NAME(), "Molecule");
+  info->Set(vtkDataObject::DATA_TYPE_NAME(), "vtkMolecule" // Molecule::GetName() || "Molecule"
+  );
   return 1;
 }
 
 //------------------------------------------------------------------------------
 int BuildMolecule::FillInputPortInformation(int vtkNotUsed(port), vtkInformation *info)
 {
-  info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "Molecule");
+  info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkMolecule" // Molecule::GetName() || "Molecule"
+  );
   return 1;
 }
 
@@ -184,4 +187,19 @@ void BuildMolecule::AddInputData(int index, vtkDataObject *input)
 {
 
   this->AddInputDataInternal(index, input);
+}
+
+vtkIdType BuildMolecule::GetNumberOfAtoms() const
+{
+  return numAtoms_;
+}
+
+vtkIdType BuildMolecule::ResetNumberOfAtoms(vtkIdType nAtoms)
+{
+  if (numAtoms_ != nAtoms)
+  {
+    std::swap(numAtoms_, nAtoms);
+    // this->OnChangeNumberOfAtoms(nAtoms, numAtoms_); // (prev, new);
+  }
+  return nAtoms; // prev
 }

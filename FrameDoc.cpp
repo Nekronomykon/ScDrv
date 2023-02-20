@@ -173,11 +173,11 @@ vtk::Molecule *FrameDoc::getMolecule() const
 bool FrameDoc::ReadMoleculeCML(Path a_path)
 {
   ResetCursor rcc(Qt::WaitCursor);
+  vtk::Molecule *pMol = this->getMolecule();
+  assert(pMol);
   vtkNew<vtkCMLMoleculeReader> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  vtk::Molecule *pMol = this->getMolecule();
-  assert(pMol != nullptr);
   // pMol->Initialize();
   pMol->DeepCopy(reader->GetOutput());
   this->updateAllViews();
@@ -186,9 +186,9 @@ bool FrameDoc::ReadMoleculeCML(Path a_path)
 
 bool FrameDoc::ReadMoleculePDB(Path a_path)
 {
-  vtk::Molecule *pMol = this->getMolecule();
-  assert(pMol != nullptr);
   ResetCursor rcc(Qt::WaitCursor);
+  vtk::Molecule *pMol = this->getMolecule();
+  assert(pMol);
   vtkNew<vtkPDBReader> reader;
   reader->SetFileName(a_path.c_str());
   reader->Update();
@@ -210,9 +210,9 @@ bool FrameDoc::ReadMoleculePDB(Path a_path)
 
 bool FrameDoc::ReadMoleculeWFN(Path a_path)
 {
-  vtk::Molecule *pMol = this->getMolecule();
-  assert(pMol != nullptr);
   ResetCursor rcc(Qt::WaitCursor);
+  vtk::Molecule *pMol = this->getMolecule();
+  assert(pMol);
   vtkNew<vtk::ReadMoleculeWFN> reader;
   reader->ResetPath(a_path);
   reader->Update();
@@ -234,9 +234,9 @@ bool FrameDoc::ReadMoleculeWFN(Path a_path)
 
 bool FrameDoc::ReadMoleculeWFX(Path a_path)
 {
-  vtk::Molecule *pMol = this->getMolecule();
-  assert(pMol != nullptr);
   ResetCursor rcc(Qt::WaitCursor);
+  vtk::Molecule *pMol = this->getMolecule();
+  assert(pMol);
   vtkNew<vtk::ReadMoleculeWFX> reader;
   reader->ResetPath(a_path);
   reader->Update();
@@ -259,13 +259,11 @@ bool FrameDoc::ReadMoleculeWFX(Path a_path)
 bool FrameDoc::ReadMoleculeXYZ(Path a_path)
 {
   ResetCursor rcc(Qt::WaitCursor);
-  vtkNew<vtk::ReadMoleculeXYZ> reader2;
-  reader2->ResetPath(a_path);
-  vtkNew<vtkXYZMolReader2> reader;
-  reader->SetFileName(a_path.c_str());
-  reader->Update();
   vtk::Molecule *pMol = this->getMolecule();
-  assert(pMol != nullptr);
+  assert(pMol);
+  vtkNew<vtk::ReadMoleculeXYZ> reader;
+  reader->ResetPath(a_path);
+  reader->Update();
   // pMol->Initialize();
   if (bGuessBonds_)
   {
@@ -285,12 +283,12 @@ bool FrameDoc::ReadMoleculeXYZ(Path a_path)
 bool FrameDoc::ReadFieldCUBE(Path a_path)
 {
   ResetCursor rcc(Qt::WaitCursor);
+  vtk::Molecule *pMol = this->getMolecule();
+  assert(pMol);
   vtkNew<vtkGaussianCubeReader> reader;
-  // vtkNew<vtkGaussianCubeReader2> reader2;
+  vtkNew<vtkGaussianCubeReader2> reader2;
   reader->SetFileName(a_path.c_str());
   reader->Update();
-  vtk::Molecule *pMol = this->getMolecule();
-  assert(pMol != nullptr);
   // pMol->Initialize();
   if (bGuessBonds_)
   {

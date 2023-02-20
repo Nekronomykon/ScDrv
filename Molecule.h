@@ -15,6 +15,7 @@ namespace vtk
 {
   typedef vtkMolecule Molecule;
 }; // namespace vtk
+
 typedef vtkNew<vtk::Molecule> ANewMolecule;
 typedef vtkSmartPointer<vtk::Molecule> AMolecule;
 
