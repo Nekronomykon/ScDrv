@@ -26,18 +26,19 @@ ReadMoleculeXYZ::ReadMoleculeXYZ(void)
 }
 
 //------------------------------------------------------------------------------
-int ReaadMoleculeXYZ::RequestInformation(vtkInformation *vtkNotUsed(request),
+int ReadMoleculeXYZ::RequestInformation(vtkInformation *vtkNotUsed(request),
                                          vtkInformationVector **vtkNotUsed(inputVector), vtkInformationVector *outputVector)
 {
   vtkInformation *outInfo = outputVector->GetInformationObject(0);
 
-  vtksys::ifstream fileInput(this->GetPath().c_str());
+   vtksys::ifstream fileInput( this->GetPath() );
 
   if (!fileInput.is_open())
   {
-    vtkErrorMacro("ReaadMoleculeXYZ error opening file: " << this->GetPath());
+    vtkErrorMacro("ReadMoleculeXYZ error opening file: " << this->GetPath().c_str());
     return 0;
   }
+
 
   vtkIdType nAtoms = 0;
   int timeStep = 0;
@@ -52,7 +53,7 @@ int ReaadMoleculeXYZ::RequestInformation(vtkInformation *vtkNotUsed(request),
       break; // reached after last timestep
     }
 
-    this->FilePositions.emplace_back(currentPos);
+    // this->FilePositions.emplace_back(currentPos);
 
     std::string title;
     getline(fileInput, title); // second title line
@@ -66,16 +67,16 @@ int ReaadMoleculeXYZ::RequestInformation(vtkInformation *vtkNotUsed(request),
         std::istringstream tmp(&title[found + 6]);
         double timeValue;
         tmp >> timeValue;
-        this->TimeSteps.emplace_back(timeValue);
+        // this->TimeSteps.emplace_back(timeValue);
       }
       else
       {
-        this->TimeSteps.emplace_back(timeStep);
+        // this->TimeSteps.emplace_back(timeStep);
       }
     }
     else
     {
-      this->TimeSteps.emplace_back(timeStep);
+      // this->TimeSteps.emplace_back(timeStep);
     }
     timeStep++;
 
@@ -86,16 +87,16 @@ int ReaadMoleculeXYZ::RequestInformation(vtkInformation *vtkNotUsed(request),
   }
   fileInput.close();
 
-  outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_STEPS(), this->TimeSteps.data(), timeStep);
-  double timeRange[2];
-  timeRange[0] = this->TimeSteps[0];
-  timeRange[1] = this->TimeSteps[timeStep - 1];
-  outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_RANGE(), timeRange, 2);
+  // outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_STEPS(), this->TimeSteps.data(), timeStep);
+  // double timeRange[2];
+  // timeRange[0] = this->TimeSteps[0];
+  // timeRange[1] = this->TimeSteps[timeStep - 1];
+  // outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_RANGE(), timeRange, 2);
   return 1;
 }
 
 //------------------------------------------------------------------------------
-int ReaadMoleculeXYZ::RequestData(
+int ReadMoleculeXYZ::RequestData(
     vtkInformation *, vtkInformationVector **, vtkInformationVector *outputVector)
 {
   vtkInformation *outInfo = outputVector->GetInformationObject(0);
@@ -103,21 +104,21 @@ int ReaadMoleculeXYZ::RequestData(
 
   if (!output)
   {
-    vtkErrorMacro("ReaadMoleculeXYZ does not have a vtkMolecule as output.");
+    vtkErrorMacro("ReadMoleculeXYZ does not have a vtkMolecule as output.");
     return 1;
   }
 
-  vtksys::ifstream fileInput(this->FileName.c_str());
+  vtksys::ifstream fileInput( this->GetPath() );
 
   if (!fileInput.is_open())
   {
-    vtkErrorMacro("ReaadMoleculeXYZ error opening file: " << this->FileName);
+    vtkErrorMacro("ReadMoleculeXYZ error opening file: " << this->GetPath().c_str());
     return 0;
   }
 
   int timestep = 0;
+/*
   std::vector<double>::iterator it = this->TimeSteps.begin();
-
   if (outInfo->Has(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEP()))
   {
     // Get the requested time step.
@@ -127,7 +128,7 @@ int ReaadMoleculeXYZ::RequestData(
     if (requestedTimeStep < *it)
     {
       requestedTimeStep = *it;
-      vtkWarningMacro("ReaadMoleculeXYZ using its first timestep value of " << requestedTimeStep);
+      vtkWarningMacro("ReadMoleculeXYZ using its first timestep value of " << requestedTimeStep);
     }
     for (it = this->TimeSteps.begin(); it < this->TimeSteps.end(); ++it, ++timestep)
     {
@@ -152,12 +153,12 @@ int ReaadMoleculeXYZ::RequestData(
       --it;
     }
   }
-  else
+  else*/
   {
     timestep = 0;
   }
 
-  fileInput.seekg(this->FilePositions[timestep]);
+  // fileInput.seekg(this->FilePositions[timestep]);
   vtkIdType nAtoms;
 
   fileInput >> nAtoms;
@@ -177,7 +178,7 @@ int ReaadMoleculeXYZ::RequestData(
     fileInput >> atomType >> x >> y >> z;
     if (fileInput.fail()) // checking we are at end of line
     {
-      vtkErrorMacro("ReaadMoleculeXYZ error reading file: "
+      vtkErrorMacro("ReadMoleculeXYZ error reading file: "
                     << this->GetPath().c_str() << " Problem reading atoms' positions.");
       fileInput.close();
       return 0;

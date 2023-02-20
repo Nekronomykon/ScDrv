@@ -6,6 +6,8 @@
 #else  // !_MSC_VER
 #endif //  _MSC_VER
 
+#include <vtkExecutive.h>
+
 /*=========================================================================
 
   Program:   Visualization Toolkit

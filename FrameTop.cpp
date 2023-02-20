@@ -820,7 +820,7 @@ void FrameTop::on_actionOpen__triggered(void)
 ///
 void FrameTop::on_actionSave__triggered(void)
 {
-  assert(frameDoc_->hasPath());
+  assert(frameDoc_->HasPath());
 }
 //
 ///////////////////////////////////////////////////////////////////////
