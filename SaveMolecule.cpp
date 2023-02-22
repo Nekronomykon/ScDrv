@@ -16,7 +16,7 @@ void SaveMolecule::PrintSelf(ostream &os, vtkIndent indent)
 }
 
 //------------------------------------------------------------------------------
-Molecule *SaveMolecule::GetInput()
-{
-  return Molecule::SafeDownCast(this->GetInput(0));
-}
+// Molecule *SaveMolecule::GetInput()
+// {
+//   return Molecule::SafeDownCast(this->GetInputPort(0));
+// }

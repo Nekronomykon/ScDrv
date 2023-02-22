@@ -19,6 +19,29 @@ namespace vtk
     static ReadMoleculeWFN *New();
     vtkTypeMacro(ReadMoleculeWFN, ReadMolecule);
     void PrintSelf(ostream &os, vtkIndent indent) override;
+    //
+    ///////////////////////////////////////////////////////////////////////////
+    // First call --> Information: initializing data structures
+    //
+    // int RequestInformation(vtkInformation * /* request */,
+    //                        vtkInformationVector ** /* input */,
+    //                        vtkInformationVector * /* output */) override;
+    //
+    // uses the following virtual call:
+    //
+    int ReadInformation(std::istream & /*inp*/) override;
+    //
+    ///////////////////////////////////////////////////////////////////////////
+    // Second call --> Data: filling the data structures
+    //
+    // int RequestData(vtkInformation * /* request */,
+    //                vtkInformationVector ** /* input */,
+    //                vtkInformationVector * /* output */) override;
+    //
+    // uses the following virtual call:
+    //
+    int ReadData(std::istream & /*inp*/) override;
+
 
   protected:
     explicit ReadMoleculeWFN(void);

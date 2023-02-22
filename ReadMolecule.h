@@ -26,15 +26,27 @@ namespace vtk
     Molecule *GetOutput(void);
     void SetOutput(Molecule * /* putmol */);
     //
+    ///////////////////////////////////////////////////////////////////////////
+    // First call --> Information: initializing data structures
+    //
     int RequestInformation(vtkInformation * /* request */,
                            vtkInformationVector ** /* input */,
                            vtkInformationVector * /* output */) override;
-    virtual int ReadInformation(std::istream& /*inp*/);
-
+    //
+    // uses the following virtual call:
+    //
+    virtual int ReadInformation(std::istream & /*inp*/);
+    //
+    ///////////////////////////////////////////////////////////////////////////
+    // Second call --> Data: filling the data structures
+    //
     int RequestData(vtkInformation * /* request */,
                     vtkInformationVector ** /* input */,
                     vtkInformationVector * /* output */) override;
-    virtual int ReadData(std::istream& /*inp*/);
+    //
+    // uses the following virtual call:
+    //
+    virtual int ReadData(std::istream & /*inp*/);
 
   protected:
     explicit ReadMolecule(int /*nOuts */ = 1, int /*nIns*/ = 0);

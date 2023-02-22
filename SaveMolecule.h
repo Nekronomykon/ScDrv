@@ -12,14 +12,14 @@
 
 namespace vtk
 {
-  class SaveMolecule : public BuildMolecule
+  class SaveMolecule : public BuildMolecule, public ImplPathBound<SaveMolecule>
   {
   public:
     static SaveMolecule *New();
     vtkTypeMacro(SaveMolecule, BuildMolecule);
     void PrintSelf(ostream &os, vtkIndent indent) override;
 
-    Molecule *GetInput();
+    // Molecule *GetInput();
 
   protected:
     explicit SaveMolecule(int /*nOuts */ = 0, int /*nIns*/ = 1);

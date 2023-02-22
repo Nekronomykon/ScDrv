@@ -101,11 +101,11 @@ int ReadMoleculeXYZ::RequestData(
     vtkInformation *, vtkInformationVector **, vtkInformationVector *outVector)
 {
   vtkInformation *outInfo = outVector->GetInformationObject(0);
-  vtkMolecule *output = vtkMolecule::SafeDownCast(vtkDataObject::GetData(outVector));
+  Molecule *output = Molecule::SafeDownCast(vtkDataObject::GetData(outVector));
 
   if (!output)
   {
-    vtkErrorMacro("ReadMoleculeXYZ does not have a vtkMolecule as output.");
+    vtkErrorMacro("ReadMoleculeXYZ does not have a Molecule-descendant object as output.");
     return 1;
   }
 
