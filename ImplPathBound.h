@@ -12,6 +12,9 @@
 #include <sstream>
 #include <cassert>
 
+#include <vector>
+#include <deque>
+
 #include <filesystem>
 
 typedef std::ifstream InputFile;
@@ -19,34 +22,41 @@ typedef std::ostringstream OutputString;
 typedef std::istringstream InputString;
 typedef std::string String;
 
+// Class for the (sub)strings reparsed (to think on):
+// typedef std::vector<String> BunchOfStrings;
+typedef std::deque<String> BunchOfStrings;
+
 typedef std::filesystem::path Path;
 
-struct ImplFileRoot
+struct BaseRead
 {
-  /* no data */
-
-  //------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+  // No data...
+  ///////////////////////////////////////////////////////////////////////////////
+  //
   template <class _In>
   static int ScrollStrings(_In &in, int ns)
   {
     if (ns <= 0)
       return 0;
-    std::string one;
+    String one;
     do
     {
       std::getline(in, one);
     } while (--ns);
     return ns;
   }
-  //------------------------------------------------------------------------------
+  //
+  ///////////////////////////////////////////////////////////////////////////////
+  //
   static std::string GetMarkupContent(std::istream &inp, const char *tag)
   {
-    std::string keyOpen("<");
-    std::string keyClose("</");
-    std::string res;
-    std::string one;
+    String keyOpen("<");
+    String keyClose("</");
+    String res;
+    String one;
     bool bAdd(false);
-
+    //
     assert(tag && *tag);
     keyOpen.append(tag) += '>';
     keyClose.append(tag) += '>';
@@ -81,7 +91,8 @@ struct ImplFileRoot
 
     return res;
   }
-  //------------------------------------------------------------------------------
+  //
+  ///////////////////////////////////////////////////////////////////////////////
   // Reads a string and trim it from the end:
   template <class _In, class _String>
   static _In &GetLine(_In &in, _String &line)
@@ -97,7 +108,9 @@ struct ImplFileRoot
     }
     return in;
   }
-
+  //
+  ///////////////////////////////////////////////////////////////////////////////
+  //
   template <class _In, class _String>
   static _In &ScrollToPrefix(_In &in, const char *key, _String &line)
   {
@@ -120,7 +133,9 @@ struct ImplFileRoot
 
     return in;
   }
-
+  //
+  ///////////////////////////////////////////////////////////////////////////////
+  //
   template <class In, class Value>
   static In &ReadAfterPrefix(In &in, const char *key, Value &val)
   {
@@ -135,7 +150,9 @@ struct ImplFileRoot
 
     return in;
   }
-
+  //
+  ///////////////////////////////////////////////////////////////////////////////
+  //
   template <class _In>
   static _In &ScrollToEmpty(_In &in)
   {
@@ -147,7 +164,9 @@ struct ImplFileRoot
     }
     return in;
   }
-
+  //
+  ///////////////////////////////////////////////////////////////////////////////
+  //
   template <class _In, class _String>
   static _In &GatherNonEmpty(_In &in, _String &line)
   {
@@ -162,20 +181,17 @@ struct ImplFileRoot
         break;
       add << add_one << std::endl;
     }
-
     return in;
   }
 };
 
-template <class T>
+template <class T, class TBase = BaseRead>
 class ImplPathBound
-    : public ImplFileRoot
+    : public TBase
 {
-private:
-  /* data */
 public:
   explicit ImplPathBound() {}
-
+  //
   ///////////////////////////////////////////////////////////////////////////////
   //
   void SetPath(const char *arg)
@@ -184,24 +200,29 @@ public:
     T *pThis = static_cast<T *>(this);
     // vtkDebugMacro(<< pThis->GetClassName() << ": setting nameFile to" << ((arg && *arg) ? arg : "(null)"));
     if (arg && *arg)
-      this->pathFile_.assign(arg);
+      this->path_.assign(arg);
     else
-      this->pathFile_.clear();
+      this->path_.clear();
 
     pThis->Modified();
   }
-  Path GetPath() const { return pathFile_; }
-  bool HasPath() const { return !pathFile_.empty(); }
-  Path ResetPath(Path path = Path())
+  //
+  ///////////////////////////////////////////////////////////////////////////////
+  //
+  Path GetPath() const { return path_; }
+  bool HasPath() const { return !path_.empty(); }
+  Path ResetPath(Path a_path = Path())
   {
-    std::swap(pathFile_, path);
-    return path;
+    std::swap(path_, a_path);
+    return a_path;
   }
   //
   ///////////////////////////////////////////////////////////////////////////////
 
 protected:
-  Path pathFile_;
+  Path path_;
+private:
+  /* data */
 };
 
 #endif // !Impl_Path_h__
