@@ -72,3 +72,14 @@ int ReadMolecule::ReadData(std::istream &)
 {
   return 0;
 }
+
+String ReadMolecule::GetTitle() const
+{
+  return strTitle_;
+}
+
+String ReadMolecule::ResetTitle(String titleNew)
+{
+  std::swap(titleNew, strTitle_);
+  return titleNew;
+}

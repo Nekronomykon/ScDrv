@@ -48,9 +48,16 @@ namespace vtk
     //
     virtual int ReadData(std::istream & /*inp*/);
 
+    // Title operations
+    String GetTitle() const;
+    String ResetTitle(String titleNew);
+
   protected:
     explicit ReadMolecule(int /*nOuts */ = 1, int /*nIns*/ = 0);
     ~ReadMolecule() override = default;
+
+  private:
+    String strTitle_;
   };
 }; // namespace vtk
 

@@ -46,6 +46,9 @@ protected:
 public:
   inline static const AllFileFormats &getFormats() { return AllFormats; }
 
+  enum {Angstrom = 0, Bohr = 1, Picometer = 2}; // Linear units:
+  enum {Auto = 0, Cartesian = 1, ZMatrix = 2, Fractional = 3}; // Coordinate types
+
   static FileFormat FormatForSuffix(const QString &);
 
   //
@@ -66,7 +69,10 @@ public:
   bool hasFormat() const;
   FileFormat getFormat() const;
   FileFormat resetFormat(FileFormat /*fmt*/);
-
+  //
+  QString moleculeTitle()const;
+  void setMoleculeTitle(QString);
+  //
   bool doSave();
   //
   void readSettings(QSettings & /*src*/);
@@ -76,6 +82,8 @@ public:
   //
   WidgetMolecule *editMolecule();
   WidgetMolecule *getEditMolecule() const;
+  //
+  void setLinearUnits(int /* units */);
   // reader functions
   bool ReadMoleculeCML(Path);
   bool ReadMoleculePDB(Path);

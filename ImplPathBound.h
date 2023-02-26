@@ -17,6 +17,8 @@
 
 #include <filesystem>
 
+#include <QString>
+
 typedef std::ifstream InputFile;
 typedef std::ostringstream OutputString;
 typedef std::istringstream InputString;
@@ -183,6 +185,50 @@ struct BaseRead
     }
     return in;
   }
+  //
+  ///////////////////////////////////////////////////////////////////////////////
+  //
+  template <class _In>
+  static BunchOfStrings ReadInParse(_In &in, bool bSkipEmpty = true)
+  {
+    BunchOfStrings allstr;
+    String str_one;
+
+    if (std::getline(in, str_one) && bSkipEmpty)
+    {
+      if (!str_one.empty())
+      {
+        QString qstr_it(QString(str_one.c_str()).simplified());
+        // trimmed() is for simple LR-trimming();
+        // simplified() also reduces the intrastring whitespaces
+        if (!qstr_it.isEmpty())
+          str_one = String(qstr_it.toLocal8Bit().data());
+      }
+      while (str_one.empty())
+      {
+        if (!std::getline(in, str_one))
+          break; // End-Of-Stream signaled
+        QString qstr_it(QString(str_one.c_str()).simplified());
+        if (!qstr_it.isEmpty())
+        {
+          str_one = String(qstr_it.toLocal8Bit().data());
+          break;
+        }
+      }
+    }
+    if (!str_one.empty())
+    {
+      InputString inps(str_one);
+      String str_it;
+      do
+      {
+        inps >> str_it;
+        if (!str_it.empty()) // apparently any times if read
+          allstr.push_back(str_it);
+      } while (inps);
+    }
+    return allstr;
+  }
 };
 
 template <class T, class TBase = BaseRead>
@@ -221,6 +267,7 @@ public:
 
 protected:
   Path path_;
+
 private:
   /* data */
 };

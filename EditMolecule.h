@@ -9,6 +9,8 @@
 #include <map>
 
 #include <QWidget>
+#include <QComboBox>
+#include <QLineEdit>
 #include <QTextDocument>
 
 #include "Molecule.h"
@@ -38,6 +40,10 @@ public:
 
   EditSource *editSource() const { return editSource_; }
   QTextDocument *getSource() const;
+
+    QLineEdit* getEditTitle() const;
+QComboBox* getLinearUnits() const;
+QComboBox* getCoordinateType() const;
 
 private slots:
   void on_toolEditAtoms__triggered(void);

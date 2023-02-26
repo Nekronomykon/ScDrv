@@ -215,6 +215,7 @@ bool FrameDoc::ReadMoleculeWFN(Path a_path)
   assert(pMol);
   vtkNew<vtk::ReadMoleculeWFN> reader;
   reader->ResetPath(a_path);
+  this->setLinearUnits(Bohr);
   reader->Update();
   // pMol->Initialize();
   if (bGuessBonds_)
@@ -228,6 +229,8 @@ bool FrameDoc::ReadMoleculeWFN(Path a_path)
   {
     pMol->DeepCopy(reader->GetOutput());
   }
+  // update title:
+  this->setMoleculeTitle(QString(reader->GetTitle().c_str()));
   this->updateAllViews();
   return bool(pMol->GetNumberOfAtoms() > 0);
 }
@@ -239,6 +242,7 @@ bool FrameDoc::ReadMoleculeWFX(Path a_path)
   assert(pMol);
   vtkNew<vtk::ReadMoleculeWFX> reader;
   reader->ResetPath(a_path);
+  this->setLinearUnits(Bohr);
   reader->Update();
   // pMol->Initialize();
   if (bGuessBonds_)
@@ -252,6 +256,7 @@ bool FrameDoc::ReadMoleculeWFX(Path a_path)
   {
     pMol->DeepCopy(reader->GetOutput());
   }
+  this->setMoleculeTitle(QString(reader->GetTitle().c_str()));
   this->updateAllViews();
   return bool(pMol->GetNumberOfAtoms() > 0);
 }
@@ -263,6 +268,7 @@ bool FrameDoc::ReadMoleculeXYZ(Path a_path)
   assert(pMol);
   vtkNew<vtk::ReadMoleculeXYZ> reader;
   reader->ResetPath(a_path);
+  this->setLinearUnits(Angstrom);
   reader->Update();
   // pMol->Initialize();
   if (bGuessBonds_)
@@ -276,6 +282,7 @@ bool FrameDoc::ReadMoleculeXYZ(Path a_path)
   {
     pMol->DeepCopy(reader->GetOutput());
   }
+  this->setMoleculeTitle(QString(reader->GetTitle().c_str()));
   this->updateAllViews();
   return bool(pMol->GetNumberOfAtoms() > 0);
 }
@@ -288,6 +295,7 @@ bool FrameDoc::ReadFieldCUBE(Path a_path)
   vtkNew<vtkGaussianCubeReader> reader;
   vtkNew<vtkGaussianCubeReader2> reader2;
   reader->SetFileName(a_path.c_str());
+  this->setLinearUnits(Bohr);
   reader->Update();
   // pMol->Initialize();
   if (bGuessBonds_)
@@ -363,11 +371,20 @@ bool FrameDoc::ExportPixPostScript(Path a_path)
 
   return this->getEditMolecule()->getView()->exportImageTo(saver, false); // RGB instead of RGBA
 }
-
+//
+///////////////////////////////////////////////////////////////////////
+//
 void FrameDoc::updateAllViews()
 {
   wMol_->showMolecule();
   wStruct_->showMolecule();
+}
+//
+///////////////////////////////////////////////////////////////////////
+//
+void FrameDoc::setLinearUnits(int units)
+{
+  wMol_->editAtoms()->getLinearUnits()->setCurrentIndex(units);
 }
 //
 ///////////////////////////////////////////////////////////////////////
@@ -436,6 +453,18 @@ FileFormat FrameDoc::resetFormat(FileFormat new_fmt)
 {
   std::swap(new_fmt, format_);
   return new_fmt;
+}
+//
+///////////////////////////////////////////////////////////////////////
+//
+QString FrameDoc::moleculeTitle() const
+{
+  return this->getEditMolecule()->editAtoms()->getEditTitle()->text();
+  ;
+}
+void FrameDoc::setMoleculeTitle(QString strTitle)
+{
+  this->getEditMolecule()->editAtoms()->getEditTitle()->setText(strTitle);
 }
 //
 ///////////////////////////////////////////////////////////////////////

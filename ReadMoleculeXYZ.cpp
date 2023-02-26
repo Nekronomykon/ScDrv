@@ -28,18 +28,17 @@ ReadMoleculeXYZ::ReadMoleculeXYZ(void)
 
 //------------------------------------------------------------------------------
 int ReadMoleculeXYZ::RequestInformation(vtkInformation *vtkNotUsed(request),
-                                         vtkInformationVector **vtkNotUsed(inputVector), vtkInformationVector *outVector)
+                                        vtkInformationVector **vtkNotUsed(inputVector), vtkInformationVector *outVector)
 {
   vtkInformation *outInfo = outVector->GetInformationObject(0);
 
-   vtksys::ifstream fileInput( this->GetPath() );
+  vtksys::ifstream fileInput(this->GetPath());
 
   if (!fileInput.is_open())
   {
     vtkErrorMacro("ReadMoleculeXYZ error opening file: " << this->GetPath().c_str());
     return 0;
   }
-
 
   vtkIdType nAtoms = 0;
   int timeStep = 0;
@@ -109,7 +108,7 @@ int ReadMoleculeXYZ::RequestData(
     return 1;
   }
 
-  vtksys::ifstream fileInput( this->GetPath() );
+  vtksys::ifstream fileInput(this->GetPath());
 
   if (!fileInput.is_open())
   {
@@ -118,66 +117,74 @@ int ReadMoleculeXYZ::RequestData(
   }
 
   int timestep = 0;
-/*
-  std::vector<double>::iterator it = this->TimeSteps.begin();
-  if (outInfo->Has(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEP()))
-  {
-    // Get the requested time step.
-    double requestedTimeStep = outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEP());
+  /*
+    std::vector<double>::iterator it = this->TimeSteps.begin();
+    if (outInfo->Has(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEP()))
+    {
+      // Get the requested time step.
+      double requestedTimeStep = outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEP());
 
-    // find the timestep with the closest value
-    if (requestedTimeStep < *it)
-    {
-      requestedTimeStep = *it;
-      vtkWarningMacro("ReadMoleculeXYZ using its first timestep value of " << requestedTimeStep);
-    }
-    for (it = this->TimeSteps.begin(); it < this->TimeSteps.end(); ++it, ++timestep)
-    {
-      if ((*it > requestedTimeStep))
-        break;
-    }
-
-    if (it != this->TimeSteps.end())
-    {
-      --it;
-      --timestep;
-      if (fabs(*it - requestedTimeStep) > fabs(*(it + 1) - requestedTimeStep))
+      // find the timestep with the closest value
+      if (requestedTimeStep < *it)
       {
-        // closer to next timestep value
-        ++timestep;
-        ++it;
+        requestedTimeStep = *it;
+        vtkWarningMacro("ReadMoleculeXYZ using its first timestep value of " << requestedTimeStep);
+      }
+      for (it = this->TimeSteps.begin(); it < this->TimeSteps.end(); ++it, ++timestep)
+      {
+        if ((*it > requestedTimeStep))
+          break;
+      }
+
+      if (it != this->TimeSteps.end())
+      {
+        --it;
+        --timestep;
+        if (fabs(*it - requestedTimeStep) > fabs(*(it + 1) - requestedTimeStep))
+        {
+          // closer to next timestep value
+          ++timestep;
+          ++it;
+        }
+      }
+      else
+      {
+        --timestep;
+        --it;
       }
     }
-    else
-    {
-      --timestep;
-      --it;
-    }
-  }
-  else*/
+    else*/
   {
     timestep = 0;
   }
 
   // fileInput.seekg(this->FilePositions[timestep]);
+  String str_line;
+  GetLine(fileInput, str_line);
+  InputString inps_na(str_line);
+
   vtkIdType nAtoms;
 
-  fileInput >> nAtoms;
-  fileInput.get(); // end of line char
+  inps_na >> nAtoms;
+  // fileInput.get(); // end of line char
+  if (nAtoms <= 0)
+    return 0;
 
-  std::string title;
-  getline(fileInput, title); // second title line
+  String title;
+  GetLine(fileInput, str_line); // second title line
+  this->ResetTitle(str_line);
 
-  // construct vtkMolecule
+  // (de?re)construct vtkMolecule
   output->Initialize();
 
   /// vtkNew<vtkPeriodicTable> pT;
   vtk::Elements elements;
   for (int i = 0; i < nAtoms; i++)
   {
-    char atomType[16];
+    // char atomType[16];
+    String symbol;
     float x, y, z;
-    fileInput >> atomType >> x >> y >> z;
+    fileInput >> symbol >> x >> y >> z;
     if (fileInput.fail()) // checking we are at end of line
     {
       vtkErrorMacro("ReadMoleculeXYZ error reading file: "
@@ -185,7 +192,7 @@ int ReadMoleculeXYZ::RequestData(
       fileInput.close();
       return 0;
     }
-    output->AppendAtom(vtk::Elements::SymbolToNumber(atomType), x, y, z);
+    output->AppendAtom(vtk::Elements::SymbolToNumber(symbol.c_str()), x, y, z);
   }
   fileInput.close();
 

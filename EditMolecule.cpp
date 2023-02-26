@@ -62,7 +62,7 @@ void EditMolecule::loadMolecule()
 
   for (int j = 0; j < nAtoms; ++j)
   {
-    QString strAtom(tr("  Atom %1: \n").arg(j+1) );
+    QString strAtom(tr("  Atom %1: \n").arg(j + 1));
 
     strAtom += '\n';
     editSource_->appendPlainText(strAtom.trimmed());
@@ -71,6 +71,18 @@ void EditMolecule::loadMolecule()
 QTextDocument *EditMolecule::getSource() const
 {
   return editSource_->document();
+}
+QLineEdit *EditMolecule::getEditTitle() const
+{
+  return lineTitle_;
+}
+QComboBox *EditMolecule::getLinearUnits() const
+{
+  return chooseUnits_;
+}
+QComboBox *EditMolecule::getCoordinateType() const
+{
+  return chooseFormat_;
 }
 //
 ///////////////////////////////////////////////////////////////////////////////
