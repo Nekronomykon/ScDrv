@@ -20,13 +20,27 @@ namespace vtk
     vtkTypeMacro(ReadMoleculeXYZ, ReadMolecule);
     void PrintSelf(ostream &os, vtkIndent indent) override;
     //
-    int RequestInformation(vtkInformation * /* request */,
-                           vtkInformationVector ** /* input */,
-                           vtkInformationVector * /* output */) override;
-
+    ///////////////////////////////////////////////////////////////////////////
+    // First call --> Information: initializing data structures
+    //
+    // int RequestInformation(vtkInformation * /* request */,
+    //                        vtkInformationVector ** /* input */,
+    //                        vtkInformationVector * /* output */) override;
+    //
+    // uses the following virtual call:
+    //
+    int ReadInformation(std::istream & /*inp*/, vtkInformation* /*outInfo*/);
+    //
+    ///////////////////////////////////////////////////////////////////////////
+    // Second call --> Data: filling the data structures
+    //
     int RequestData(vtkInformation * /* request */,
                     vtkInformationVector ** /* input */,
                     vtkInformationVector * /* output */) override;
+    //
+    // uses the following virtual call:
+    //
+    // int ReadData(std::istream & /*inp*/, Molecule* /*pMol*/, vtkInformation* /*outInfo*/) override;
 
   protected:
     explicit ReadMoleculeXYZ(void);

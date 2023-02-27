@@ -27,18 +27,17 @@ ReadMoleculeXYZ::ReadMoleculeXYZ(void)
 }
 
 //------------------------------------------------------------------------------
-int ReadMoleculeXYZ::RequestInformation(vtkInformation *vtkNotUsed(request),
-                                        vtkInformationVector **vtkNotUsed(inputVector), vtkInformationVector *outVector)
+int ReadMoleculeXYZ::ReadInformation(std::istream &fileInput, vtkInformation *outInfo)
 {
-  vtkInformation *outInfo = outVector->GetInformationObject(0);
+  // vtkInformation *outInfo = outVector->GetInformationObject(0);
 
-  vtksys::ifstream fileInput(this->GetPath());
+  // vtksys::ifstream fileInput(this->GetPath());
 
-  if (!fileInput.is_open())
-  {
-    vtkErrorMacro("ReadMoleculeXYZ error opening file: " << this->GetPath().c_str());
-    return 0;
-  }
+  // if (!fileInput.is_open())
+  // {
+  //  vtkErrorMacro("ReadMoleculeXYZ error opening file: " << this->GetPath().c_str());
+  //  return 0;
+  // }
 
   vtkIdType nAtoms = 0;
   int timeStep = 0;
@@ -85,7 +84,7 @@ int ReadMoleculeXYZ::RequestInformation(vtkInformation *vtkNotUsed(request),
       getline(fileInput, title); // for each atom a line with symbol, x, y, z
     }
   }
-  fileInput.close();
+  // fileInput.close();
 
   // outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_STEPS(), this->TimeSteps.data(), timeStep);
   // double timeRange[2];
@@ -194,7 +193,7 @@ int ReadMoleculeXYZ::RequestData(
     }
     output->AppendAtom(vtk::Elements::SymbolToNumber(symbol.c_str()), x, y, z);
   }
-  fileInput.close();
+  // fileInput.close();
 
   return 1;
 }

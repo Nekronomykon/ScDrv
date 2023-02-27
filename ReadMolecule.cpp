@@ -58,7 +58,9 @@ int ReadMolecule::RequestInformation(vtkInformation *, vtkInformationVector **, 
     return 0;
   }
 
-  return this->ReadInformation(fileInput, outVector->GetInformationObject(0));
+  int kRes = this->ReadInformation(fileInput, outVector->GetInformationObject(0));
+  fileInput.close();
+  return kRes;
 }
 
 int ReadMolecule::ReadInformation(std::istream &input, vtkInformation *outInfo)
@@ -74,8 +76,7 @@ int ReadMolecule::RequestData(vtkInformation *, vtkInformationVector **, vtkInfo
     vtkErrorMacro("ReadMolecule does not have a Molecule-descendant object as output ");
     return 1;
   }
-
-
+  
   vtksys::ifstream fileInput(this->GetPath());
   if (!fileInput.is_open())
   {
@@ -83,7 +84,9 @@ int ReadMolecule::RequestData(vtkInformation *, vtkInformationVector **, vtkInfo
     return 0;
   }
 
-  return this->ReadData(fileInput, pMol, outVector->GetInformationObject(0));
+  int kRes = this->ReadData(fileInput, pMol, outVector->GetInformationObject(0));
+  fileInput.close();
+  return kRes;
 }
 
 int ReadMolecule::ReadData(std::istream& /*input*/, Molecule* /*pMol*/, vtkInformation * /*outInfo*/)
