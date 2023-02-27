@@ -154,9 +154,9 @@ int ReadMoleculeXYZ::RequestData(
       }
     }
     else*/
-  {
-    timestep = 0;
-  }
+  // {
+  timestep = 0;
+  // }
 
   // fileInput.seekg(this->FilePositions[timestep]);
   String str_line;
