@@ -34,13 +34,13 @@ namespace vtk
     ///////////////////////////////////////////////////////////////////////////
     // Second call --> Data: filling the data structures
     //
-    int RequestData(vtkInformation * /* request */,
-                    vtkInformationVector ** /* input */,
-                    vtkInformationVector * /* output */) override;
+    // int RequestData(vtkInformation * /* request */,
+    //                 vtkInformationVector ** /* input */,
+    //                 vtkInformationVector * /* output */) override;
     //
     // uses the following virtual call:
     //
-    // int ReadData(std::istream & /*inp*/, Molecule* /*pMol*/, vtkInformation* /*outInfo*/) override;
+    int ReadData(std::istream & /*inp*/, Molecule* /*pMol*/, vtkInformation* /*outInfo*/) override;
 
   protected:
     explicit ReadMoleculeXYZ(void);
