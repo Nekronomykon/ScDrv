@@ -35,7 +35,7 @@ namespace vtk
     //
     // uses the following virtual call:
     //
-    virtual int ReadInformation(std::istream & /*inp*/);
+    virtual int ReadInformation(std::istream & /*inp*/, vtkInformation* /*outInfo*/);
     //
     ///////////////////////////////////////////////////////////////////////////
     // Second call --> Data: filling the data structures
@@ -46,7 +46,7 @@ namespace vtk
     //
     // uses the following virtual call:
     //
-    virtual int ReadData(std::istream & /*inp*/);
+    virtual int ReadData(std::istream & /*inp*/, Molecule* /*pMol*/, vtkInformation* /*outInfo*/);
 
     // Title operations
     String GetTitle() const;

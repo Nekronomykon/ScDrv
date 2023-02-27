@@ -18,14 +18,14 @@ void ReadMoleculeWFN::PrintSelf(ostream &os, vtkIndent indent)
 }
 
 //------------------------------------------------------------------------------
-int ReadMoleculeWFN::ReadInformation(std::istream &in)
+int ReadMoleculeWFN::ReadInformation(std::istream& input, vtkInformation * /*outInfo*/)
 {
   String str_line, skip;
-  std::getline(in, str_line);
+  std::getline(input, str_line);
   this->ResetTitle(str_line);
 
   vtkIdType nAtoms, nOrbs, nFuncs;
-  std::getline(in, str_line);
+  std::getline(input, str_line);
   InputString inps_sizes(str_line);
   inps_sizes >> skip >> nOrbs
   >> skip >> skip >> nFuncs
@@ -35,14 +35,14 @@ int ReadMoleculeWFN::ReadInformation(std::istream &in)
 }
 
 //------------------------------------------------------------------------------
-int ReadMoleculeWFN::ReadData(std::istream &in)
+int ReadMoleculeWFN::ReadData(std::istream& input, Molecule* /*pMol*/, vtkInformation * /*outInfo*/)
 {
   String str_line, skip;
-  std::getline(in, str_line);
+  std::getline(input, str_line);
   this->ResetTitle(str_line);
 
   vtkIdType nAtoms, nOrbs, nFuncs;
-  std::getline(in, str_line);
+  std::getline(input, str_line);
   InputString inps_sizes(str_line);
   return 0;
 }

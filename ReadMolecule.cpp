@@ -37,42 +37,6 @@ void ReadMolecule::SetOutput(Molecule *putmol)
   this->GetExecutive()->SetOutputData(0, putmol);
 }
 
-int ReadMolecule::RequestInformation(vtkInformation *, vtkInformationVector **, vtkInformationVector *)
-{
-  vtksys::ifstream fileInput(this->GetPath());
-
-  if (!fileInput.is_open())
-  {
-    vtkErrorMacro("ReadMolecule error opening file: " << this->GetPath().c_str());
-    return 0;
-  }
-
-  return this->ReadInformation(fileInput);
-}
-
-int ReadMolecule::ReadInformation(std::istream &)
-{
-  return 0;
-}
-
-int ReadMolecule::RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *)
-{
-  vtksys::ifstream fileInput(this->GetPath());
-
-  if (!fileInput.is_open())
-  {
-    vtkErrorMacro("ReadMolecule error opening file: " << this->GetPath().c_str());
-    return 0;
-  }
-
-  return this->ReadData(fileInput);
-}
-
-int ReadMolecule::ReadData(std::istream &)
-{
-  return 0;
-}
-
 String ReadMolecule::GetTitle() const
 {
   return strTitle_;
@@ -82,4 +46,47 @@ String ReadMolecule::ResetTitle(String titleNew)
 {
   std::swap(titleNew, strTitle_);
   return titleNew;
+}
+
+int ReadMolecule::RequestInformation(vtkInformation *, vtkInformationVector **, vtkInformationVector *outVector)
+{
+  vtksys::ifstream fileInput(this->GetPath());
+
+  if (!fileInput.is_open())
+  {
+    vtkErrorMacro("ReadMolecule error opening file: " << this->GetPath().c_str());
+    return 0;
+  }
+
+  return this->ReadInformation(fileInput, outVector->GetInformationObject(0));
+}
+
+int ReadMolecule::ReadInformation(std::istream &input, vtkInformation *outInfo)
+{
+  return 0;
+}
+
+int ReadMolecule::RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *outVector)
+{
+  Molecule* pMol = Molecule::SafeDownCast(vtkDataObject::GetData(outVector));
+  if (!pMol)
+  {
+    vtkErrorMacro("ReadMolecule does not have a Molecule-descendant object as output ");
+    return 1;
+  }
+
+
+  vtksys::ifstream fileInput(this->GetPath());
+  if (!fileInput.is_open())
+  {
+    vtkErrorMacro("ReadMolecule error opening file: " << this->GetPath().c_str());
+    return 0;
+  }
+
+  return this->ReadData(fileInput, pMol, outVector->GetInformationObject(0));
+}
+
+int ReadMolecule::ReadData(std::istream& /*input*/, Molecule* /*pMol*/, vtkInformation * /*outInfo*/)
+{
+  return 0;
 }

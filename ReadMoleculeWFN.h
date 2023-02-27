@@ -29,7 +29,7 @@ namespace vtk
     //
     // uses the following virtual call:
     //
-    int ReadInformation(std::istream & /*inp*/) override;
+    int ReadInformation(std::istream& /*input*/, vtkInformation * /*outInfo*/) override;
     //
     ///////////////////////////////////////////////////////////////////////////
     // Second call --> Data: filling the data structures
@@ -40,7 +40,7 @@ namespace vtk
     //
     // uses the following virtual call:
     //
-    int ReadData(std::istream & /*inp*/) override;
+    int ReadData(std::istream& /*input*/, Molecule* /*pMol*/, vtkInformation * /*outInfo*/) override;
 
 
   protected:

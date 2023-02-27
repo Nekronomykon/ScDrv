@@ -99,8 +99,8 @@ int ReadMoleculeXYZ::RequestInformation(vtkInformation *vtkNotUsed(request),
 int ReadMoleculeXYZ::RequestData(
     vtkInformation *, vtkInformationVector **, vtkInformationVector *outVector)
 {
-  vtkInformation *outInfo = outVector->GetInformationObject(0);
   Molecule *output = Molecule::SafeDownCast(vtkDataObject::GetData(outVector));
+  vtkInformation *outInfo = outVector->GetInformationObject(0);
 
   if (!output)
   {
