@@ -51,11 +51,11 @@ int ReadMoleculeWFN::ReadData(std::istream &input, Molecule *pMol, vtkInformatio
   {
     std::getline(input, str_line);
     InputString inps_atom(str_line);
-    String symbol; char cskip;
+    String symbol;
+    char cskip;
     double x(0), y(0), z(0), q(0);
     inps_atom >> symbol >> skip >> skip >> skip >> x >> y >> z >> skip >> cskip >> q;
-//  C 1       (CENTRE  1)  -0.21492365 -4.10451431  3.27197497  CHARGE =  6.0
-    // char *infoRest;
+    //  C 1       (CENTRE  1)  -0.21492365 -4.10451431  3.27197497  CHARGE =  6.0
     pMol->AppendAtom((IndexElement)q, x, y, z);
   }
 

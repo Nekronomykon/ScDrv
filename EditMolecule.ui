@@ -242,12 +242,12 @@
        </item>
        <item>
         <property name="text">
-         <string>Td</string>
+         <string>Th</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Th</string>
+         <string>Td</string>
         </property>
        </item>
        <item>

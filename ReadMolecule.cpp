@@ -37,17 +37,26 @@ void ReadMolecule::SetOutput(Molecule *putmol)
   this->GetExecutive()->SetOutputData(0, putmol);
 }
 
+//------------------------------------------------------------------------------
 String ReadMolecule::GetTitle() const
 {
   return strTitle_;
 }
 
+//------------------------------------------------------------------------------
 String ReadMolecule::ResetTitle(String titleNew)
 {
   std::swap(titleNew, strTitle_);
   return titleNew;
 }
 
+//------------------------------------------------------------------------------
+BunchOfStrings ReadMolecule::GetAtomLabels() const
+{
+  return labelAtoms_;
+}
+
+//------------------------------------------------------------------------------
 int ReadMolecule::RequestInformation(vtkInformation *, vtkInformationVector **, vtkInformationVector *outVector)
 {
   vtksys::ifstream fileInput(this->GetPath());
@@ -63,20 +72,17 @@ int ReadMolecule::RequestInformation(vtkInformation *, vtkInformationVector **, 
   return kRes;
 }
 
-int ReadMolecule::ReadInformation(std::istream &input, vtkInformation *outInfo)
-{
-  return 0;
-}
 
+//------------------------------------------------------------------------------
 int ReadMolecule::RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *outVector)
 {
-  Molecule* pMol = Molecule::SafeDownCast(vtkDataObject::GetData(outVector));
+  Molecule *pMol = Molecule::SafeDownCast(vtkDataObject::GetData(outVector));
   if (!pMol)
   {
     vtkErrorMacro("ReadMolecule does not have a Molecule-descendant object as output ");
     return 1;
   }
-  
+
   vtksys::ifstream fileInput(this->GetPath());
   if (!fileInput.is_open())
   {
@@ -89,7 +95,15 @@ int ReadMolecule::RequestData(vtkInformation *, vtkInformationVector **, vtkInfo
   return kRes;
 }
 
-int ReadMolecule::ReadData(std::istream& /*input*/, Molecule* /*pMol*/, vtkInformation * /*outInfo*/)
+#ifndef STREAM_VIRTUAL_READER
+//------------------------------------------------------------------------------
+int ReadMolecule::ReadInformation(std::istream &input, vtkInformation *outInfo)
 {
   return 0;
 }
+//------------------------------------------------------------------------------
+int ReadMolecule::ReadData(std::istream & /*input*/, Molecule * /*pMol*/, vtkInformation * /*outInfo*/)
+{
+  return 0;
+}
+#endif // !STREAM_VIRTUAL_READER

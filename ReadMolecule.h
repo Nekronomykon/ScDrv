@@ -12,11 +12,13 @@
 #include <vtkInformationVector.h>
 // #include <vtkInformation.h>
 
+#include "FileBaseRead.h"
+
 #include "ImplPathBound.h"
 
 namespace vtk
 {
-  class ReadMolecule : public BuildMolecule, public ImplPathBound<ReadMolecule>
+  class ReadMolecule : public BuildMolecule, public ImplPathBound<ReadMolecule,BaseRead>
   {
   public:
     static ReadMolecule *New();
@@ -48,9 +50,12 @@ namespace vtk
     //
     virtual int ReadData(std::istream & /*inp*/, Molecule* /*pMol*/, vtkInformation* /*outInfo*/);
 
-    // Title operations
+    // Title operations:
     String GetTitle() const;
     String ResetTitle(String titleNew);
+
+    // Atom Labels operations:
+    BunchOfStrings GetAtomLabels() const;
 
   protected:
     explicit ReadMolecule(int /*nOuts */ = 1, int /*nIns*/ = 0);
@@ -58,6 +63,7 @@ namespace vtk
 
   private:
     String strTitle_;
+    BunchOfStrings labelAtoms_;
   };
 }; // namespace vtk
 
