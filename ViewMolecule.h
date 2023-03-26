@@ -11,11 +11,15 @@
 #include <vtkColor.h>
 #include <vtkRenderer.h>
 #include <vtkImageWriter.h>
+
 #include <vtkMoleculeMapper.h>
 
 #include <vtkRenderWindowInteractor.h>
 
+#include <vtkLabeledDataMapper.h>
+
 #include <vtkActor.h>
+#include <vtkActor2D.h>
 #include <vtkLODActor.h>
 
 #include "Molecule.h"
@@ -26,6 +30,9 @@
 typedef vtkNew<vtkActor> ANewActor;
 typedef vtkSmartPointer<vtkActor> AnActor;
 
+typedef vtkNew<vtkActor2D> ANewActor2D;
+typedef vtkSmartPointer<vtkActor2D> AnActor2D;
+
 typedef vtkNew<vtkRenderer> ANewRenderer;
 typedef vtkSmartPointer<vtkRenderer> ARenderer;
 
@@ -33,6 +40,10 @@ typedef vtkNew<vtkMoleculeMapper> ANewMolMapper;
 typedef vtkSmartPointer<vtkMoleculeMapper> AMolMapper;
 
 typedef vtkNew<vtkRenderWindowInteractor> ANewRenderWindowInteractor;
+typedef vtkSmartPointer<vtkRenderWindowInteractor> ARenderWindowInteractor;
+
+typedef vtkNew<vtkLabeledDataMapper> ANewLabeledDataMapper;
+typedef vtkSmartPointer<vtkLabeledDataMapper> ALabeledDataMapper;
 
 class ViewMolecule
     : public QVTKOpenGLNativeWidget
@@ -42,8 +53,8 @@ public:
     explicit ViewMolecule(QWidget * /*parent*/ = nullptr);
     ~ViewMolecule() override = default;
 
-    vtkColor3d getBackgroundColor() const;
-    vtkColor3d &backgroundColor();
+    vtkColor3d getBackgroundColor(void) const;
+    vtkColor3d &backgroundColor(void);
 
     vtkMoleculeMapper *getMoleculeMapper(void) const;
     vtkRenderer *getMoleculeRenderer(void) const;
@@ -65,6 +76,10 @@ private:
     ANewActor actorMol_;
     ANewRenderer renderMol_;
     ANewMolMapper mapMol_;
+    //
+    bool bLabelAtoms_ = true;
+    ANewActor2D actorLabelAtoms_;
+    ANewLabeledDataMapper mapLabelAtoms_;
 };
 
 #endif //! View_Molecule_h__

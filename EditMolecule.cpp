@@ -51,35 +51,27 @@ void EditMolecule::resetMolecule(Molecule *pMol)
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-void EditMolecule::loadMolecule()
-{
-  editSource_->clear();
-  if (!ptrMolecule_)
-    return;
-
-  int nAtoms = ptrMolecule_->GetNumberOfAtoms();
-  QPointer<QTextDocument> pDoc(new QTextDocument);
-
-  for (int j = 0; j < nAtoms; ++j)
-  {
-    QString strAtom(tr("  Atom %1: \n").arg(j + 1));
-
-    strAtom += '\n';
-    editSource_->appendPlainText(strAtom.trimmed());
-  }
-}
 QTextDocument *EditMolecule::getSource() const
 {
   return editSource_->document();
 }
+//
+///////////////////////////////////////////////////////////////////////////////
+//
 QLineEdit *EditMolecule::getEditTitle() const
 {
   return lineTitle_;
 }
+//
+///////////////////////////////////////////////////////////////////////////////
+//
 QComboBox *EditMolecule::getLinearUnits() const
 {
   return chooseUnits_;
 }
+//
+///////////////////////////////////////////////////////////////////////////////
+//
 QComboBox *EditMolecule::getCoordinateType() const
 {
   return chooseFormat_;
@@ -100,3 +92,25 @@ void EditMolecule::on_toolEditTitle__triggered(void)
   lineTitle_->setReadOnly(false);
   lineTitle_->setFocus();
 }
+//
+///////////////////////////////////////////////////////////////////////////////
+//
+void EditMolecule::loadMolecule()
+{
+  editSource_->clear();
+  if (!ptrMolecule_)
+    return;
+
+  int nAtoms = ptrMolecule_->GetNumberOfAtoms();
+  QPointer<QTextDocument> pDoc(new QTextDocument);
+
+  for (int j = 0; j < nAtoms; ++j)
+  {
+    QString strAtom(tr("  Atom %1: \n").arg(j + 1));
+
+    strAtom += '\n';
+    editSource_->appendPlainText(strAtom.trimmed());
+  }
+}
+//
+///////////////////////////////////////////////////////////////////////////////

@@ -4,6 +4,7 @@
 
 #include <vtkRenderWindow.h>
 #include <vtkWindowToImageFilter.h>
+#include <vtkTextProperty.h>
 
 #include <vtkTrivialProducer.h>
 
@@ -49,18 +50,33 @@ ViewMolecule::ViewMolecule(QWidget *parent)
   renderBg_->SetLayer(0);
   pRW->AddRenderer(renderBg_);
   renderMol_->SetLayer(1);
+  // -----------------------------------------------------------
+  // read these properties from registry?
+  // initial atom labels in molecule
+  vtkTextProperty *pAtomTextProp = mapLabelAtoms_->GetLabelTextProperty();
+  pAtomTextProp->UseTightBoundingBoxOn();
+  pAtomTextProp->SetFontSize(14);
+  pAtomTextProp->SetFontFamilyToCourier();
+  pAtomTextProp->BoldOn();
+  pAtomTextProp->SetColor(colors->GetColor3d("Yellow").GetData());
+  if (bLabelAtoms_)
+  {
+    // mapLabelAtoms_->SetInputConnection(mapMol_->GetAtomGlyphPointOut()->GetOutputPort());
+    renderMol_->AddActor2D(actorLabelAtoms_);
+  }
+
   pRW->AddRenderer(renderMol_);
   this->updateBackground();
 }
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-vtkColor3d ViewMolecule::getBackgroundColor() const
+vtkColor3d ViewMolecule::getBackgroundColor(void) const
 {
   return colorBg_;
 }
 //
-vtkColor3d &ViewMolecule::backgroundColor()
+vtkColor3d &ViewMolecule::backgroundColor(void)
 {
   return colorBg_;
 }
