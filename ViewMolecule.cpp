@@ -58,7 +58,7 @@ ViewMolecule::ViewMolecule(QWidget *parent)
   pAtomTextProp->SetFontSize(14);
   pAtomTextProp->SetFontFamilyToCourier();
   pAtomTextProp->BoldOn();
-  pAtomTextProp->SetColor(colors->GetColor3d("Yellow").GetData());
+  // pAtomTextProp->SetColor(colors->GetColor3d("Yellow").GetData());
   if (bLabelAtoms_)
   {
     // mapLabelAtoms_->SetInputConnection(mapMol_->GetAtomGlyphPointOut()->GetOutputPort());
