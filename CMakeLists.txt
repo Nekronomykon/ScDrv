@@ -29,7 +29,11 @@ find_package(VTK 9 COMPONENTS
   REQUIRED QUIET)
 add_compile_definitions(QT_DISABLE_DEPRECATED_BEFORE=0x050F00)
 
-find_package(Qt6 6.0 COMPONENTS Core Widgets Gui PrintSupport OpenGL REQUIRED)
+find_package(Qt6 COMPONENTS REQUIRED Core Widgets Gui PrintSupport OpenGL)
+if (NOT Qt6_FOUND)
+    #find_package(Qt5 5.15 REQUIRED COMPONENTS Core)
+find_package(Qt5 5.15 COMPONENTS REQUIRED Core Widgets Gui PrintSupport OpenGL)
+endif()
 
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
@@ -45,10 +49,11 @@ file(GLOB RC_FILES *.qrc)
 qt_wrap_ui(UISources ${UI_FILES} )
 
 if(Windows)
-  target_link_libraries(ScDrv Qt6::WinMain)
+  target_link_libraries(ScDrv Qt::WinMain)
 endif()
 
 # CMAKE_AUTOMOC in ON so the MOC headers will be automatically wrapped.
 add_executable(ScDrv MACOSX_BUNDLE ${CXX_FILES} ${CPP_FILES} ${UISources} ${RC_FILES} ${HDR_FILES})
 
-target_link_libraries(ScDrv ${VTK_LIBRARIES} Qt6::Core Qt6::Gui Qt6::Widgets Qt6::PrintSupport Qt6::OpenGL)
+target_link_libraries(ScDrv ${VTK_LIBRARIES} Qt::Core Qt::Gui Qt::Widgets Qt::PrintSupport Qt::OpenGL)
+
