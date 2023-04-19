@@ -62,7 +62,7 @@ ViewMolecule::ViewMolecule(QWidget *parent)
   if (bLabelAtoms_)
   {
     // mapLabelAtoms_->SetInputConnection(mapMol_->GetAtomGlyphPointOut()->GetOutputPort());
-    renderMol_->AddActor2D(actorLabelAtoms_);
+    // renderMol_->AddActor2D(actorLabelAtoms_);
   }
 
   pRW->AddRenderer(renderMol_);

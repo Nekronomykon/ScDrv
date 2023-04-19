@@ -78,7 +78,7 @@ private:
     ANewMolMapper mapMol_;
     //
     bool bLabelAtoms_ = true;
-    ANewActor2D actorLabelAtoms_;
+    // ANewActor2D actorLabelAtoms_;
     ANewLabeledDataMapper mapLabelAtoms_;
 };
 
